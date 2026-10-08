@@ -1,0 +1,20 @@
+# Sandbox staging overlay: the real egress-restricted equivalent of
+# healing/sandbox/runner.py (isolated staging per docs/SPIKE_SANDBOX.md).
+# Validate only: docker compose -f infra/docker-compose.yml
+#   -f infra/sandbox.overlay.yml config
+services:
+  demo:
+    networks:
+      - sandbox
+
+  wiremock:
+    image: wiremock/wiremock:3.9.1
+    container_name: wiremock
+    command: ["--port", "8080"]
+    networks:
+      - sandbox
+
+networks:
+  sandbox:
+    name: heal-sandbox
+    internal: true
