@@ -1,0 +1,10 @@
+﻿=== COMMAND: make bench-golden ===
+ERROR: The term 'make' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+=== EQUIVALENT (Makefile body, since make is unavailable) ===
+# Golden-set report
+
+- cases: 24, mismatches: none
+- accuracy: 1.000 (min 1.0)
+- false-heal rate: 0.000 (max 0.0)
+- verdict: PASS
+EXIT_CODE: 0

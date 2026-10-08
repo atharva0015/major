@@ -1,0 +1,8 @@
+﻿=== COMMAND: make test ===
+ERROR: The term 'make' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+=== EQUIVALENT (Makefile body, since make is unavailable) ===
+........................................................................ [ 49%]
+........................................................................ [ 98%]
+..                                                                       [100%]
+146 passed in 7.64s
+EXIT_CODE: 0

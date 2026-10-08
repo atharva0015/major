@@ -1,0 +1,3 @@
+﻿=== COMMAND: python -m scripts.sbom ===
+wrote sbom.json with 216 components
+EXIT_CODE: 0

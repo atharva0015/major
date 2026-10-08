@@ -1,0 +1,45 @@
+﻿=== COMMAND: python -m scripts.bench_decision ===
+# Decision-layer report (classify -> match -> policy -> record)
+
+- cases: 24
+- classification accuracy: 1.000
+- genuine_regression passed to heal engine: 0
+- wrong cases: none
+
+## Confusion matrix (true x predicted)
+
+| true \ predicted | environment_issue | genuine_regression | locator_drift |
+|---|---|---|---|
+| environment_issue | 3 | 0 | 0 |
+| genuine_regression | 0 | 6 | 0 |
+| locator_drift | 0 | 0 | 15 |
+
+## Per-case results
+
+| case | true | predicted | decision | healed |
+|---|---|---|---|---|
+| renamed_ids:/login | locator_drift | locator_drift | heal_unverified | login-submit |
+| renamed_ids:/products | locator_drift | locator_drift | heal_unverified | add-cart-1 |
+| renamed_ids:/checkout | locator_drift | locator_drift | heal_unverified | checkout-submit |
+| changed_classes:/login | locator_drift | locator_drift | heal_unverified | login-submit |
+| changed_classes:/products | locator_drift | locator_drift | heal_unverified | add-cart-1 |
+| changed_classes:/checkout | locator_drift | locator_drift | heal_unverified | checkout-submit |
+| moved_elements:/login | locator_drift | locator_drift | heal_unverified | login-submit |
+| moved_elements:/products | locator_drift | locator_drift | heal_unverified | add-cart-1 |
+| moved_elements:/checkout | locator_drift | locator_drift | heal_unverified | checkout-submit |
+| reskinned_layout:/login | locator_drift | locator_drift | heal_unverified | login-submit |
+| reskinned_layout:/products | locator_drift | locator_drift | heal_unverified | add-cart-1 |
+| reskinned_layout:/checkout | locator_drift | locator_drift | heal_unverified | checkout-submit |
+| duplicate_buttons:/login | environment_issue | environment_issue | fail_escalate | None |
+| duplicate_buttons:/products | environment_issue | environment_issue | fail_escalate | None |
+| duplicate_buttons:/checkout | environment_issue | environment_issue | fail_escalate | None |
+| removed_element:/login | genuine_regression | genuine_regression | fail_escalate | None |
+| removed_element:/products | genuine_regression | genuine_regression | fail_escalate | None |
+| removed_element:/checkout | genuine_regression | genuine_regression | fail_escalate | None |
+| swapped_roles:/login | genuine_regression | genuine_regression | fail_escalate | None |
+| swapped_roles:/products | genuine_regression | genuine_regression | fail_escalate | None |
+| swapped_roles:/checkout | genuine_regression | genuine_regression | fail_escalate | None |
+| ab_variant_text:/login | locator_drift | locator_drift | heal_unverified | login-submit |
+| ab_variant_text:/products | locator_drift | locator_drift | heal_unverified | add-cart-1 |
+| ab_variant_text:/checkout | locator_drift | locator_drift | heal_unverified | checkout-submit |
+EXIT_CODE: 0

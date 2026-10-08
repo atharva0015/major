@@ -1,0 +1,32 @@
+﻿=== COMMAND: make bench ===
+ERROR: The term 'make' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+=== EQUIVALENT (Makefile body, since make is unavailable) ===
+# Baseline report (do-nothing healer)
+
+- total: 24
+- heal_accuracy: 0.000
+- false_heal_rate: 0.000
+- escalation_rate: 1.000
+- correct_escalation_rate: 1.000
+- cost_per_heal: 0.000
+- latency_per_heal_ms: 0.000
+
+- failures by class: {'locator_drift': 15, 'environment_issue': 3, 'genuine_regression': 6}
+- locator drift share: 0.625
+- estimated manual repairs: 15
+- policy: baseline-0.1.0, seed: 42
+# Verify-before-it-matters report (sandbox + layered Critic)
+
+- wrong heals injected: 15
+- critic catch rate: 0.667
+- critic false-reject rate: 0.000
+- orchestrator false-heal rate: 0.000
+
+## Heal success by attempt
+
+| attempt | success | total | rate |
+|---|---|---|---|
+| 1 | 15 | 15 | 1.000 |
+| 2 | 0 | 15 | 0.000 |
+| 3 | 0 | 15 | 0.000 |
+EXIT_CODE: 0

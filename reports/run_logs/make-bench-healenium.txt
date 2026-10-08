@@ -1,0 +1,66 @@
+﻿=== COMMAND: make bench-healenium ===
+ERROR: The term 'make' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+=== EQUIVALENT (Makefile body, since make is unavailable) ===
+# Healenium attempt-1 report (sim)
+
+- total: 24
+- heal_accuracy: 1.000
+- false_heal_rate: 0.286
+- escalation_rate: 0.125
+- correct_escalation_rate: 0.333
+- cost_per_heal: 1.000
+- latency_per_heal_ms: 0.021
+
+- policy: healenium-sim-0.1.0, seed: 42, live: False
+- baseline heal_accuracy: 0.0
+- baseline escalation_rate: 1.0
+
+## Adversarial cases (must NOT heal)
+- adversarial total: 9
+- adversarial healed: 6
+- adversarial false heals: 6
+- adversarial false-heal rate: 1.000
+
+| case | healed | escalated |
+|---|---|---|
+| duplicate_buttons:/login | True | False |
+| duplicate_buttons:/products | True | False |
+| duplicate_buttons:/checkout | True | False |
+| removed_element:/login | False | True |
+| removed_element:/products | False | True |
+| removed_element:/checkout | False | True |
+| swapped_roles:/login | True | False |
+| swapped_roles:/products | True | False |
+| swapped_roles:/checkout | True | False |
+
+## Per-case results
+
+| case | should_heal | healed | correct |
+|---|---|---|---|
+| renamed_ids:/login | True | True | True |
+| renamed_ids:/products | True | True | True |
+| renamed_ids:/checkout | True | True | True |
+| changed_classes:/login | True | True | True |
+| changed_classes:/products | True | True | True |
+| changed_classes:/checkout | True | True | True |
+| moved_elements:/login | True | True | True |
+| moved_elements:/products | True | True | True |
+| moved_elements:/checkout | True | True | True |
+| reskinned_layout:/login | True | True | True |
+| reskinned_layout:/products | True | True | True |
+| reskinned_layout:/checkout | True | True | True |
+| duplicate_buttons:/login | False | True | False |
+| duplicate_buttons:/products | False | True | False |
+| duplicate_buttons:/checkout | False | True | False |
+| removed_element:/login | False | False | False |
+| removed_element:/products | False | False | False |
+| removed_element:/checkout | False | False | False |
+| swapped_roles:/login | False | True | False |
+| swapped_roles:/products | False | True | False |
+| swapped_roles:/checkout | False | True | False |
+| ab_variant_text:/login | True | True | True |
+| ab_variant_text:/products | True | True | True |
+| ab_variant_text:/checkout | True | True | True |
+
+Expected: 24 cases.
+EXIT_CODE: 0
