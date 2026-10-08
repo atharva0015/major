@@ -1,0 +1,30 @@
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.pyc
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+
+# Secrets and local env (never staged)
+.env
+*.env
+
+# Docker volumes and runtime data
+db/
+selenoid-config/video/
+logs/
+screenshots/
+
+# Regenerated benchmark outputs (evidence lives in reports/run_logs/ + docs/RUN_RESULTS.md)
+benchmark/reports/*.md
+benchmark/reports/*.json
+benchmark/reports/*.log
+benchmark/reports/*.jsonl
+sbom.json
+# NOTE: kept tracked (not ignored): healing/quality/golden.json,
+# healing/quality/registry.json, benchmark/reports/.gitkeep,
+# reports/run_logs/ (baseline run evidence)

@@ -1,0 +1,50 @@
+[project]
+name = "self-healing-framework"
+version = "0.1.0"
+description = "Self-healing test framework: detect, classify, heal (max 3 tries), verify, explain, escalate."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "TBD" }
+dependencies = [
+  "fastapi>=0.109",
+  "httpx>=0.27",
+  "uvicorn>=0.27",
+  "libcst>=1.5",
+  "opentelemetry-api>=1.28",
+  "opentelemetry-sdk>=1.28",
+  "prometheus_client>=0.20",
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff>=0.8",
+  "mypy>=1.10",
+  "pytest>=8",
+  "pyyaml>=6",
+  "selenium>=4",
+  "PyGithub>=2.5",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["healing*", "benchmark*", "demo_app*"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+warn_return_any = true
+warn_unused_configs = true
+show_error_codes = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
