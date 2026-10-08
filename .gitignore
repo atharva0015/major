@@ -24,6 +24,7 @@ benchmark/reports/*.md
 benchmark/reports/*.json
 benchmark/reports/*.log
 benchmark/reports/*.jsonl
+!benchmark/reports/.gitkeep
 sbom.json
 # NOTE: kept tracked (not ignored): healing/quality/golden.json,
 # healing/quality/registry.json, benchmark/reports/.gitkeep,
