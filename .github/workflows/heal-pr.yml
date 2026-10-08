@@ -1,0 +1,80 @@
+name: heal-pr
+
+on:
+  pull_request:
+    types: [labeled, opened, synchronize, reopened]
+
+jobs:
+  unit-tests:
+    if: contains(github.event.pull_request.labels.*.name, 'auto-heal')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .[dev]
+      - run: make lint
+      - run: make test
+
+  healed-on-staging:
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .[dev]
+      - run: python -m scripts.bench_verify
+
+  stability:
+    needs: healed-on-staging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .[dev]
+      - name: 5 consecutive passes
+        run: |
+          for i in 1 2 3 4 5; do python -m pytest tests/test_orchestrator.py -q || exit 1; done
+
+  negative-check:
+    # The healed test must FAIL against a seeded-defect build,
+    # proving the heal is not vacuous.
+    needs: stability
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .[dev]
+      - name: Seeded defect must fail
+        run: |
+          DRIFT_MODE=removed_element python -m pytest benchmark/test_demo.py -q -k "submit or checkout" && exit 1 || exit 0
+
+  secret-scan:
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: grep -rniE "sk-|BEGIN PRIVATE KEY|api[_-]?key\s*[:=]" --include="*.py" . && exit 1 || exit 0
+
+  policy-check:
+    needs: [negative-check, secret-scan]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .[dev]
+      - name: Self-approval never counts
+        run: python -m pytest tests/test_gitops_e2e.py -q -k "review"
