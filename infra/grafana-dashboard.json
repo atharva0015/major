@@ -1,0 +1,17 @@
+{
+  "title": "Self-healing overview",
+  "uid": "healing-overview",
+  "schemaVersion": 39,
+  "panels": [
+    {"id": 1, "title": "Heal latency by attempt", "type": "timeseries",
+     "targets": [{"expr": "histogram_quantile(0.95, heal_latency_seconds)"}]},
+    {"id": 2, "title": "Heal cost by attempt", "type": "timeseries",
+     "targets": [{"expr": "heal_cost_total"}]},
+    {"id": 3, "title": "Heal success by attempt number", "type": "barchart",
+     "targets": [{"expr": "heal_success_total"}]},
+    {"id": 4, "title": "Escalations by class", "type": "timeseries",
+     "targets": [{"expr": "heal_escalations_total"}]},
+    {"id": 5, "title": "Alert acknowledgement time", "type": "timeseries",
+     "targets": [{"expr": "histogram_quantile(0.95, alert_ack_seconds)"}]}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "pins": [
+    {
+      "versions": {
+        "config": "config-0.1.0",
+        "model": "rules-0.1.0",
+        "policy": "policy-0.1.0",
+        "prompt": "n/a-template-0.1.0"
+      }
+    }
+  ]
+}

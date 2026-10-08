@@ -1,0 +1,149 @@
+{
+  "cases": [
+    {
+      "case_id": "renamed_ids:/login",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "login-submit"
+    },
+    {
+      "case_id": "renamed_ids:/products",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "add-cart-1"
+    },
+    {
+      "case_id": "renamed_ids:/checkout",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "checkout-submit"
+    },
+    {
+      "case_id": "changed_classes:/login",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "login-submit"
+    },
+    {
+      "case_id": "changed_classes:/products",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "add-cart-1"
+    },
+    {
+      "case_id": "changed_classes:/checkout",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "checkout-submit"
+    },
+    {
+      "case_id": "moved_elements:/login",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "login-submit"
+    },
+    {
+      "case_id": "moved_elements:/products",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "add-cart-1"
+    },
+    {
+      "case_id": "moved_elements:/checkout",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "checkout-submit"
+    },
+    {
+      "case_id": "reskinned_layout:/login",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "login-submit"
+    },
+    {
+      "case_id": "reskinned_layout:/products",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "add-cart-1"
+    },
+    {
+      "case_id": "reskinned_layout:/checkout",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "checkout-submit"
+    },
+    {
+      "case_id": "duplicate_buttons:/login",
+      "classification": "environment_issue",
+      "decision": "fail_escalate",
+      "healed": null
+    },
+    {
+      "case_id": "duplicate_buttons:/products",
+      "classification": "environment_issue",
+      "decision": "fail_escalate",
+      "healed": null
+    },
+    {
+      "case_id": "duplicate_buttons:/checkout",
+      "classification": "environment_issue",
+      "decision": "fail_escalate",
+      "healed": null
+    },
+    {
+      "case_id": "removed_element:/login",
+      "classification": "genuine_regression",
+      "decision": "fail_escalate",
+      "healed": null
+    },
+    {
+      "case_id": "removed_element:/products",
+      "classification": "genuine_regression",
+      "decision": "fail_escalate",
+      "healed": null
+    },
+    {
+      "case_id": "removed_element:/checkout",
+      "classification": "genuine_regression",
+      "decision": "fail_escalate",
+      "healed": null
+    },
+    {
+      "case_id": "swapped_roles:/login",
+      "classification": "genuine_regression",
+      "decision": "fail_escalate",
+      "healed": null
+    },
+    {
+      "case_id": "swapped_roles:/products",
+      "classification": "genuine_regression",
+      "decision": "fail_escalate",
+      "healed": null
+    },
+    {
+      "case_id": "swapped_roles:/checkout",
+      "classification": "genuine_regression",
+      "decision": "fail_escalate",
+      "healed": null
+    },
+    {
+      "case_id": "ab_variant_text:/login",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "login-submit"
+    },
+    {
+      "case_id": "ab_variant_text:/products",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "add-cart-1"
+    },
+    {
+      "case_id": "ab_variant_text:/checkout",
+      "classification": "locator_drift",
+      "decision": "heal_unverified",
+      "healed": "checkout-submit"
+    }
+  ],
+  "sha256": "1e6ef5ba7f031d82c9a67ac56bac466fcf48da7c114c8e0454c0c64920b9908b"
+}
