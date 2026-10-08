@@ -1,0 +1,81 @@
+# Versioned policy config. Rules and thresholds live here, not in code.
+policy_version: "policy-0.1.0"
+config_version: "config-0.1.0"
+autonomy_level: L3  # launch default: heal, PR requires review
+kill_switch: false
+
+thresholds:
+  high: 0.8
+  medium: 0.5
+
+ambiguity_margin: 0.1
+
+# Classes that must never reach the heal engine (fail closed).
+blocked_classes:
+  - genuine_regression
+  - environment_issue
+  - contract_change
+
+# Rule weights: contribution of each fired rule to its class probability.
+# Severity rules outweigh locator_marker (which fires on every missing
+# locator) so adversarial classes always win their cases. Fail closed.
+rule_weights:
+  removed_marker: 1.6
+  swapped_marker: 1.5
+  decoy_marker: 1.5
+  network_fault: 1.5
+  contract_marker: 1.6
+  locator_marker: 0.8
+  text_only_change: 0.6
+
+# Prior probability mass per class before rules fire (sums to 1.0).
+class_priors:
+  locator_drift: 0.35
+  data_issue: 0.1
+  timing_issue: 0.1
+  environment_issue: 0.15
+  genuine_regression: 0.2
+  contract_change: 0.1
+
+# Extra masking patterns (regex strings) applied in addition to built-ins.
+masking_extra_patterns: []
+
+# Attempt ladder: hard cap of 3 (a 4th only if explicitly enabled).
+max_attempts: 3
+allow_fourth_attempt: false
+per_heal_timeout_s: 30.0
+per_heal_cost_budget: 10.0
+
+# Shadow mode (launch default): record what would be done, open no PRs.
+shadow_mode: true
+watch_window_h: 24
+
+# Alert severity routing + acknowledgement SLA (seconds).
+severity_routing:
+  genuine_regression: high
+  contract_change: high
+  environment_issue: medium
+  locator_drift: low
+ack_sla_s: 3600
+
+# Quality gates (additive limits; never loosen the thresholds above).
+# Golden CI fails if accuracy drops below min or false-heal rises above max.
+quality_limits:
+  golden_min_accuracy: 1.0
+  golden_max_false_heal_rate: 0.0
+  max_false_heal_rate: 0.0
+  max_calibration_ece: 0.15
+
+# Vision/LLM extension: OFF by default; enabled per application only.
+vision_llm:
+  enabled: false
+  apps: []
+  embedding_url: ""
+  llm_url: ""
+  llm_max_dom_chars: 2000
+  vision_max_cost: 1.0
+  llm_max_cost: 2.0
+  llm_timeout_s: 10.0
+
+model_version: "rules-0.1.0"
+prompt_version: "n/a-template-0.1.0"
