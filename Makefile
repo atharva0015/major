@@ -1,4 +1,4 @@
-.PHONY: test lint bench bench-healenium bench-healenium-live bench-shadow bench-api bench-golden bench-vision gates
+.PHONY: test lint bench bench-healenium bench-healenium-live bench-shadow bench-api bench-golden bench-vision gates demo
 
 test:
 	pytest -q
@@ -32,3 +32,6 @@ bench-vision:
 
 gates:
 	python -m scripts.check_gates
+
+demo:
+	python -m scripts.demo
