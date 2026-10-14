@@ -1,0 +1,128 @@
+# Demo-case expectations — written BEFORE running anything (2026-10-14).
+# Step for every case: "click Submit order" (or the named variant step).
+# HEAL = pipeline must heal to the named testid. ESCALATE = pipeline must
+# refuse to heal (correct: null). needs_review marks HEALs expected below
+# high confidence. Mismatches are reported, never edited away.
+
+cases:
+  - id: renamed_id
+    expected: HEAL
+    heals_to: submit-order
+    needs_review: false
+    reason: Only the id changed; text and stable testid are intact.
+  - id: reskinned
+    expected: HEAL
+    heals_to: submit-order
+    needs_review: false
+    reason: Classes and id changed; stable testid is intact.
+  - id: moved
+    expected: HEAL
+    heals_to: submit-order
+    needs_review: false
+    reason: Button moved containers; identity (testid) unchanged.
+  - id: label_reworded
+    expected: HEAL
+    heals_to: submit-order
+    needs_review: true
+    reason: Text became "Place order"; testid unchanged, but text evidence
+      is weaker so confidence should not be high.
+  - id: lookalike_trap
+    expected: ESCALATE
+    heals_to: null
+    needs_review: false
+    reason: Submit order is gone; Cancel wearing btn-primary is a trap.
+  - id: duplicates
+    expected: ESCALATE
+    heals_to: null
+    needs_review: false
+    reason: Two enabled "Submit order" buttons (header + form); ambiguous.
+  - id: button_removed
+    expected: ESCALATE
+    heals_to: null
+    needs_review: false
+    reason: No similar button remains; nothing safe to pick.
+  - id: save_draft_vs_save_order
+    expected: ESCALATE
+    heals_to: null
+    needs_review: false
+    reason: '"Save draft" vs "Save order" differ by one word; intent unclear.'
+  - id: delete_account_vs_delete_draft
+    expected: ESCALATE
+    heals_to: null
+    needs_review: false
+    reason: Wrong pick deletes the wrong thing; must not guess.
+  - id: disabled_submit
+    expected: ESCALATE
+    heals_to: null
+    needs_review: false
+    reason: Submit order present but disabled; not actionable.
+  - id: renamed_id_and_text
+    expected: HEAL
+    heals_to: submit-order
+    needs_review: false
+    reason: Id and text both changed; stable testid still identifies it.
+  - id: single_char_typo
+    expected: HEAL
+    heals_to: submit-order
+    needs_review: false
+    reason: One-character text typo; identity is unambiguous.
+  - id: hidden_submit
+    expected: ESCALATE
+    heals_to: null
+    needs_review: false
+    reason: Submit order present but display:none; not visible, not actionable.
+  - id: iframe_submit
+    expected: ESCALATE
+    heals_to: null
+    needs_review: false
+    reason: Same label inside an iframe; frame boundary blocks verification.
+  - id: translated_label
+    expected: HEAL
+    heals_to: submit-order
+    needs_review: true
+    reason: Text became Spanish; testid unchanged but text evidence is gone.
+  - id: shortened_label
+    expected: HEAL
+    heals_to: submit-order
+    needs_review: false
+    reason: Text shortened to "Submit"; testid unchanged.
+  - id: near_identical_pair
+    expected: ESCALATE
+    heals_to: null
+    needs_review: false
+    reason: submit-order vs submit-order-2, same text; ambiguous.
+  - id: link_replaces_button
+    expected: HEAL
+    heals_to: submit-order
+    needs_review: false
+    reason: Button became a link; testid unchanged, link is actionable.
+  - id: reordered_steps
+    expected: HEAL
+    heals_to: submit-order
+    needs_review: false
+    reason: Submit moved after Cancel; identity unchanged.
+  - id: cookie_covered
+    expected: ESCALATE
+    heals_to: null
+    needs_review: false
+    reason: Cookie banner covers the button; click would land elsewhere.
+  - id: redesign_removed
+    expected: ESCALATE
+    heals_to: null
+    needs_review: false
+    reason: Button intentionally removed (auto-submit note); nothing to pick.
+  - id: ab_continue_variant
+    expected: HEAL
+    heals_to: submit-order
+    needs_review: true
+    reason: Variant text "Continue"; testid unchanged, text evidence weak.
+  - id: duplicate_ids
+    expected: ESCALATE
+    heals_to: null
+    needs_review: false
+    reason: Two elements share id submit-order; page is broken.
+  - id: action_changed
+    expected: ESCALATE
+    heals_to: null
+    needs_review: false
+    reason: Text matches but data-action is preview; testid alone misleads.
