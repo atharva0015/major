@@ -46,9 +46,19 @@ Run: `python -m scripts.retention` (dry-run) or `--apply` to delete.
   (`MIT, Apache-2.0, BSD, ISC, PSF`).
 - Healenium reuse: Apache-2.0, notices in `THIRD_PARTY_NOTICES.md` + `NOTICE`.
 
-## Vendor and subprocessor register (template — owner must fill in)
+## Vendor and subprocessor register (template — needs human review)
 
-| Vendor | Purpose | Data shared | DPA signed | Owner |
-|---|---|---|---|---|
-| *(e.g. CI provider)* | *(test execution)* | *(logs)* | *(yes/no)* | *(name)* |
-| *(e.g. alerting/Slack)* | *(incident alerts)* | *(masked summaries)* | *(yes/no)* | *(name)* |
+Every row below names a service evidenced in this repo (compose file,
+routers, CI config). Region, DPA status, and owner are TBD by a human;
+nothing here is approved for production data.
+
+| Vendor / service | Purpose (evidence) | Data sent | Region | DPA signed | Owner | Review |
+|---|---|---|---|---|---|---|
+| GitHub Actions (`ci.yml`, `heal-pr.yml`) | CI: lint, tests, benches, gates | Repo code, test logs, SBOM | UNVERIFIED (vendor cloud) | TBD | TBD | needs human review |
+| GitHub API via PyGithub (`gitops/app.py`) | Open heal/revert PRs, comments, labels | PR diffs, masked summaries; token from env only | UNVERIFIED | TBD | TBD | needs human review |
+| Docker Hub | Image pulls (`postgres`, `selenium/*`, `python`, Healenium) | Pull metadata only; no project data | UNVERIFIED (CDN) | TBD | TBD | needs human review |
+| PyPI | `pip install` of floors in `pyproject.toml` + demo container | Download metadata only | UNVERIFIED (CDN) | TBD | TBD | needs human review |
+| Slack webhook (`SLACK_WEBHOOK_URL`) | Alert delivery | Masked alert summaries only | Customer-configured, TBD | TBD | TBD | needs human review |
+| Teams webhook (`TEAMS_WEBHOOK_URL`) | Alert delivery | Masked alert summaries only | Customer-configured, TBD | TBD | TBD | needs human review |
+| Jira API (`JiraSender`, token from env) | Issue creation for escalations | Masked summaries only | Customer-configured, TBD | TBD | TBD | needs human review |
+| Self-hosted: Healenium + Grid + Postgres (compose) | Locator matching, browsers, storage | Test DOM/screenshots; stays on local network | Local-only | n/a (self-hosted) | TBD | needs human review |
