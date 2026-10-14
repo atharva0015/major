@@ -25,49 +25,59 @@ never be loosened to fit measured numbers.
   value: 0.95
   source: benchmark/reports/golden.json
   key: accuracy
+  provenance: live
 - metric: false_heal_rate_overall
   op: "=="
   value: 0.0
   source: benchmark/reports/verify.json
   key: false_heal_rate
+  provenance: sim
 - metric: false_heal_rate_adversarial
   op: "=="
   value: 0.0
   source: benchmark/reports/healenium.json
   key: "results[computed: wrong_heals/healed among should_heal=false]"
+  provenance: live
 - metric: critic_catch_rate
   op: ">="
   value: 0.9
   source: benchmark/reports/verify.json
   key: catch_rate
+  provenance: sim
 - metric: critic_false_reject_rate
   op: "<="
   value: 0.05
   source: benchmark/reports/verify.json
   key: false_reject_rate
+  provenance: sim
 - metric: classification_accuracy
   op: ">="
   value: 0.95
   source: benchmark/reports/decision.json
   key: accuracy
+  provenance: sim
 - metric: genuine_passed_to_heal
   op: "=="
   value: 0
   source: benchmark/reports/decision.json
   key: genuine_passed_to_heal
+  provenance: sim
 - metric: contract_healed
   op: "=="
   value: 0
   source: benchmark/reports/api.json
   key: contract_healed
+  provenance: sim
 - metric: cost_per_heal
   op: "<="
   value: 2.0
   source: benchmark/reports/healenium.json
   key: metrics.cost_per_heal
+  provenance: live
 - metric: latency_per_heal_ms
   op: "<="
   value: 100.0
   source: benchmark/reports/healenium.json
   key: metrics.latency_per_heal_ms
+  provenance: live
 ```

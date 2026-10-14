@@ -2,7 +2,9 @@
 
 Reads report JSON only (plus the alert unit tests as a subgate). Never
 imports healing/ or benchmark/ code, so a broken pipeline cannot mask a
-red gate. Missing or malformed reports FAIL closed.
+red gate. Missing or malformed reports FAIL closed — except gates that
+declare live provenance: with no live report they are UNVERIFIED, never
+graded on simulated data.
 """
 
 from __future__ import annotations
@@ -41,7 +43,8 @@ def read_json(path: str) -> dict[str, object]:
 
 
 def adversarial_fhr(path: str) -> float:
-    rows = read_json(path).get("results", [])
+    data = read_json(path)
+    rows = data.get("results", data.get("vias", []))
     assert isinstance(rows, list)
     adv = [r for r in rows if isinstance(r, dict) and not r.get("should_heal")]
     healed = [r for r in adv if r.get("healed")]
@@ -51,7 +54,13 @@ def adversarial_fhr(path: str) -> float:
     return len(wrong) / len(healed)
 
 
-def metric_value(name: str, source: str) -> float:
+def live_source_for(source: str) -> str:
+    """Live counterpart of a sim report path (healenium.json -> healenium_live.json)."""
+    root, ext = os.path.splitext(source)
+    return root + "_live" + ext
+
+
+def metric_value(name: str, source: str, live: bool = False) -> float:
     if name == "false_heal_rate_adversarial":
         return adversarial_fhr(source)
     data = read_json(source)
@@ -59,6 +68,11 @@ def metric_value(name: str, source: str) -> float:
         metrics = data.get("metrics", {})
         assert isinstance(metrics, dict)
         return float(metrics[name])
+    if live and name == "heal_accuracy":
+        # Live reports nest accuracy under metrics; sim golden.json is flat.
+        metrics = data.get("metrics", {})
+        assert isinstance(metrics, dict)
+        return float(metrics["heal_accuracy"])
     key = {
         "heal_accuracy": "accuracy",
         "false_heal_rate_overall": "false_heal_rate",
@@ -101,13 +115,34 @@ def main() -> None:
         print(f"FAIL targets_block: {exc}")
         raise SystemExit(1)
     failed = 0
+    unverified = 0
+    passed = 0
     for t in targets:
         name, op, value, source = (
             str(t["metric"]),
             str(t["op"]),
-            float(t["value"]),
+            float(str(t["value"])),
             str(t["source"]),
         )
+        provenance = str(t.get("provenance", "sim"))
+        if provenance == "live":
+            live_path = live_source_for(source)
+            try:
+                actual = metric_value(name, live_path, live=True)
+            except (OSError, ValueError, KeyError, AssertionError, TypeError) as exc:
+                print(
+                    f"UNVERIFIED {name} [live]: no live report at {live_path} "
+                    f"({exc}); sim data must not stand in"
+                )
+                unverified += 1
+                continue
+            if OPS[op](actual, value):
+                print(f"PASS {name} [live]: {actual} {op} {value}")
+                passed += 1
+            else:
+                print(f"FAIL {name} [live]: {actual} {op} {value} (from {live_path})")
+                failed += 1
+            continue
         try:
             actual = metric_value(name, source)
         except (OSError, ValueError, KeyError, AssertionError, TypeError) as exc:
@@ -115,17 +150,23 @@ def main() -> None:
             failed += 1
             continue
         if OPS[op](actual, value):
-            print(f"PASS {name}: {actual} {op} {value}")
+            print(f"PASS {name} [sim]: {actual} {op} {value}")
+            passed += 1
         else:
-            print(f"FAIL {name}: {actual} {op} {value} (from {source})")
+            print(f"FAIL {name} [sim]: {actual} {op} {value} (from {source})")
             failed += 1
     status, detail = check_alerts()
     print(f"{status} alert_completeness: {detail}")
-    failed += status != "PASS"
+    if status == "PASS":
+        passed += 1
+    else:
+        failed += 1
     print(
         "UNVERIFIED heal_survival_rate: no history yet (survival.py reports "
         "insufficient_data); becomes a FAIL gate once data accrues"
     )
+    unverified += 1
+    print(f"MEASURED PASS {passed} / FAIL {failed} / UNVERIFIED {unverified}")
     print(f"result: {'FAIL' if failed else 'PASS'} ({failed} failing)")
     if failed:
         raise SystemExit(1)
