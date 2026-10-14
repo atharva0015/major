@@ -34,6 +34,9 @@ services:
       - COLLECT_METRICS=true
       - FIND_ELEMENTS_AUTO_HEALING=false
       - HLM_LOG_LEVEL=info
+    volumes:
+      - ./screenshots/:/screenshots
+      - ./logs/:/logs
     networks:
       - healenium
 
@@ -56,40 +59,49 @@ services:
       - RECOVERY_TRIES=1
       - SCORE_CAP=.6
       - HEAL_ENABLED=true
-      - SELENIUM_SERVER_URL=http://selenoid:4444/wd/hub
+      - SELENIUM_SERVER_URL=http://selenium-hub:4444/wd/hub
       - HEALENIUM_SERVER_URL=http://healenium:7878
       - HEALENIUM_SERVICE=http://healenium:7878
       - IMITATE_SERVICE=http://selector-imitator:8000
       - HLM_LOG_LEVEL=info
+    volumes:
+      - ./logs/:/logs
     depends_on:
       - healenium
       - selector-imitator
-      - selenoid
+      - selenium-hub
+      - chrome
     networks:
       - healenium
 
-  selenoid:
-    image: aerokube/selenoid:latest-release
-    container_name: selenoid
-    ports:
-      - "4444:4444"
-    volumes:
-      # Provide ./selenoid-config/browsers.json (see docs/HEALENIUM.md).
-      - ./selenoid-config:/etc/selenoid:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: ["-conf", "/etc/selenoid/browsers.json", "-container-network", "healenium"]
-    networks:
-      - healenium
-
-  selenoid-ui:
-    image: aerokube/selenoid-ui:latest-release
-    container_name: selenoid-ui
+  # Selenium Grid (official Healenium base compose). Selenoid was removed:
+  # aerokube/selenoid:latest-release speaks Docker API 1.24, but Docker
+  # Desktop 29 requires >=1.40, so it can never spawn browsers here.
+  selenium-hub:
+    image: selenium/hub:latest
+    container_name: selenium-hub
     restart: on-failure
     ports:
-      - "8080:8080"
-    command: ["--selenoid-uri", "http://selenoid:4444"]
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+    networks:
+      - healenium
+
+  chrome:
+    image: selenium/node-chromium:latest
+    container_name: node-chrome
+    restart: on-failure
+    shm_size: 2gb
     depends_on:
-      - selenoid
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_INSTANCES=5
+      - SE_NODE_MAX_SESSIONS=5
+      - SE_NODE_SESSION_TIMEOUT=20
     networks:
       - healenium
 
@@ -99,7 +111,12 @@ services:
     working_dir: /work
     volumes:
       - ..:/work
-    command: python -m uvicorn demo_app.app:app --host 0.0.0.0 --port 8001
+    environment:
+      # Drift control for live healing runs (default: no drift).
+      - DRIFT_MODE=${DRIFT_MODE:-none}
+      - API_DRIFT_MODE=${API_DRIFT_MODE:-none}
+    # Bare slim image has no deps; install pinned floors at start (matches pyproject).
+    command: ["sh", "-c", "pip install --no-cache-dir 'fastapi>=0.109' 'httpx>=0.27' 'uvicorn>=0.27' && python -m uvicorn demo_app.app:app --host 0.0.0.0 --port 8001"]
     ports:
       - "8001:8001"
     networks:

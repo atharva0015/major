@@ -1,0 +1,78 @@
+{
+  "data": [
+    {
+      "declaringClass": "[id=\"login-submit\"]",
+      "failedLocatorType": "By.cssSelector",
+      "failedLocatorValue": "[id=\"login-submit\"]",
+      "healedLocatorType": "By.cssSelector",
+      "healedLocatorValue": "button#login-submit-v2",
+      "healingResultId": 5,
+      "score": "0.97",
+      "screenShotPath": "/screenshots/f71e56b9bfae4f580e52a521312590f5/screenshot_08-Oct-2026-06-38-23.110.png",
+      "sourceReportId": null,
+      "sourceReportName": null,
+      "sourceReportTime": null,
+      "successHealing": true
+    }
+  ],
+  "id": "f71e56b9bfae4f580e52a521312590f5",
+  "name": "Healing Report 08 Oct 2026 - 06:38",
+  "reportLinks": [
+    {
+      "extendClass": "active",
+      "id": "f71e56b9bfae4f580e52a521312590f5",
+      "name": "08 Oct 2026 - 06:38"
+    },
+    {
+      "extendClass": null,
+      "id": "cbe31b3cfab2278b49c123fa2fae4cee",
+      "name": "08 Oct 2026 - 06:38"
+    },
+    {
+      "extendClass": null,
+      "id": "107469f5e67e82277a6d15a44fe4b64d",
+      "name": "08 Oct 2026 - 06:35"
+    },
+    {
+      "extendClass": null,
+      "id": "cb4c7a1d12c390c031f65cb75f50eb12",
+      "name": "08 Oct 2026 - 06:35"
+    },
+    {
+      "extendClass": null,
+      "id": "427b5757e6cc14aeb1355a74e1be2e76",
+      "name": "08 Oct 2026 - 06:33"
+    },
+    {
+      "extendClass": null,
+      "id": "24b6e8295331efb9e2653a73325a7d1f",
+      "name": "08 Oct 2026 - 06:30"
+    },
+    {
+      "extendClass": null,
+      "id": "0532b18aba94c88620ce13381a06b989",
+      "name": "08 Oct 2026 - 06:30"
+    },
+    {
+      "extendClass": null,
+      "id": "35609c45d71bb9b723336674165aa175",
+      "name": "08 Oct 2026 - 06:26"
+    },
+    {
+      "extendClass": null,
+      "id": "02c83ad71c747f46ed8917fd8f2ee5d1",
+      "name": "08 Oct 2026 - 06:25"
+    },
+    {
+      "extendClass": null,
+      "id": "1623d90329f71e55d84401aa74cd3a50",
+      "name": "08 Oct 2026 - 06:22"
+    },
+    {
+      "extendClass": null,
+      "id": "9d44b0fd693f33b083230d18764a886b",
+      "name": "08 Oct 2026 - 06:20"
+    }
+  ],
+  "time": "2026-10-08T06:38:22.591699"
+}

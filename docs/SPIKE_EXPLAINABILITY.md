@@ -2,7 +2,7 @@
 
 ## What Healenium exposes (verified against public interfaces)
 
-- HTML report at `GET /healenium/report/` per session: failed locator value,
+- HTML report at `GET /healenium/report` (no trailing slash) per session: failed locator value,
   healed locator value, screenshot, correct/not-correct toggle, **single
   final healing score**.
 - JSON: `GET /healenium/report/data`, `GET /healenium/report/data/{uid}`,

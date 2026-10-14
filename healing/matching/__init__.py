@@ -1,7 +1,7 @@
 """Matching: Healenium-based locator matching (Apache 2.0, see NOTICE)."""
 
 from healing.matching.base import Candidate, Matcher, ScoredCandidate
-from healing.matching.healenium_adapter import HealeniumAdapter
+from healing.matching.healenium_adapter import HealeniumAdapter, best_score_for_locator
 from healing.matching.llm_attempt import (
     DisabledLlm,
     LlmAttempt,
@@ -30,6 +30,7 @@ __all__: list[str] = [
     "SelfHostedEmbedding",
     "SelfHostedLlm",
     "WEIGHTS",
+    "best_score_for_locator",
     "build_prompt",
     "cosine",
     "crop_features",

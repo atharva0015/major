@@ -13,7 +13,7 @@ import httpx
 
 from healing.matching.base import Candidate, Matcher, ScoredCandidate
 
-ADAPTER_VERSION = "healenium-adapter-0.1.0"
+ADAPTER_VERSION = "healenium-adapter-0.2.0"
 BACKEND_IMAGE = "healenium/hlm-backend:3.5.1"
 PROXY_IMAGE = "healenium/hlm-proxy:2.2.1"
 DEFAULT_SCORE_CAP = 0.6
@@ -60,6 +60,30 @@ def parse_candidates(html: str) -> list[Candidate]:
     return p.out
 
 
+def best_score_for_locator(payload: object, locator: str) -> float | None:
+    """Best valid unit score among entries mentioning locator (pure)."""
+    import json
+
+    items = payload.get("data", []) if isinstance(payload, dict) else []
+    if not isinstance(items, list):
+        return None
+    best: float | None = None
+    for it in items:
+        if not isinstance(it, dict):
+            continue
+        if locator not in json.dumps(it):
+            continue
+        v = it.get("score")
+        if isinstance(v, bool):
+            continue
+        if isinstance(v, str):
+            v = float(v) if v.replace(".", "", 1).isdigit() else None
+        if isinstance(v, (int, float)) and 0.0 <= float(v) <= 1.0:
+            f = float(v)
+            best = f if best is None else max(best, f)
+    return best
+
+
 class HealeniumAdapter(Matcher):
     """Thin client over hlm-backend public endpoints."""
 
@@ -78,26 +102,21 @@ class HealeniumAdapter(Matcher):
         return parse_candidates(html)
 
     def _backend_score(self, locator: str) -> float | None:
+        """Best valid score for entries mentioning locator, else None.
+
+        Verified live against hlm-backend 3.5.1: GET /healenium/report/data
+        returns {"data": [...], ...}; each entry carries "score" as a
+        "0.97"-style string. No query params (the backend ignores them);
+        filtering is client-side. Anything else -> None (fail closed).
+        """
         try:
             r = httpx.get(
                 f"{self.base_url}/healenium/report/data",
-                params={"locator": locator},
                 timeout=self.timeout_s,
             )
             if r.status_code != 200:
                 return None
-            payload = r.json()
-            items = payload if isinstance(payload, list) else payload.get("items", [])
-            best: float | None = None
-            for it in items if isinstance(items, list) else []:
-                if not isinstance(it, dict):
-                    continue
-                for key in ("score", "healingScore", "resultScore"):
-                    v = it.get(key)
-                    if isinstance(v, (int, float)):
-                        f = float(v)
-                        best = f if best is None else max(best, f)
-            return best
+            return best_score_for_locator(r.json(), locator)
         except Exception:
             return None
 
