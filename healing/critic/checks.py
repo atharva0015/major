@@ -86,18 +86,16 @@ def check_network(calls: list[str], expected_hosts: list[str]) -> tuple[bool, st
 
 
 def check_intent(chosen: str, correct: str | None, purpose: str) -> tuple[bool, str]:
-    """The step's recorded purpose still matches the chosen role/name."""
+    """The step's recorded purpose still matches the chosen role/name.
+
+    Exact identity only: same-stem neighbors (add-cart-2 for add-cart-1)
+    previously passed and hid real defects. Fail closed.
+    """
     if correct is None:
         return False, "no_correct_element"
     if chosen == correct:
         return True, ""
-    # Same-purpose tokens share a stem (submit/add/checkout/buy); else mismatch.
-    stems = ("submit", "add-cart", "checkout", "buy", "purchase")
-    chosen_stem = next((s for s in stems if s in chosen), chosen)
-    correct_stem = next((s for s in stems if s in correct), correct)
-    if chosen_stem != correct_stem:
-        return False, f"intent_mismatch:{purpose}:{chosen}!={correct}"
-    return True, ""
+    return False, f"intent_mismatch:{purpose}:{chosen}!={correct}"
 
 
 def run_checks(
