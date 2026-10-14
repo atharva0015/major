@@ -6,20 +6,120 @@
       "failedLocatorValue": "[id=\"login-submit\"]",
       "healedLocatorType": "By.cssSelector",
       "healedLocatorValue": "button#login-submit-v2",
-      "healingResultId": 5,
+      "healingResultId": 21,
       "score": "0.97",
-      "screenShotPath": "/screenshots/f71e56b9bfae4f580e52a521312590f5/screenshot_08-Oct-2026-06-38-23.110.png",
+      "screenShotPath": "/screenshots/0efbcbf0989f3a533ff559cb8b50703f/screenshot_14-Oct-2026-12-21-56.238.png",
       "sourceReportId": null,
       "sourceReportName": null,
       "sourceReportTime": null,
       "successHealing": true
     }
   ],
-  "id": "f71e56b9bfae4f580e52a521312590f5",
-  "name": "Healing Report 08 Oct 2026 - 06:38",
+  "id": "0efbcbf0989f3a533ff559cb8b50703f",
+  "name": "Healing Report 14 Oct 2026 - 00:21",
   "reportLinks": [
     {
       "extendClass": "active",
+      "id": "0efbcbf0989f3a533ff559cb8b50703f",
+      "name": "14 Oct 2026 - 00:21"
+    },
+    {
+      "extendClass": null,
+      "id": "1f13286cec70e49b722a32b88886ee29",
+      "name": "14 Oct 2026 - 00:21"
+    },
+    {
+      "extendClass": null,
+      "id": "cf97e25c402f5e9660e647a647067c56",
+      "name": "08 Oct 2026 - 06:41"
+    },
+    {
+      "extendClass": null,
+      "id": "3e5adae53ccae995c9cbab61391bc2c1",
+      "name": "08 Oct 2026 - 06:40"
+    },
+    {
+      "extendClass": null,
+      "id": "a877d9aec1bf831a5ba71426454f24b6",
+      "name": "08 Oct 2026 - 06:40"
+    },
+    {
+      "extendClass": null,
+      "id": "b48c65b85d134214dc33fbce178bc9b3",
+      "name": "08 Oct 2026 - 06:40"
+    },
+    {
+      "extendClass": null,
+      "id": "68cf0efb358aea4cd702c04e99198aa2",
+      "name": "08 Oct 2026 - 06:40"
+    },
+    {
+      "extendClass": null,
+      "id": "bbff44c8c6253563dcdef21054579d28",
+      "name": "08 Oct 2026 - 06:40"
+    },
+    {
+      "extendClass": null,
+      "id": "f92333ea173228e59ff0e55150a095f8",
+      "name": "08 Oct 2026 - 06:40"
+    },
+    {
+      "extendClass": null,
+      "id": "41cf768da66e6f2a984b59b04544e9fe",
+      "name": "08 Oct 2026 - 06:40"
+    },
+    {
+      "extendClass": null,
+      "id": "90743f613585b452c6d6700414caa2a5",
+      "name": "08 Oct 2026 - 06:40"
+    },
+    {
+      "extendClass": null,
+      "id": "b9caa7b69ccf9ab7102f20c111ca7114",
+      "name": "08 Oct 2026 - 06:39"
+    },
+    {
+      "extendClass": null,
+      "id": "e4aaf4e4312365ad7273f932ba097ce2",
+      "name": "08 Oct 2026 - 06:39"
+    },
+    {
+      "extendClass": null,
+      "id": "c5649688e08238f7305f2dd905e8c057",
+      "name": "08 Oct 2026 - 06:39"
+    },
+    {
+      "extendClass": null,
+      "id": "757aa136b99bd6ad4393291a54f4aa7a",
+      "name": "08 Oct 2026 - 06:39"
+    },
+    {
+      "extendClass": null,
+      "id": "6ef3c0a88100ad076f8ba0e04a948032",
+      "name": "08 Oct 2026 - 06:39"
+    },
+    {
+      "extendClass": null,
+      "id": "4f5ede5ab54284afa4dda847531d9192",
+      "name": "08 Oct 2026 - 06:39"
+    },
+    {
+      "extendClass": null,
+      "id": "4b8c99184e144ba85acc1ed4afa40fe8",
+      "name": "08 Oct 2026 - 06:39"
+    },
+    {
+      "extendClass": null,
+      "id": "3552d9914de6ac2695d7024192a46f47",
+      "name": "08 Oct 2026 - 06:39"
+    },
+    {
+      "extendClass": null,
+      "id": "680ede045f101c76e216be4691a27b28",
+      "name": "08 Oct 2026 - 06:39"
+    },
+    {
+      "extendClass": null,
       "id": "f71e56b9bfae4f580e52a521312590f5",
       "name": "08 Oct 2026 - 06:38"
     },
@@ -74,5 +174,5 @@
       "name": "08 Oct 2026 - 06:20"
     }
   ],
-  "time": "2026-10-08T06:38:22.591699"
+  "time": "2026-10-14T00:21:54.70796"
 }
