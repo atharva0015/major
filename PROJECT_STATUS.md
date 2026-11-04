@@ -13,7 +13,7 @@ rerun, or a missing input).
 The healing pipeline is implemented end-to-end: classify → match →
 sandbox replay → layered Critic → policy gate → explanation record →
 alert / shadow PR, with an API sidecar and quality tooling. **MEASURED
-this session (2026-11-05, Python 3.12.10): 182 tests pass; lint and mypy
+this session (2026-11-05, Python 3.12.10): 185 tests pass; lint and mypy
 are clean; the 24-case demo matches 24/24; gates report 9 PASS, 2 FAIL,
 1 UNVERIFIED (exit 1).** Both failures are the documented ones: the raw
 live Healenium matcher heals 9/9 adversarial cases, and live latency is
@@ -31,9 +31,9 @@ remains UNVERIFIED by design (no history).
 
 | Check | Result |
 |---|---|
-| `pytest -q` | 182 passed in 14.77 s |
+| `pytest -q` | 185 passed in 15.90 s |
 | `ruff check .` | clean |
-| `ruff format --check .` | 166 files already formatted |
+| `ruff format --check .` | 168 files already formatted |
 | `mypy healing` | no issues in 50 source files |
 | `python tasks.py demo` | 24/24 cases match, exit 0 |
 | `python -m scripts.bench_golden_live` | 24 cases, heal_accuracy 1.0 |
@@ -188,7 +188,10 @@ green on 3.12 observed.
 
 ## Changes since the previous status
 
-- Tests: 166 → **182 passed**; lint/mypy re-verified on Python 3.12.10.
+- Tests: 166 → **185 passed**; lint/mypy re-verified on Python 3.12.10.
+- Demo debt: `bench_demo_cases` now runs all **24** pre-registered cases
+  (it previously ran only the 12 base cases); new tests cover the bench and
+  the one-command demo.
 - `heal_accuracy [live]`: UNVERIFIED → **PASS** from
   `scripts/bench_golden_live.py`; gates are now 9 PASS / 2 FAIL / 1 UNVERIFIED.
 - Held-out set: previously "absent / UNVERIFIED" → **built and measured**

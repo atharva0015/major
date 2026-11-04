@@ -9,8 +9,9 @@ verified/shipped · `[ ]` not completed.
 Evidence labels follow `PROJECT_STATUS.md`: **MEASURED**, **SIMULATED**,
 **UNVERIFIED**.
 
-At a glance: **45 done · 46 partial · 23 open** (was 72 / 13 / 31 before the
-2026-11-04 audit; the P0 batch closed four items and P1.3 closed one).
+At a glance: **47 done · 44 partial · 23 open** (was 72 / 13 / 31 before the
+2026-11-04 audit; the P0 batch closed four items, P1.3 closed one, and the
+demo-case/one-command-demo tests closed two more).
 
 > **Audit rule used here:** a `[x]` stays only if it has both (a) a passing
 > automated test that exercises the behaviour and (b) a saved output artifact
@@ -208,17 +209,26 @@ At a glance: **45 done · 46 partial · 23 open** (was 72 / 13 / 31 before the
 - [x] **Make targets and Windows equivalents** — test, lint, every bench,
   gates, demo (`Makefile`, `tasks.py`). Evidence: `tests/test_bench_wiring.py`;
   `reports/run_logs/make-*.txt` and `reports/evidence/2026-11-04/*`.
+- [x] **Demo-case benchmark covers all 24 pre-registered cases** — the bench
+  runs the 12 base cases plus the 12 hard cases against `cases.yaml`.
+  `tests/test_demo_cases_bench.py` asserts 24 rows, 0 pipeline false heals,
+  and 0 wrong escalations. Evidence:
+  `reports/evidence/2026-11-05/demo_cases.txt` (24/24).
+- [x] **One-command presentation demo** — `scripts/demo.py` / `tasks.py demo`.
+  `tests/test_demo_script.py` runs it as a subprocess and asserts 24 case
+  rows plus both XAI records. Evidence:
+  `reports/evidence/2026-11-05/demo.txt` (24/24, exit 0).
 
 ### 1.10 Tests and documentation
 
-- [x] **182 tests passing** on Python 3.12.10, including classifier, matcher,
+- [x] **185 tests passing** on Python 3.12.10, including classifier, matcher,
   Critic, policy, orchestrator, sandbox, XAI, alerts, GitOps, API sidecar,
   held-out set, gates, and metrics (**MEASURED 2026-11-04**). Evidence: the
-  suite itself; `reports/evidence/2026-11-05/pytest.txt` (182 passed, exit 0).
+  suite itself; `reports/evidence/2026-11-05/pytest.txt` (185 passed, exit 0).
 - [x] **Lint/type checks clean** — ruff check, ruff format, mypy (**MEASURED
   2026-11-04**). Evidence: `reports/evidence/2026-11-04/lint.txt` (exit 0/0/0).
 
-## 2. Implemented but not fully verified/shipped (46)
+## 2. Implemented but not fully verified/shipped (44)
 
 ### 2.1 Existing partials (13)
 
@@ -254,7 +264,7 @@ At a glance: **45 done · 46 partial · 23 open** (was 72 / 13 / 31 before the
   quickstart, architecture, commands, evidence links, and limits, but most
   docs still have no executable check.
 
-### 2.2 Downgraded by the 2026-11-04 audit (32)
+### 2.2 Downgraded by the 2026-11-04 audit (30)
 
 Each item is implemented and/or tested, but lacks one of the two required
 proofs. The reason names the missing half.
@@ -284,11 +294,6 @@ proofs. The reason names the missing half.
 - [~] **Live end-to-end pipeline run** — artifact exists
   (`benchmark/reports/e2e_live.md`), but no pytest test covers the live
   pipeline.
-- [~] **Demo-case benchmark** — artifact exists
-  (`benchmark/reports/demo_cases.md`, 24/24), but no pytest test asserts the
-  demo-case outcomes.
-- [~] **One-command demo** — output saved
-  (`reports/evidence/2026-11-04/demo.txt`), but no test runs `scripts.demo`.
 - [~] **Committed run logs** — logs exist under `reports/run_logs/`, but this
   is a documentation claim, not an executable check.
 - [~] **Sandbox overlay documentation** — `infra/sandbox.overlay.yml` is
@@ -391,10 +396,10 @@ weeks. Human-only decisions are marked; no sign-off box is ticked here.
   placeholders with real teams. **L**.
 - [ ] **P1.9 Smoke-test Slack/Teams/Jira delivery** with real webhook URLs from
   environment variables. **S**.
-- [ ] **P1.10 Close the missing test/artifact debt from section 2.2** — at
-  minimum: live E2E, demo cases, one-command demo, GitOps diff/PR, assertion
-  guard, calibration, autonomy, survival, OTel export, masking, narrative,
-  frozen hashes. **L**.
+- [ ] **P1.10 Close the missing test/artifact debt from section 2.2** —
+  demo cases and the one-command demo are now closed; remaining minimum:
+  live E2E, GitOps diff/PR, assertion guard, calibration, autonomy,
+  survival, OTel export, masking, narrative, frozen changelog. **L**.
 - [ ] **P1.11 Write the operator runbook** — stack start/stop, secret rotation,
   failed-heal recovery, retention/apply. **M**.
 - [ ] **P1.12 Enforce the SBOM license allowlist in CI** — `scripts/sbom.py`

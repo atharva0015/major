@@ -25,8 +25,8 @@ is committed. Tracked docs (`docs/HELDOUT.md`, `docs/LIVE_VS_SIM.md`,
 
 | # | Claim | Exact command | Output artifact | Date | Label | Re-run 2026-11-04/05 |
 |---|---|---|---|---|---|---|
-| 1 | 182 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-05/pytest.txt` | 2026-11-05 | MEASURED | **MATCH** - 182 passed in 14.77 s (count same; runtime varies) |
-| 2 | Demo 24/24 match, exit 0 | `python tasks.py demo` | `reports/evidence/2026-11-04/demo.txt`, `p0-demo.txt` | 2026-11-04 | SIMULATED | **MATCH** — 24 rows, all expected/pipeline pairs equal, exit 0 |
+| 1 | 185 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-05/pytest.txt` | 2026-11-05 | MEASURED | **MATCH** — 185 passed in 15.90 s (count same; runtime varies) |
+| 2 | Demo 24/24 match, exit 0 | `python tasks.py demo` | `reports/evidence/2026-11-04/demo.txt`, `p0-demo.txt`, `2026-11-05/demo.txt` | 2026-11-04; re-run 2026-11-05 | SIMULATED | **MATCH** — 24 rows, all expected/pipeline pairs equal, exit 0 |
 | 3 | Held-out UI 24/24, accuracy 1.000, FHR 0.000 | `python -m scripts.bench_heldout` | `benchmark/reports/heldout.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_heldout.txt`, `p0-heldout.txt`; tracked `docs/HELDOUT.md` | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — report hash unchanged; `ui_accuracy=1.0`, `ui_false_heal_rate=0.0`, `ui_escaped=0` |
 | 4 | Held-out API 10/11 | `python -m scripts.bench_heldout` | same as #3 | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — still 10/11; `heldout:token-cart` remains the one miss |
 | 5 | Healenium live: accuracy 1.000, FHR 0.375, adversarial 9/9, 1122 ms | `python -m scripts.bench_healenium_live` | `benchmark/reports/healenium_live.json` + `.md` (ignored); tracked summary `docs/LIVE_VS_SIM.md` | 2026-10-08 | MEASURED (historical) | **NOT RE-RUN** — Docker unavailable; the gate and index still read the unchanged 2026-10-08 report. **UNVERIFIED now.** |
@@ -102,7 +102,7 @@ The source column is the report the checker reads.
 | Golden set | `python -m scripts.bench_golden` | `benchmark/reports/golden.json` + `.md` | MATCH — hash unchanged; PASS |
 | Healenium simulator | `python -m scripts.bench_healenium` | `benchmark/reports/healenium.json` + `.md` | MATCH on headline numbers; hash changed only the sub-ms latency field (0.0283 ms) |
 | Held-out | `python -m scripts.bench_heldout` | `benchmark/reports/heldout.json` + `.md` | MATCH — hash unchanged |
-| Demo cases | `python -m scripts.bench_demo_cases` | `benchmark/reports/demo_cases.json` + `.md` | MATCH — hash unchanged; 24/24 |
+| Demo cases | `python -m scripts.bench_demo_cases` | `benchmark/reports/demo_cases.json` + `.md`; `reports/evidence/2026-11-05/demo_cases.txt` | RE-RUN 2026-11-05: 24 rows (12 base + 12 hard), 0 false heals, 0 wrong escalations |
 | Vision/LLM | `python -m scripts.bench_vision` | `benchmark/reports/vision.json` + `.md` | MATCH on verdict/counts; hash changed only vision latency (0.225 ms vs 0.100 ms) |
 | Shadow mode | `python -m scripts.shadow_report` | `benchmark/reports/shadow.json` + `.md` | MATCH — hash unchanged; 0 PRs, 0 escaped |
 | Live Healenium | `python -m scripts.bench_healenium_live` | `benchmark/reports/healenium_live.json` + `.md` | **BLOCKED** — Docker daemon unavailable |
@@ -132,7 +132,7 @@ fails the suite).
 
 **No differences.** The two gaps flagged in the earlier audit are closed:
 the held-out case files are now frozen and hash-checked, and the freeze
-record's test count is refreshed to 182.
+record's test count is refreshed to 185.
 
 ## Claims with no reproducible command
 

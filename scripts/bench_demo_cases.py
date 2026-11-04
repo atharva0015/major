@@ -1,7 +1,9 @@
-"""Bench external mini-demo: frozen pipeline + sim-alone on 12 drift scenarios.
+"""Bench external mini-demo: frozen pipeline + sim-alone on 24 drift scenarios.
 
 Method mirrors bench_heldout.py: orchestrator.heal_case per case, Critic
 re-run on the healed choice, HealeniumSimHealer alone for comparison.
+Runs all 24 cases in `benchmark/demo_cases/cases.yaml`: the 12 base cases
+in `cases.py` plus the 12 hard cases in `hard_cases.py`.
 Custom drift names ("demo:*") hit no stock-drift branch in the sim, so the
 sim heals iff the stable testid survives — documented, not tuned.
 Writes benchmark/reports/demo_cases.md + demo_cases.json. Docker is down
@@ -20,6 +22,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import yaml
 
 from benchmark.demo_cases.cases import CASES
+from benchmark.demo_cases.hard_cases import HARD_CASES
 from benchmark.harness import candidates_from
 from benchmark.healenium_healer import HealeniumSimHealer
 from healing.critic.checks import run_checks
@@ -48,7 +51,7 @@ def main() -> None:
     orch = HealerOrchestrator()
     sim = HealeniumSimHealer()
     rows: list[dict[str, object]] = []
-    for case in CASES:
+    for case in list(CASES) + list(HARD_CASES):
         cands = candidates_from(case.html)
         out = orch.heal_case(
             case.id,
