@@ -57,7 +57,7 @@ probes through a known pipeline*, not a double-blind trial.
 
 ## Frozen hashes at held-out time (from `docs/FROZEN_HASHES.md`, verified current)
 
-| File | SHA-256 (`git hash-object`) | Matches working tree |
+| File | SHA-1 blob ID (`git hash-object`) | Matches working tree |
 |---|---|---|
 | `healing/classifier/rules.py` | `979914fd77151753b62072c885ed3a764e5834f6` | yes (MEASURED) |
 | `healing/critic/checks.py` | `b4967ea84dba703db4bc7b25df3122e9bd497818` | yes (MEASURED) |
