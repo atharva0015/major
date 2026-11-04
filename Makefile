@@ -1,4 +1,4 @@
-.PHONY: test lint bench bench-healenium bench-healenium-live bench-shadow bench-api bench-golden bench-vision bench-decision bench-verify bench-heldout bench-demo-cases bench-e2e-live gates demo
+.PHONY: test lint bench bench-healenium bench-healenium-live bench-shadow bench-api bench-golden bench-golden-live bench-vision bench-decision bench-verify bench-heldout bench-demo-cases bench-e2e-live gates demo
 
 test:
 	pytest -q
@@ -41,6 +41,9 @@ bench-api:
 
 bench-golden:
 	python -m scripts.bench_golden
+
+bench-golden-live:
+	python -m scripts.bench_golden_live
 
 bench-vision:
 	python -m scripts.bench_vision

@@ -62,6 +62,7 @@ The demo takes seconds.
 | `python tasks.py bench-demo-cases` | External mini-demo cases |
 | `python tasks.py bench-decision` | Classification accuracy + fail-closed gate proof |
 | `python tasks.py bench-golden` | Hash-pinned golden set |
+| `python tasks.py bench-golden-live` | Derive live `golden_live.json` from a measured live E2E report |
 | `python tasks.py bench-api` | API sidecar, zero contract heals |
 | `python tasks.py bench-healenium` | Healenium simulator |
 | `python tasks.py bench-healenium-live` | Live Healenium (Docker required) |
@@ -100,8 +101,10 @@ Safety invariants:
   pipeline around it escalates all 9, so the protection is real, but the
   `false_heal_rate_adversarial` gate is red on raw matcher output.
 - Live **latency** is 1122 ms per heal against a sim-era 100 ms target.
-- `heal_accuracy [live]` is **UNVERIFIED**: no script produces
-  `benchmark/reports/golden_live.json` yet.
+- `heal_accuracy [live]` **PASSES** at 1.0 only because
+  `scripts/bench_golden_live.py` derives `benchmark/reports/golden_live.json`
+  from the historical 2026-10-08 live E2E report. It does not re-run the
+  stack; treat it as measured-but-stale until Docker is available.
 - Held-out API is **10/11**; `heldout:token-cart` misses because `observe()`
   lacks a `GET /api/cart` dispatch. Root cause and proposed fix:
   [`docs/TOKEN_CART_ANALYSIS.md`](docs/TOKEN_CART_ANALYSIS.md).

@@ -1,14 +1,15 @@
-# Evidence index (2026-11-04)
+# Evidence index (2026-11-04, refreshed 2026-11-05)
 
 Every headline claim in `PROJECT_STATUS.md` with its exact command, output
 artifact, date, provenance label, and the result of re-running it on
-2026-11-04. Labels: **MEASURED** (real run), **SIMULATED** (simulator or
+2026-11-04/05. Labels: **MEASURED** (real run), **SIMULATED** (simulator or
 in-process replay), **UNVERIFIED** (not observed / input missing).
 
 Environment: Windows host, `.venv312` (Python 3.12.10), `make` absent.
 Commands shown as `python` were run as
 `.venv312/Scripts/python.exe -m ...`; the full invocation is recorded at the
-top of each log under `reports/evidence/2026-11-04/`. Docker was **not
+top of each log under `reports/evidence/2026-11-04/` or
+`reports/evidence/2026-11-05/`. Docker was **not
 running** (`npipe:////./pipe/dockerDesktopLinuxEngine` unavailable), so
 live-stack commands could not be repeated.
 
@@ -22,16 +23,17 @@ is committed. Tracked docs (`docs/HELDOUT.md`, `docs/LIVE_VS_SIM.md`,
 
 ## Headline claims
 
-| # | Claim | Exact command | Output artifact | Date | Label | Re-run 2026-11-04 |
+| # | Claim | Exact command | Output artifact | Date | Label | Re-run 2026-11-04/05 |
 |---|---|---|---|---|---|---|
-| 1 | 178 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-04/pytest.txt` | 2026-11-04 | MEASURED | **MATCH** — 178 passed in 14.34 s (count same; runtime varies) |
+| 1 | 182 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-05/pytest.txt` | 2026-11-05 | MEASURED | **MATCH** - 182 passed in 14.77 s (count same; runtime varies) |
 | 2 | Demo 24/24 match, exit 0 | `python tasks.py demo` | `reports/evidence/2026-11-04/demo.txt`, `p0-demo.txt` | 2026-11-04 | SIMULATED | **MATCH** — 24 rows, all expected/pipeline pairs equal, exit 0 |
 | 3 | Held-out UI 24/24, accuracy 1.000, FHR 0.000 | `python -m scripts.bench_heldout` | `benchmark/reports/heldout.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_heldout.txt`, `p0-heldout.txt`; tracked `docs/HELDOUT.md` | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — report hash unchanged; `ui_accuracy=1.0`, `ui_false_heal_rate=0.0`, `ui_escaped=0` |
 | 4 | Held-out API 10/11 | `python -m scripts.bench_heldout` | same as #3 | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — still 10/11; `heldout:token-cart` remains the one miss |
 | 5 | Healenium live: accuracy 1.000, FHR 0.375, adversarial 9/9, 1122 ms | `python -m scripts.bench_healenium_live` | `benchmark/reports/healenium_live.json` + `.md` (ignored); tracked summary `docs/LIVE_VS_SIM.md` | 2026-10-08 | MEASURED (historical) | **NOT RE-RUN** — Docker unavailable; the gate and index still read the unchanged 2026-10-08 report. **UNVERIFIED now.** |
 | 6 | Critic catch rate 1.000 | `python -m scripts.bench_verify` | `benchmark/reports/verify.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_verify.txt`, `p0-verify.txt` | 2026-10-14; re-run 2026-11-04 | SIMULATED | **MATCH** — report hash unchanged; `catch_rate=1.0`, `false_reject_rate=0.0`, `false_heal_rate=0.0` |
-| 7 | Gate result 8 PASS / 2 FAIL / 2 UNVERIFIED | `python -m scripts.check_gates` | `reports/evidence/2026-11-04/check_gates.txt`, `p0-gates.txt` | 2026-11-04 | MEASURED | **MATCH** — same statuses and values; exit 1 |
+| 7 | Gate result 9 PASS / 2 FAIL / 1 UNVERIFIED | `python -m scripts.check_gates` | `reports/evidence/2026-11-05/gates-after-golden-live.txt` | 2026-11-05 | MEASURED | **MATCH** — current statuses; exit 1 |
 | 8 | Live E2E pipeline 24/24, 0 false heals, 0 escaped | `python -m scripts.bench_e2e_live` | `benchmark/reports/e2e_live.json` + `.md` (ignored); tracked summary `docs/E2E_LIVE.md` | 2026-10-08 | MEASURED (historical) | **NOT RE-RUN** — Docker unavailable; **UNVERIFIED now.** |
+| 9 | Live golden accuracy 1.0 on 24 cases | `python -m scripts.bench_golden_live` | `reports/evidence/2026-11-05/bench_golden_live.txt`, `golden_live.json` | 2026-11-05 derivation | DERIVED from live 2026-10-08 | **MATCH** — `heal_accuracy=1.0`, `cases=24`, `escaped=0`; stack not re-run |
 
 ## P0 rehearsal (2026-11-04)
 
@@ -49,7 +51,25 @@ Fresh run of the presentation path; all logs are under
 | Frozen hashes | `git hash-object <file>` | `frozen-hashes.txt` | 7/7 MATCH |
 
 The gate exit code is non-zero because two live gates are red; that is the
-honest current state, not a rehearsal failure.
+honest current state, not a rehearsal failure. A later 2026-11-05 run with
+the live golden adapter moved the count to 9 PASS / 2 FAIL / 1 UNVERIFIED
+(see below).
+
+## Live accuracy derivation (2026-11-05)
+
+`python -m scripts.bench_golden_live` reads the measured live E2E report
+(`benchmark/reports/e2e_live.json`, 2026-10-08) and writes the gate-shaped
+`benchmark/reports/golden_live.json`. It does **not** re-run Docker or the
+stack and does not turn simulated data into live data: the source must
+declare `"live": true`.
+
+| Check | Command | Artifact | Result |
+|---|---|---|---|
+| Live golden adapter | `python -m scripts.bench_golden_live` | `reports/evidence/2026-11-05/bench_golden_live.txt`, `golden_live.json` | 24 cases, accuracy 1.0 |
+| Gates after adapter | `python -m scripts.check_gates` | `reports/evidence/2026-11-05/gates-after-golden-live.txt` | 9 PASS / 2 FAIL / 1 UNVERIFIED |
+
+The `heal_accuracy [live]` pass is based on the **historical 2026-10-08**
+live run, not a fresh one. P0.5 still needs Docker to refresh it.
 
 ## Gate-by-gate evidence
 
@@ -58,7 +78,7 @@ The source column is the report the checker reads.
 
 | Gate | Source artifact | Date | Label | Re-run result |
 |---|---|---|---|---|
-| `heal_accuracy` (`>= 0.95`) | `benchmark/reports/golden_live.json` — **missing** | — | UNVERIFIED | Still UNVERIFIED. **No script in the repo generates this file.** |
+| `heal_accuracy` (`>= 0.95`) | `benchmark/reports/golden_live.json` — derived from `e2e_live.json` (2026-10-08) | 2026-11-05 derivation | MEASURED (historical) | PASS — 1.0. Derived, not a fresh live run; see the live-accuracy section above. |
 | `false_heal_rate_overall` (`= 0.0`) | `benchmark/reports/verify.json` | 2026-11-04 re-run | SIMULATED | PASS — 0.0; hash unchanged |
 | `false_heal_rate_adversarial` (`= 0.0`) | `benchmark/reports/healenium_live.json` | 2026-10-08 | MEASURED | FAIL — 1.0; input unchanged, live re-run blocked |
 | `critic_catch_rate` (`>= 0.9`) | `benchmark/reports/verify.json` | 2026-11-04 re-run | SIMULATED | PASS — 1.0; hash unchanged |
@@ -89,9 +109,9 @@ The source column is the report the checker reads.
 | Live E2E | `python -m scripts.bench_e2e_live` | `benchmark/reports/e2e_live.json` + `.md` | **BLOCKED** — Docker daemon unavailable |
 
 Every command above was run from the repo root with
-`.venv312/Scripts/python.exe`. Gate and pytest stdout is saved under
-`reports/evidence/2026-11-04/`; bench stdout is also saved there for the
-rows that were re-run.
+`.venv312/Scripts/python.exe`. Gate, pytest, and adapter stdout is saved
+under `reports/evidence/2026-11-04/` or `reports/evidence/2026-11-05/`;
+bench stdout is also saved there for the rows that were re-run.
 
 ## Frozen-file check (2026-11-04)
 
@@ -112,16 +132,16 @@ fails the suite).
 
 **No differences.** The two gaps flagged in the earlier audit are closed:
 the held-out case files are now frozen and hash-checked, and the freeze
-record's test count is refreshed to 178.
+record's test count is refreshed to 182.
 
 ## Claims with no reproducible command
 
 These are flagged as **UNVERIFIED** or procedural; do not cite them as
 measured:
 
-- `heal_accuracy [live]` — the checker consumes `golden_live.json`, but no
-  script produces it. The only live-looking accuracy command is
-  `bench_e2e_live`, which writes a different report and requires Docker.
+- `heal_accuracy [live]` — now passes from a **derived historical** report
+  (`golden_live.json` ← `e2e_live.json`, 2026-10-08). The adapter does not
+  re-run the stack; treat it as measured-but-stale until P0.5 reruns live.
 - `heal_survival_rate` — no history store and no command; the code reports
   `insufficient_data`.
 - Held-out and demo **independence** — the provenance docs are statements

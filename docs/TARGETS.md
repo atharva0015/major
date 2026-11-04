@@ -6,7 +6,7 @@ never be loosened to fit measured numbers.
 
 | Metric | Target | Rationale | Measured by |
 |---|---|---|---|
-| heal accuracy | >= 0.95 | Flake allowance; golden separately pins 1.0 | golden.json, decision.json |
+| heal accuracy | >= 0.95 | Flake allowance; golden separately pins 1.0 | golden.json, golden_live.json (derived), decision.json |
 | false-heal rate, overall (orchestrator) | = 0.0 | Any wrong heal can hide a defect | verify.json, golden.json |
 | false-heal rate, adversarial (orchestrator path) | = 0.0 | Willful-misheal cases must all escalate | healenium.json adversarial slice, decision.json |
 | Critic catch rate | >= 0.90 | 1-in-3 escapes today is inadequate | verify.json |

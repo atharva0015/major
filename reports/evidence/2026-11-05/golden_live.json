@@ -1,0 +1,11 @@
+{
+  "derivation": "derived from the measured live E2E report; this adapter does not re-run the stack",
+  "metrics": {
+    "cases": 24,
+    "escaped": 0,
+    "false_heal_rate": 0.0,
+    "heal_accuracy": 1.0
+  },
+  "provenance": "live",
+  "source": "benchmark/reports/e2e_live.json"
+}

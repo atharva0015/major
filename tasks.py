@@ -31,6 +31,7 @@ TASKS: dict[str, list[list[str]]] = {
     "bench-shadow": [[sys.executable, "-m", "scripts.shadow_report"]],
     "bench-api": [[sys.executable, "-m", "scripts.bench_api"]],
     "bench-golden": [[sys.executable, "-m", "scripts.bench_golden"]],
+    "bench-golden-live": [[sys.executable, "-m", "scripts.bench_golden_live"]],
     "bench-vision": [[sys.executable, "-m", "scripts.bench_vision"]],
     "gates": [[sys.executable, "-m", "scripts.check_gates"]],
     "demo": [[sys.executable, "-m", "scripts.demo"]],

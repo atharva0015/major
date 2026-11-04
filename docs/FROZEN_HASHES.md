@@ -44,8 +44,8 @@ No frozen file changed; no `CHANGELOG_FROZEN.md` entry needed.
 
 One record gap remains, flagged for a human:
 
-- The freeze rationale says "166 passed"; the current suite is **178
-  passed** (2026-11-04).
+- The freeze rationale says "166 passed"; the current suite is **182
+  passed** (2026-11-05).
 
 No `CHANGELOG_FROZEN.md` entry was needed: no previously frozen file changed.
 Adding the two held-out files records their initial freeze, not a change to

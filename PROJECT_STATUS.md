@@ -1,7 +1,7 @@
-# Project status (regenerated 2026-11-04)
+# Project status (regenerated 2026-11-05)
 
-Snapshot: branch `chore/baseline`, after the 2026-11-04 evidence audit
-(HEAD moves with the evidence commit).
+Snapshot: branch `chore/baseline`, after the 2026-11-04 evidence audit and
+the 2026-11-05 live-golden derivation (HEAD moves with the evidence commit).
 
 Labels: **MEASURED** = observed from a real run in a recorded session.
 **SIMULATED** = produced by the Healenium simulator or in-process replay,
@@ -13,9 +13,9 @@ rerun, or a missing input).
 The healing pipeline is implemented end-to-end: classify → match →
 sandbox replay → layered Critic → policy gate → explanation record →
 alert / shadow PR, with an API sidecar and quality tooling. **MEASURED
-this session (2026-11-04, Python 3.12.10): 178 tests pass; lint and mypy
-are clean; the 24-case demo matches 24/24; gates report 8 PASS, 2 FAIL,
-2 UNVERIFIED (exit 1).** Both failures are the documented ones: the raw
+this session (2026-11-05, Python 3.12.10): 182 tests pass; lint and mypy
+are clean; the 24-case demo matches 24/24; gates report 9 PASS, 2 FAIL,
+1 UNVERIFIED (exit 1).** Both failures are the documented ones: the raw
 live Healenium matcher heals 9/9 adversarial cases, and live latency is
 1122 ms against a sim-era 100 ms target. The pipeline around the matcher
 still escalates all 9 adversarial cases (MEASURED live, 2026-10-08).
@@ -23,19 +23,21 @@ still escalates all 9 adversarial cases (MEASURED live, 2026-10-08).
 The held-out set now exists and was measured (previous status said it was
 absent): UI 24/24 correct with 0 false heals; API 10/11, with one
 documented label/coverage miss that fails closed. `heal_accuracy [live]`
-remains UNVERIFIED because `benchmark/reports/golden_live.json` has never
-been produced. Survival remains UNVERIFIED by design (no history).
+now **PASSES** at 1.0, but from `golden_live.json` derived from the
+historical 2026-10-08 live E2E report; the stack was not re-run. Survival
+remains UNVERIFIED by design (no history).
 
-## Verification this session (MEASURED 2026-11-04)
+## Verification this session (MEASURED 2026-11-05)
 
 | Check | Result |
 |---|---|
-| `pytest -q` | 178 passed in 14.34 s |
+| `pytest -q` | 182 passed in 14.77 s |
 | `ruff check .` | clean |
-| `ruff format --check .` | 164 files already formatted |
+| `ruff format --check .` | 166 files already formatted |
 | `mypy healing` | no issues in 50 source files |
 | `python tasks.py demo` | 24/24 cases match, exit 0 |
-| `python -m scripts.check_gates` | 8 PASS / 2 FAIL / 2 UNVERIFIED, exit 1 |
+| `python -m scripts.bench_golden_live` | 24 cases, heal_accuracy 1.0 |
+| `python -m scripts.check_gates` | 9 PASS / 2 FAIL / 1 UNVERIFIED, exit 1 |
 
 Environment: Windows host, project venv `.venv312` (Python 3.12.10).
 `make` is absent on this host, so Makefile-equivalent commands were run
@@ -45,7 +47,7 @@ directly. GitHub Actions results were not observed from here.
 
 | Gate | Target | Value | Status |
 |---|---|---|---|
-| heal_accuracy | >= 0.95 | no live report | UNVERIFIED (needs `golden_live.json`) |
+| heal_accuracy | >= 0.95 | 1.0 (derived, historical 2026-10-08) | PASS (MEASURED live, derived; not re-run) |
 | false_heal_rate_overall | = 0.0 | 0.0 | PASS (SIMULATED) |
 | false_heal_rate_adversarial | = 0.0 | 1.0 | FAIL (MEASURED live raw matcher) |
 | critic_catch_rate | >= 0.9 | 1.0 | PASS (SIMULATED, post intent fix) |
@@ -62,8 +64,10 @@ Two gates fail and are not waived. Per `docs/KNOWN_RED_GATES.md`, a human
 must decide fix / waive / change target for each; no box is ticked.
 
 `docs/TARGETS.md` still lists the sim report for `heal_accuracy`, while
-`scripts/check_gates.py` now looks for its live counterpart. The checker
-output above is authoritative for this snapshot.
+`scripts/check_gates.py` reads its live counterpart. The checker output
+above is authoritative for this snapshot. The live value is **derived**
+from `e2e_live.json` by `scripts/bench_golden_live.py`; refresh it with a
+new live run when Docker is available.
 
 ## Benchmarks and evidence
 
@@ -76,6 +80,7 @@ output above is authoritative for this snapshot.
 | Healenium sim | 24 | accuracy 1.000, FHR 0.286, adversarial 6/9 | SIMULATED |
 | Healenium live | 24 | accuracy 1.000, FHR 0.375, adversarial 9/9, 1122 ms | MEASURED 2026-10-08 |
 | Live E2E pipeline | 24 | accuracy 1.000, FHR 0.000, adversarial 0.000, escaped 0, 1464.7 ms lookup | MEASURED 2026-10-08 |
+| Golden live (derived) | 24 | accuracy 1.000, FHR 0.000, escaped 0 | DERIVED from live E2E 2026-10-08; generated 2026-11-05 |
 | Held-out UI | 24 | accuracy 1.000, catch 1.000, FHR 0.000, escaped 0 | MEASURED 2026-10-14 |
 | Held-out API | 11 | 10/11, contract heals 0, FHR 0.000 | MEASURED 2026-10-14 |
 | Demo cases | 24 | 24/24 match pre-registered expectations | SIMULATED 2026-11-04 |
@@ -153,7 +158,8 @@ is disabled by default.
 2. `latency_per_heal_ms` red (1122 ms vs 100 ms). The target was written
    for sim units; changing it now would be tuning to fit, so it stands
    until a human resets it deliberately.
-3. `heal_accuracy [live]` UNVERIFIED — no `golden_live.json`.
+3. `heal_accuracy [live]` PASSES only from a **derived historical** report;
+   a fresh stack run is still needed to confirm it.
 4. `heal_survival_rate` UNVERIFIED — no 30-day history; becomes a FAIL
    gate once data accrues.
 5. Held-out API is 10/11; the one miss is documented and fail-closed.
@@ -169,8 +175,9 @@ is disabled by default.
    attempt 1. There is no session reuse, and the live latency stays high.
 10. CI on 3.12 is unverified from this host. The `gates` job is red by
     design until the gate decisions land.
-11. `README.md` is still a four-line scaffold; `PROJECT_STATUS.md` was
-    stale and is regenerated here. `TODO.md` tracks the remaining work.
+11. `README.md` now covers quickstart, architecture, commands, evidence,
+    and limits; most other docs still lack an executable check. `TODO.md`
+    tracks the remaining work.
 
 ## Human sign-off
 
@@ -181,15 +188,17 @@ green on 3.12 observed.
 
 ## Changes since the previous status
 
-- Tests: 166 → **178 passed**; lint/mypy re-verified on Python 3.12.10.
+- Tests: 166 → **182 passed**; lint/mypy re-verified on Python 3.12.10.
+- `heal_accuracy [live]`: UNVERIFIED → **PASS** from
+  `scripts/bench_golden_live.py`; gates are now 9 PASS / 2 FAIL / 1 UNVERIFIED.
 - Held-out set: previously "absent / UNVERIFIED" → **built and measured**
   (UI 24/24, API 10/11).
 - Demo: one-command runner added; **24/24** cases match, both XAI records
   print, exit 0.
 - Live provenance gates: `heal_accuracy` now requires a live report;
   adversarial and latency gates read live data.
-- Worktree: previously "uncommitted work remains" → **clean** at
-  `f4c8093`; live-stack fixes and later evidence/docs are committed.
+- Worktree: clean after the P0 evidence commit (`dfbbf1e`); the P1.3
+  adapter and docs changes land in the following commit.
 - Known red gates corrected to the two that currently fail: adversarial
   false-heal rate and live latency (the earlier 166-test snapshot reported
   a different mix).

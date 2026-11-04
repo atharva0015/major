@@ -9,8 +9,8 @@ verified/shipped · `[ ]` not completed.
 Evidence labels follow `PROJECT_STATUS.md`: **MEASURED**, **SIMULATED**,
 **UNVERIFIED**.
 
-At a glance: **44 done · 46 partial · 24 open** (was 72 / 13 / 31 before the
-2026-11-04 audit; the P0 batch below closed four items).
+At a glance: **45 done · 46 partial · 23 open** (was 72 / 13 / 31 before the
+2026-11-04 audit; the P0 batch closed four items and P1.3 closed one).
 
 > **Audit rule used here:** a `[x]` stays only if it has both (a) a passing
 > automated test that exercises the behaviour and (b) a saved output artifact
@@ -38,6 +38,10 @@ At a glance: **44 done · 46 partial · 24 open** (was 72 / 13 / 31 before the
 - **P0 batch (2026-11-04):** four of the five P0 items are closed — rehearsal
   logs, evidence-index walkthrough, README, and frozen held-out hashes with an
   automated check. P0.5 (live re-runs) stays open until Docker is available.
+- **P1.3 (2026-11-05):** `scripts/bench_golden_live.py` now derives the
+  gate-shaped `golden_live.json` from the measured live E2E report; the gate
+  moves from UNVERIFIED to PASS (historical data), so the count becomes
+  9 PASS / 2 FAIL / 1 UNVERIFIED.
 
 ## 1. Completed features (kept after audit)
 
@@ -207,10 +211,10 @@ At a glance: **44 done · 46 partial · 24 open** (was 72 / 13 / 31 before the
 
 ### 1.10 Tests and documentation
 
-- [x] **178 tests passing** on Python 3.12.10, including classifier, matcher,
+- [x] **182 tests passing** on Python 3.12.10, including classifier, matcher,
   Critic, policy, orchestrator, sandbox, XAI, alerts, GitOps, API sidecar,
   held-out set, gates, and metrics (**MEASURED 2026-11-04**). Evidence: the
-  suite itself; `reports/evidence/2026-11-04/pytest.txt` (178 passed, exit 0).
+  suite itself; `reports/evidence/2026-11-05/pytest.txt` (182 passed, exit 0).
 - [x] **Lint/type checks clean** — ruff check, ruff format, mypy (**MEASURED
   2026-11-04**). Evidence: `reports/evidence/2026-11-04/lint.txt` (exit 0/0/0).
 
@@ -355,7 +359,7 @@ weeks. Human-only decisions are marked; no sign-off box is ticked here.
   available** — otherwise present the 2026-10-08 results explicitly as
   historical/UNVERIFIED, not as fresh measurements. **M**.
 
-### P1 — before merge to main (18)
+### P1 — before merge to main (17 open, 1 done)
 
 - [ ] **P1.1 Resolve `false_heal_rate_adversarial`** — 1.0 vs target 0.0 on raw
   live Healenium data. Human must choose: contain the raw matcher, waive with
@@ -363,9 +367,15 @@ weeks. Human-only decisions are marked; no sign-off box is ticked here.
 - [ ] **P1.2 Resolve `latency_per_heal_ms`** — 1122 ms vs 100 ms. Add session
   reuse and split sim/live budgets, or formally re-baseline with rationale.
   **M**.
-- [ ] **P1.3 Produce `benchmark/reports/golden_live.json`** so
-  `heal_accuracy [live]` is verified instead of UNVERIFIED. No current script
-  emits it. **M**.
+- [x] **P1.3 Produce `benchmark/reports/golden_live.json`** so
+  `heal_accuracy [live]` is verified instead of UNVERIFIED.
+  `scripts/bench_golden_live.py` derives it from the measured live E2E report
+  and refuses a source that is not marked `"live": true`; `tests/test_golden_live.py`
+  covers the mapping and rejects simulated/empty/bad input. Evidence:
+  `reports/evidence/2026-11-05/bench_golden_live.txt` and `golden_live.json`
+  (24 cases, accuracy 1.0), `gates-after-golden-live.txt` (9 PASS / 2 FAIL /
+  1 UNVERIFIED). The accuracy is from the **historical 2026-10-08** run, not
+  a fresh stack run. **M**.
 - [ ] **P1.4 Fix the `token-cart` observer gap generally** — registry or
   TestClient dispatch in `observe()`, plus an explicit observer-gap escalation
   reason; add the seven fresh cases in `docs/TOKEN_CART_ANALYSIS.md`; target
@@ -419,7 +429,7 @@ weeks. Human-only decisions are marked; no sign-off box is ticked here.
   criteria in `docs/EXTENSION_CHATBOT.md` hold. No code exists. **XL if
   revived**.
 
-## 4. Delivered by the 2026-11-04 evidence session
+## 4. Delivered by the 2026-11-04/05 evidence sessions
 
 These are process/documentation deliverables, listed without `[x]` markers so
 they do not inflate the verified-feature count:

@@ -1,0 +1,5 @@
+﻿$ ruff check .
+$ ruff format --check .
+$ mypy healing
+All checks passed!166 files already formattedSuccess: no issues found in 50 source files
+exit=0/0/0

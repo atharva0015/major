@@ -1,10 +1,13 @@
-# Known red gates (MEASURED via `make gates` equivalent, exit 1)
+# Known red gates (MEASURED via `python -m scripts.check_gates`, exit 1)
+
+Current run (2026-11-05): **9 PASS / 2 FAIL / 1 UNVERIFIED**. Evidence:
+`reports/evidence/2026-11-05/gates-after-golden-live.txt`.
 
 Two gates fail. Neither was tuned, waived, or edited around. A human must
 decide, per gate: **fix** the underlying cause, **waive** with written
 reason, or **change the target** with rationale. No box below is ticked.
 
-## 1. `false_heal_rate_adversarial` — 1.0 vs target 0.0 (SIMULATED sim data)
+## 1. `false_heal_rate_adversarial` — 1.0 vs target 0.0 (MEASURED live)
 
 - Why it fails: the raw Healenium simulator heals 6 of 9 must-not-heal
   cases (duplicate buttons, swapped roles). Live measurement is worse
