@@ -6,9 +6,11 @@ artifact, date, provenance label, and the result of re-running it on
 in-process replay), **UNVERIFIED** (not observed / input missing).
 
 Environment: Windows host, `.venv312` (Python 3.12.10), `make` absent.
-Equivalent commands were run directly. Docker was **not running**
-(`npipe:////./pipe/dockerDesktopLinuxEngine` unavailable), so live-stack
-commands could not be repeated.
+Commands shown as `python` were run as
+`.venv312/Scripts/python.exe -m ...`; the full invocation is recorded at the
+top of each log under `reports/evidence/2026-11-04/`. Docker was **not
+running** (`npipe:////./pipe/dockerDesktopLinuxEngine` unavailable), so
+live-stack commands could not be repeated.
 
 ## Artifact durability
 
