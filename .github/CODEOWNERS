@@ -1,0 +1,33 @@
+# CODEOWNERS — PLACEHOLDERS ONLY
+#
+# NEEDS HUMAN DECISION: every @your-org/... handle below is a placeholder.
+# Replace them with real GitHub users/teams and confirm branch-protection
+# review requirements before enabling required CODEOWNERS review.
+# Do not treat this file as approval of any owner.
+
+# Default owner for the repository.
+# NEEDS HUMAN DECISION
+*                       @your-org/repo-owners
+
+# Core healing pipeline (classifier, Critic, policy, orchestrator).
+# NEEDS HUMAN DECISION
+/healing/               @your-org/healing-owners
+
+# Frozen safety files: any change needs a human approver and a
+# CHANGELOG_FROZEN entry.
+# NEEDS HUMAN DECISION
+/healing/classifier/    @your-org/classifier-owners
+/healing/critic/        @your-org/critic-owners
+/healing/policy/        @your-org/policy-owners
+
+# Benchmarks, held-out cases, and evidence artifacts.
+# NEEDS HUMAN DECISION
+/benchmark/             @your-org/eval-owners
+
+# CI workflows, CODEOWNERS, and branch-protection automation.
+# NEEDS HUMAN DECISION
+/.github/               @your-org/ci-owners
+
+# Compliance, provenance, evidence index, and human sign-off docs.
+# NEEDS HUMAN DECISION
+/docs/                  @your-org/docs-owners

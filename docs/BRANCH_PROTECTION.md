@@ -9,7 +9,8 @@ Required on `main`:
   `negative-check`, `secret-scan`, `policy-check`.
 - Require signed commits; require linear history if desired.
 - No force-push, no deletion; include administrators.
-- CODEOWNERS review required for `healing/**` (`docs/CODEOWNERS` pattern).
+- CODEOWNERS review required for `healing/**` (`.github/CODEOWNERS`; placeholder
+  handles still need human replacement).
 
 Manual steps for a human: create the GitHub App, install it on the repo,
 set `GITHUB_APP_ID` / `GITHUB_PRIVATE_KEY_PATH` / `GITHUB_INSTALLATION_ID` /
