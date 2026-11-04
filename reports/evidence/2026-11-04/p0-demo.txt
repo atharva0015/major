@@ -1,0 +1,218 @@
+﻿$ .venv312/Scripts/python tasks.py demo
++ C:\Users\Athar\Desktop\MAJOR PROJECT\MVP\.venv312\Scripts\python.exe -m scripts.demo
+demo run: SIMULATED (no Docker/browser)  date: 2026-11-04
+| case | expected | pipeline | sim-alone | critic |
+|---|---|---|---|---|
+| renamed_id | HEAL | submit-order | submit-order | pass:all-layers |
+| reskinned | HEAL | submit-order | submit-order | pass:all-layers |
+| moved | HEAL | submit-order | submit-order | pass:all-layers |
+| label_reworded | HEAL | submit-order | submit-order | pass:all-layers |
+| lookalike_trap | ESCALATE | ESCALATE | ESCALATE | n/a (escalated) |
+| duplicates | ESCALATE | ESCALATE | ESCALATE | n/a (escalated) |
+| button_removed | ESCALATE | ESCALATE | ESCALATE | n/a (escalated) |
+| save_draft_vs_save_order | ESCALATE | ESCALATE | ESCALATE | n/a (escalated) |
+| delete_account_vs_delete_draft | ESCALATE | ESCALATE | ESCALATE | n/a (escalated) |
+| disabled_submit | ESCALATE | ESCALATE | ESCALATE | n/a (escalated) |
+| renamed_id_and_text | HEAL | submit-order | submit-order | pass:all-layers |
+| single_char_typo | HEAL | submit-order | submit-order | pass:all-layers |
+| hidden_submit | ESCALATE | ESCALATE | ESCALATE | n/a (escalated) |
+| iframe_submit | ESCALATE | ESCALATE | ESCALATE | n/a (escalated) |
+| translated_label | HEAL | submit-order | submit-order | pass:all-layers |
+| shortened_label | HEAL | submit-order | submit-order | pass:all-layers |
+| near_identical_pair | ESCALATE | ESCALATE | ESCALATE | n/a (escalated) |
+| link_replaces_button | HEAL | submit-order | submit-order | pass:all-layers |
+| reordered_steps | HEAL | submit-order | submit-order | pass:all-layers |
+| cookie_covered | ESCALATE | ESCALATE | ESCALATE | n/a (escalated) |
+| redesign_removed | ESCALATE | ESCALATE | ESCALATE | n/a (escalated) |
+| ab_continue_variant | HEAL | submit-order | submit-order | pass:all-layers |
+| duplicate_ids | ESCALATE | ESCALATE | ESCALATE | n/a (escalated) |
+| action_changed | ESCALATE | ESCALATE | ESCALATE | n/a (escalated) |
+
+--- XAI record: heal (renamed_id) ---
+{
+  "candidates": [
+    {
+      "contributions": {
+        "attrs": 0.15,
+        "name": 0.2,
+        "neighbors": 0.0,
+        "position": 0.1,
+        "role": 0.2,
+        "text": 0.25
+      },
+      "element_id": "submit-order",
+      "score": 0.9
+    },
+    {
+      "contributions": {
+        "attrs": 0.0,
+        "name": 0.2,
+        "neighbors": 0.0,
+        "position": 0.0,
+        "role": 0.2,
+        "text": 0.25
+      },
+      "element_id": "order-form",
+      "score": 0.65
+    },
+    {
+      "contributions": {
+        "attrs": 0.0,
+        "name": 0.2,
+        "neighbors": 0.0,
+        "position": 0.0,
+        "role": 0.2,
+        "text": 0.25
+      },
+      "element_id": "cancel-order",
+      "score": 0.65
+    }
+  ],
+  "classification": "locator_drift",
+  "config_version": "config-0.1.0",
+  "content_hash": "db88983b2f7e888f4e6e5512390f315930f6abb998f6952f7072623f8b6a60cb",
+  "critic_checks": {
+    "attempts": [
+      {
+        "candidate": "submit-order",
+        "cost": 1.0,
+        "gap": 0.25,
+        "n": 1,
+        "reason": "medium_confidence_or_unverified",
+        "score": 0.9,
+        "strategy": "healenium_match",
+        "verdict": true
+      }
+    ],
+    "verdict": "pass"
+  },
+  "escalation_reason": null,
+  "heal_id": "heal-1c3fe6514892",
+  "model_version": "rules-0.1.0",
+  "policy_version": "policy-0.1.0",
+  "probabilities": {
+    "contract_change": 0.0556,
+    "data_issue": 0.0556,
+    "environment_issue": 0.0833,
+    "genuine_regression": 0.1111,
+    "locator_drift": 0.6388,
+    "timing_issue": 0.0556
+  },
+  "prompt_version": "n/a-template-0.1.0",
+  "rejected": [
+    {
+      "element_id": "order-form",
+      "why": "below_top"
+    },
+    {
+      "element_id": "cancel-order",
+      "why": "below_top"
+    }
+  ],
+  "selected": "submit-order",
+  "step": "renamed_id",
+  "test": "click Submit order",
+  "thresholds_applied": {
+    "ambiguity_margin": 0.1,
+    "confidence": 0.6388,
+    "high": 0.8,
+    "medium": 0.5
+  }
+}
+
+--- XAI record: escalation (lookalike_trap) ---
+{
+  "candidates": [
+    {
+      "contributions": {
+        "attrs": 0.0,
+        "name": 0.2,
+        "neighbors": 0.0,
+        "position": 0.1,
+        "role": 0.2,
+        "text": 0.25
+      },
+      "element_id": "order-form",
+      "score": 0.75
+    },
+    {
+      "contributions": {
+        "attrs": 0.0,
+        "name": 0.2,
+        "neighbors": 0.0,
+        "position": 0.0,
+        "role": 0.2,
+        "text": 0.25
+      },
+      "element_id": "cancel-order",
+      "score": 0.65
+    }
+  ],
+  "classification": "locator_drift",
+  "config_version": "config-0.1.0",
+  "content_hash": "d9db992213abe30b7051728644a3db3f490a0b5ce1e2682836d38a5ac994f67f",
+  "critic_checks": {
+    "attempts": [
+      {
+        "candidate": "order-form",
+        "cost": 1.0,
+        "gap": 0.1,
+        "n": 1,
+        "reason": "critic_fail",
+        "score": 0.75,
+        "strategy": "healenium_match",
+        "verdict": false
+      },
+      {
+        "candidate": "cancel-order",
+        "cost": 1.0,
+        "gap": 1.0,
+        "n": 2,
+        "reason": "critic_fail",
+        "score": 0.8,
+        "strategy": "reweighted_history",
+        "verdict": false
+      },
+      {
+        "n": 3,
+        "reason": "vision_llm_disabled",
+        "strategy": "vision_match",
+        "verdict": "unverified"
+      }
+    ],
+    "verdict": "fail"
+  },
+  "escalation_reason": "vision_llm_disabled",
+  "heal_id": "heal-83046037997a",
+  "model_version": "rules-0.1.0",
+  "policy_version": "policy-0.1.0",
+  "probabilities": {
+    "contract_change": 0.0556,
+    "data_issue": 0.0556,
+    "environment_issue": 0.0833,
+    "genuine_regression": 0.1111,
+    "locator_drift": 0.6388,
+    "timing_issue": 0.0556
+  },
+  "prompt_version": "n/a-template-0.1.0",
+  "rejected": [
+    {
+      "element_id": "order-form",
+      "why": "below_top"
+    },
+    {
+      "element_id": "cancel-order",
+      "why": "below_top"
+    }
+  ],
+  "selected": null,
+  "step": "lookalike_trap",
+  "test": "click Submit order",
+  "thresholds_applied": {
+    "ambiguity_margin": 0.1,
+    "confidence": 0.6388,
+    "high": 0.8,
+    "medium": 0.5
+  }
+}
+exit=0

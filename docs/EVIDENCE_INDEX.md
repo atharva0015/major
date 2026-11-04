@@ -24,14 +24,32 @@ is committed. Tracked docs (`docs/HELDOUT.md`, `docs/LIVE_VS_SIM.md`,
 
 | # | Claim | Exact command | Output artifact | Date | Label | Re-run 2026-11-04 |
 |---|---|---|---|---|---|---|
-| 1 | 175 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-04/pytest.txt` | 2026-11-04 | MEASURED | **MATCH** — 175 passed in 15.12 s (count same; runtime varies) |
-| 2 | Demo 24/24 match, exit 0 | `python tasks.py demo` | `reports/evidence/2026-11-04/demo.txt` (console table) | 2026-11-04 | SIMULATED | **MATCH** — 24 rows, all expected/pipeline pairs equal, exit 0 |
-| 3 | Held-out UI 24/24, accuracy 1.000, FHR 0.000 | `python -m scripts.bench_heldout` | `benchmark/reports/heldout.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_heldout.txt`; tracked `docs/HELDOUT.md` | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — report hash unchanged; `ui_accuracy=1.0`, `ui_false_heal_rate=0.0`, `ui_escaped=0` |
+| 1 | 178 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-04/pytest.txt` | 2026-11-04 | MEASURED | **MATCH** — 178 passed in 14.34 s (count same; runtime varies) |
+| 2 | Demo 24/24 match, exit 0 | `python tasks.py demo` | `reports/evidence/2026-11-04/demo.txt`, `p0-demo.txt` | 2026-11-04 | SIMULATED | **MATCH** — 24 rows, all expected/pipeline pairs equal, exit 0 |
+| 3 | Held-out UI 24/24, accuracy 1.000, FHR 0.000 | `python -m scripts.bench_heldout` | `benchmark/reports/heldout.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_heldout.txt`, `p0-heldout.txt`; tracked `docs/HELDOUT.md` | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — report hash unchanged; `ui_accuracy=1.0`, `ui_false_heal_rate=0.0`, `ui_escaped=0` |
 | 4 | Held-out API 10/11 | `python -m scripts.bench_heldout` | same as #3 | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — still 10/11; `heldout:token-cart` remains the one miss |
 | 5 | Healenium live: accuracy 1.000, FHR 0.375, adversarial 9/9, 1122 ms | `python -m scripts.bench_healenium_live` | `benchmark/reports/healenium_live.json` + `.md` (ignored); tracked summary `docs/LIVE_VS_SIM.md` | 2026-10-08 | MEASURED (historical) | **NOT RE-RUN** — Docker unavailable; the gate and index still read the unchanged 2026-10-08 report. **UNVERIFIED now.** |
-| 6 | Critic catch rate 1.000 | `python -m scripts.bench_verify` | `benchmark/reports/verify.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_verify.txt` | 2026-10-14; re-run 2026-11-04 | SIMULATED | **MATCH** — report hash unchanged; `catch_rate=1.0`, `false_reject_rate=0.0`, `false_heal_rate=0.0` |
-| 7 | Gate result 8 PASS / 2 FAIL / 2 UNVERIFIED | `python -m scripts.check_gates` | `reports/evidence/2026-11-04/check_gates.txt` | 2026-11-04 | MEASURED | **MATCH** — same statuses and values; exit 1 |
+| 6 | Critic catch rate 1.000 | `python -m scripts.bench_verify` | `benchmark/reports/verify.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_verify.txt`, `p0-verify.txt` | 2026-10-14; re-run 2026-11-04 | SIMULATED | **MATCH** — report hash unchanged; `catch_rate=1.0`, `false_reject_rate=0.0`, `false_heal_rate=0.0` |
+| 7 | Gate result 8 PASS / 2 FAIL / 2 UNVERIFIED | `python -m scripts.check_gates` | `reports/evidence/2026-11-04/check_gates.txt`, `p0-gates.txt` | 2026-11-04 | MEASURED | **MATCH** — same statuses and values; exit 1 |
 | 8 | Live E2E pipeline 24/24, 0 false heals, 0 escaped | `python -m scripts.bench_e2e_live` | `benchmark/reports/e2e_live.json` + `.md` (ignored); tracked summary `docs/E2E_LIVE.md` | 2026-10-08 | MEASURED (historical) | **NOT RE-RUN** — Docker unavailable; **UNVERIFIED now.** |
+
+## P0 rehearsal (2026-11-04)
+
+Fresh run of the presentation path; all logs are under
+`reports/evidence/2026-11-04/`.
+
+| Check | Command | Log | Result |
+|---|---|---|---|
+| Tests | `python -m pytest -q` | `p0-pytest.txt` | 178 passed, exit 0 |
+| Lint/types | `ruff check .`; `ruff format --check .`; `mypy healing` | `p0-lint.txt` | clean, exit 0/0/0 |
+| Demo | `python tasks.py demo` | `p0-demo.txt` | 24/24, exit 0 |
+| Gates | `python -m scripts.check_gates` | `p0-gates.txt` | 8 PASS / 2 FAIL / 2 UNVERIFIED, exit 1 (expected) |
+| Held-out | `python -m scripts.bench_heldout` | `p0-heldout.txt` | UI 24/24, API 10/11, exit 0 |
+| Critic verify | `python -m scripts.bench_verify` | `p0-verify.txt` | catch 1.0, false-heal 0.0, exit 0 |
+| Frozen hashes | `git hash-object <file>` | `frozen-hashes.txt` | 7/7 MATCH |
+
+The gate exit code is non-zero because two live gates are red; that is the
+honest current state, not a rehearsal failure.
 
 ## Gate-by-gate evidence
 
@@ -78,7 +96,9 @@ rows that were re-run.
 ## Frozen-file check (2026-11-04)
 
 Command: `git hash-object <file>` for each frozen file. Full output:
-`reports/evidence/2026-11-04/frozen-hashes.txt`.
+`reports/evidence/2026-11-04/frozen-hashes.txt`. The table is also enforced
+by `tests/test_frozen_hashes.py` (missing file, missing entry, or mismatch
+fails the suite).
 
 | File | Recomputed hash | Matches `docs/FROZEN_HASHES.md`? |
 |---|---|---|
@@ -87,13 +107,12 @@ Command: `git hash-object <file>` for each frozen file. Full output:
 | `healing/policy/policy.yaml` | `31cdbd25d75113f26628dea55fe2f2f43035be4e` | YES |
 | `benchmark/cases.py` | `d387369429e4fa0d18a47cbda7576c3252d16220` | YES |
 | `benchmark/api/cases.py` | `0588789ac15f7385d26d3360f2da279ed047b276` | YES |
+| `benchmark/heldout/ui_cases.py` | `7200caae7a5621ac34f5a09391e47ba12c7972a7` | YES |
+| `benchmark/heldout/api_cases.py` | `0cc0349962b0473eb8df9b5a600bc7da0fb378f7` | YES |
 
-**No differences.** Two documentation gaps remain, flagged not fixed:
-
-1. `docs/FROZEN_HASHES.md` still says "No `benchmark/heldout/` exists yet"
-   (line 17), although the directory was added on 2026-10-14. The held-out
-   case files are not listed or hash-pinned.
-2. The freeze record says "166 passed" (line 4); the current suite is 175.
+**No differences.** The two gaps flagged in the earlier audit are closed:
+the held-out case files are now frozen and hash-checked, and the freeze
+record's test count is refreshed to 178.
 
 ## Claims with no reproducible command
 

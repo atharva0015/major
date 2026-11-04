@@ -13,7 +13,7 @@ rerun, or a missing input).
 The healing pipeline is implemented end-to-end: classify → match →
 sandbox replay → layered Critic → policy gate → explanation record →
 alert / shadow PR, with an API sidecar and quality tooling. **MEASURED
-this session (2026-11-04, Python 3.12.10): 175 tests pass; lint and mypy
+this session (2026-11-04, Python 3.12.10): 178 tests pass; lint and mypy
 are clean; the 24-case demo matches 24/24; gates report 8 PASS, 2 FAIL,
 2 UNVERIFIED (exit 1).** Both failures are the documented ones: the raw
 live Healenium matcher heals 9/9 adversarial cases, and live latency is
@@ -30,9 +30,9 @@ been produced. Survival remains UNVERIFIED by design (no history).
 
 | Check | Result |
 |---|---|
-| `pytest -q` | 175 passed in 15.12 s |
+| `pytest -q` | 178 passed in 14.34 s |
 | `ruff check .` | clean |
-| `ruff format --check .` | 162 files already formatted |
+| `ruff format --check .` | 164 files already formatted |
 | `mypy healing` | no issues in 50 source files |
 | `python tasks.py demo` | 24/24 cases match, exit 0 |
 | `python -m scripts.check_gates` | 8 PASS / 2 FAIL / 2 UNVERIFIED, exit 1 |
@@ -181,7 +181,7 @@ green on 3.12 observed.
 
 ## Changes since the previous status
 
-- Tests: 166 → **175 passed**; lint/mypy re-verified on Python 3.12.10.
+- Tests: 166 → **178 passed**; lint/mypy re-verified on Python 3.12.10.
 - Held-out set: previously "absent / UNVERIFIED" → **built and measured**
   (UI 24/24, API 10/11).
 - Demo: one-command runner added; **24/24** cases match, both XAI records

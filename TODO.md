@@ -9,8 +9,8 @@ verified/shipped · `[ ]` not completed.
 Evidence labels follow `PROJECT_STATUS.md`: **MEASURED**, **SIMULATED**,
 **UNVERIFIED**.
 
-At a glance: **40 done · 46 partial · 28 open** (was 72 / 13 / 31 before the
-2026-11-04 audit).
+At a glance: **44 done · 46 partial · 24 open** (was 72 / 13 / 31 before the
+2026-11-04 audit; the P0 batch below closed four items).
 
 > **Audit rule used here:** a `[x]` stays only if it has both (a) a passing
 > automated test that exercises the behaviour and (b) a saved output artifact
@@ -35,6 +35,9 @@ At a glance: **40 done · 46 partial · 28 open** (was 72 / 13 / 31 before the
   added** (presentation rehearsal, evidence-index walkthrough, missing
   test/artifact debt).
 - No sign-off box in `docs/HUMAN_SIGNOFF.md` was ticked or edited.
+- **P0 batch (2026-11-04):** four of the five P0 items are closed — rehearsal
+  logs, evidence-index walkthrough, README, and frozen held-out hashes with an
+  automated check. P0.5 (live re-runs) stays open until Docker is available.
 
 ## 1. Completed features (kept after audit)
 
@@ -204,10 +207,10 @@ At a glance: **40 done · 46 partial · 28 open** (was 72 / 13 / 31 before the
 
 ### 1.10 Tests and documentation
 
-- [x] **175 tests passing** on Python 3.12.10, including classifier, matcher,
+- [x] **178 tests passing** on Python 3.12.10, including classifier, matcher,
   Critic, policy, orchestrator, sandbox, XAI, alerts, GitOps, API sidecar,
   held-out set, gates, and metrics (**MEASURED 2026-11-04**). Evidence: the
-  suite itself; `reports/evidence/2026-11-04/pytest.txt` (175 passed, exit 0).
+  suite itself; `reports/evidence/2026-11-04/pytest.txt` (178 passed, exit 0).
 - [x] **Lint/type checks clean** — ruff check, ruff format, mypy (**MEASURED
   2026-11-04**). Evidence: `reports/evidence/2026-11-04/lint.txt` (exit 0/0/0).
 
@@ -243,8 +246,9 @@ At a glance: **40 done · 46 partial · 28 open** (was 72 / 13 / 31 before the
   the SBOM license allowlist is unused and no CI step enforces it.
 - [~] **Vision/LLM extension** — code and benchmark complete; verdict is DROP
   because there are no real screenshots and attempts 1–2 already win.
-- [~] **Documentation surface** — extensive docs, but `README.md` is a
-  four-line scaffold (now a P0 item).
+- [~] **Documentation surface** — docs are extensive and `README.md` now has
+  quickstart, architecture, commands, evidence links, and limits, but most
+  docs still have no executable check.
 
 ### 2.2 Downgraded by the 2026-11-04 audit (32)
 
@@ -302,9 +306,9 @@ proofs. The reason names the missing half.
 - [~] **Healenium setup and live runbook** — documentation only; no test.
 - [~] **Provenance records** — documentation only; independence is a statement,
   not an executable check.
-- [~] **Frozen-file hash manifest and changelog** — hashes were manually
-  re-verified (`reports/evidence/2026-11-04/frozen-hashes.txt`), but no test
-  automates the comparison.
+- [~] **Frozen-file hash manifest and changelog** — the manifest is now
+  automated by `tests/test_frozen_hashes.py`; `CHANGELOG_FROZEN.md` is still
+  documentation-only and has no executable check.
 - [~] **Compliance evidence, license options, branch protection, sign-off
   checklist** — documentation/human-decision items; no executable check and
   no boxes ticked.
@@ -324,20 +328,29 @@ proofs. The reason names the missing half.
 Effort scale: **S** < 1 day · **M** 2–5 days · **L** 1–2 weeks · **XL** > 2
 weeks. Human-only decisions are marked; no sign-off box is ticked here.
 
-### P0 — before the presentation (5)
+### P0 — before the presentation (4 done, 1 open)
 
-- [ ] **P0.1 Rehearse the demo and gates on the presentation machine** — run
-  `python tasks.py demo`, `python -m scripts.check_gates`, and the held-out
-  bench; save fresh logs under `reports/evidence/<date>/`. **S**.
-- [ ] **P0.2 Walk `docs/EVIDENCE_INDEX.md` line by line** — remove or re-label
-  every number that lacks a command/artifact; keep the two red gates and the
-  UNVERIFIED items visible rather than hiding them. **S**.
-- [ ] **P0.3 Expand `README.md`** from the four-line scaffold to quickstart,
-  architecture summary, demo command, and evidence pointers. **S**.
-- [ ] **P0.4 Freeze the held-out case files and automate the hash check** — add
-  `benchmark/heldout/*.py` to `docs/FROZEN_HASHES.md`, add a pytest that
-  recomputes every listed hash, and record the new test count. Replaces the
-  manual re-verification item. **S**.
+- [x] **P0.1 Rehearse the demo and gates** — run `python tasks.py demo`,
+  `python -m scripts.check_gates`, and the held-out bench; save fresh logs
+  under `reports/evidence/2026-11-04/`. Evidence: `p0-demo.txt` (24/24, exit
+  0), `p0-gates.txt` (8 PASS / 2 FAIL / 2 UNVERIFIED, exit 1 expected),
+  `p0-heldout.txt` (UI 24/24, API 10/11), `p0-verify.txt` (catch 1.0), and
+  `p0-pytest.txt` (178 passed). Repeat on the presentation machine if it is
+  not this host. **S**.
+- [x] **P0.2 Walk `docs/EVIDENCE_INDEX.md` line by line** — every number was
+  re-checked against its command/artifact; red gates and UNVERIFIED items
+  remain visible; the frozen table and rehearsal section were refreshed.
+  Evidence: `docs/EVIDENCE_INDEX.md`. **S**.
+- [x] **P0.3 Expand `README.md`** — quickstart, architecture flow, command
+  table, evidence pointers, and current limits. Evidence:
+  `tests/test_readme.py` (checks required sections and links) and the README
+  itself. **S**.
+- [x] **P0.4 Freeze the held-out case files and automate the hash check** —
+  `benchmark/heldout/ui_cases.py` and `api_cases.py` are in
+  `docs/FROZEN_HASHES.md`; `tests/test_frozen_hashes.py` recomputes every
+  listed hash and fails closed. Evidence:
+  `reports/evidence/2026-11-04/frozen-hashes.txt` (7/7 MATCH) and the test.
+  **S**.
 - [ ] **P0.5 Re-run the live Healenium and live E2E benches if Docker is
   available** — otherwise present the 2026-10-08 results explicitly as
   historical/UNVERIFIED, not as fresh measurements. **M**.
