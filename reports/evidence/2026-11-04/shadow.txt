@@ -1,0 +1,39 @@
+$ .venv312/Scripts/python -m scripts.shadow_report
+# Shadow-mode report (no PRs opened)
+
+- cases: 24
+- PRs opened: 0
+- escaped defects (shadow vs ground truth): 0
+- wrong cases: none
+
+Note: ground truth stands in for engineer actions (none recorded yet).
+
+## Per-case
+
+| case | proposed | truth | escaped |
+|---|---|---|---|
+| renamed_ids:/login | True | True | False |
+| renamed_ids:/products | True | True | False |
+| renamed_ids:/checkout | True | True | False |
+| changed_classes:/login | True | True | False |
+| changed_classes:/products | True | True | False |
+| changed_classes:/checkout | True | True | False |
+| moved_elements:/login | True | True | False |
+| moved_elements:/products | True | True | False |
+| moved_elements:/checkout | True | True | False |
+| reskinned_layout:/login | True | True | False |
+| reskinned_layout:/products | True | True | False |
+| reskinned_layout:/checkout | True | True | False |
+| duplicate_buttons:/login | False | False | False |
+| duplicate_buttons:/products | False | False | False |
+| duplicate_buttons:/checkout | False | False | False |
+| removed_element:/login | False | False | False |
+| removed_element:/products | False | False | False |
+| removed_element:/checkout | False | False | False |
+| swapped_roles:/login | False | False | False |
+| swapped_roles:/products | False | False | False |
+| swapped_roles:/checkout | False | False | False |
+| ab_variant_text:/login | True | True | False |
+| ab_variant_text:/products | True | True | False |
+| ab_variant_text:/checkout | True | True | False |
+exit=0

@@ -1,0 +1,16 @@
+$ .venv312/Scripts/python -m scripts.bench_verify
+# Verify-before-it-matters report (sandbox + layered Critic)
+
+- wrong heals injected: 15
+- critic catch rate: 1.000
+- critic false-reject rate: 0.000
+- orchestrator false-heal rate: 0.000
+
+## Heal success by attempt
+
+| attempt | success | total | rate |
+|---|---|---|---|
+| 1 | 15 | 15 | 1.000 |
+| 2 | 0 | 15 | 0.000 |
+| 3 | 0 | 15 | 0.000 |
+exit=0

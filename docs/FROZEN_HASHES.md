@@ -25,3 +25,18 @@ Notes:
 - `healing/policy/policy.yaml` → `31cdbd25d75113f26628dea55fe2f2f43035be4e` (matches)
 
 No frozen file changed; no `CHANGELOG_FROZEN.md` entry needed.
+
+## Re-verification 2026-11-04
+
+`git hash-object` re-run for all five entries above; all hashes **match**
+(no differences). Full output:
+`reports/evidence/2026-11-04/frozen-hashes.txt`.
+
+Two record gaps remain, flagged for a human:
+
+- The note above says no `benchmark/heldout/` exists; it was added on
+  2026-10-14. Its case files are **not yet frozen or listed** here.
+- The freeze rationale says "166 passed"; the current suite is **175
+  passed** (2026-11-04).
+
+No `CHANGELOG_FROZEN.md` entry was needed because no frozen file changed.

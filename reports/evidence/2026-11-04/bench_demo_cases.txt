@@ -1,0 +1,26 @@
+$ .venv312/Scripts/python -m scripts.bench_demo_cases
+# Demo-cases report (SIMULATED ù Docker down, no live runs)
+
+- cases: 12 (expected HEAL: 6, expected ESCALATE: 6)
+- pipeline false heals: 0
+- pipeline wrong escalations: 0
+- sim-alone false heals: 0
+- sim-alone wrong escalations: 0
+
+## Per-case results
+
+| case | expected | pipeline | ok | sim-alone | sim ok | critic | decision |
+|---|---|---|---|---|---|---|
+| renamed_id | HEAL | submit-order | True | submit-order | True | pass:all-layers | heal_unverified |
+| reskinned | HEAL | submit-order | True | submit-order | True | pass:all-layers | heal_unverified |
+| moved | HEAL | submit-order | True | submit-order | True | pass:all-layers | heal_unverified |
+| label_reworded | HEAL | submit-order | True | submit-order | True | pass:all-layers | heal_unverified |
+| lookalike_trap | ESCALATE | ESCALATE | True | ESCALATE | True | n/a (escalated, nothing to verify) | fail_escalate |
+| duplicates | ESCALATE | ESCALATE | True | ESCALATE | True | n/a (escalated, nothing to verify) | fail_escalate |
+| button_removed | ESCALATE | ESCALATE | True | ESCALATE | True | n/a (escalated, nothing to verify) | fail_escalate |
+| save_draft_vs_save_order | ESCALATE | ESCALATE | True | ESCALATE | True | n/a (escalated, nothing to verify) | fail_escalate |
+| delete_account_vs_delete_draft | ESCALATE | ESCALATE | True | ESCALATE | True | n/a (escalated, nothing to verify) | fail_escalate |
+| disabled_submit | ESCALATE | ESCALATE | True | ESCALATE | True | n/a (escalated, nothing to verify) | fail_escalate |
+| renamed_id_and_text | HEAL | submit-order | True | submit-order | True | pass:all-layers | heal_unverified |
+| single_char_typo | HEAL | submit-order | True | submit-order | True | pass:all-layers | heal_unverified |
+exit=0

@@ -1,0 +1,16 @@
+$ .venv312/Scripts/python -m scripts.bench
+# Baseline report (do-nothing healer)
+
+- total: 24
+- heal_accuracy: 0.000
+- false_heal_rate: 0.000
+- escalation_rate: 1.000
+- correct_escalation_rate: 1.000
+- cost_per_heal: 0.000
+- latency_per_heal_ms: 0.000
+
+- failures by class: {'locator_drift': 15, 'environment_issue': 3, 'genuine_regression': 6}
+- locator drift share: 0.625
+- estimated manual repairs: 15
+- policy: baseline-0.1.0, seed: 42
+exit=0

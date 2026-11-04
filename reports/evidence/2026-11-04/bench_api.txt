@@ -1,0 +1,20 @@
+$ .venv312/Scripts/python -m scripts.bench_api
+# API benchmark report (conservative healing)
+
+- cases: 7
+- auto-healed contract changes: 0 (must be 0)
+- false-heal rate: 0.000
+- wrong cases: none
+
+## Per-case (healed / escalated and why)
+
+| case | class | action | healed | reason |
+|---|---|---|---|---|
+| renamed_field:products | approved_spec_change | propose_test_update | True | approved rename price->amount |
+| new_required_field:cart | contract_change | escalate | False | contract_change: missing required field: coupon |
+| removed_endpoint:checkout | contract_change | escalate | False | contract_change: endpoint removed |
+| expired_token:products | expired_credential | refresh_token | True | TEST_TOKEN refreshed in test env |
+| stale_seed:products | stale_data | regenerate_fixtures | True | sandbox fixtures reseeded |
+| type_change:products | contract_change | escalate | False | contract_change:  |
+| pact:cart | contract_change | escalate | False | contract_change:  |
+exit=0

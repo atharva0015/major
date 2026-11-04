@@ -1,0 +1,4 @@
+﻿$ .venv312/Scripts/python -m scripts.bench_healenium_live
+NOT RUN on 2026-11-04: Docker daemon unavailable (npipe dockerDesktopLinuxEngine not found); live Healenium stack not started.
+Output on disk remains the 2026-10-08/14 measurement: benchmark/reports/healenium_live.md/.json.
+exit=not_run

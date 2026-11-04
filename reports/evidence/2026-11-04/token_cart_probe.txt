@@ -1,0 +1,36 @@
+﻿import os
+from fastapi import HTTPException
+from healing.nonui.pipeline import ApiCase, observe
+from healing.nonui.classifier import ApiFailure, classify_api
+
+case = ApiCase("heldout:token-cart", "expired_token", "GET /api/cart")
+observed = observe(case)
+print("observe() ->", observed)
+print("classify(observe()) ->", classify_api(observed))
+
+os.environ["API_DRIFT_MODE"] = "expired_token"
+os.environ.pop("TEST_TOKEN", None)
+from demo_app.app import api_cart
+try:
+    api_cart()
+    print("direct api_cart() -> unexpected 200")
+except HTTPException as exc:
+    print("direct api_cart() ->", exc.status_code, repr(exc.detail))
+    direct = ApiFailure(
+        status=exc.status_code,
+        error=str(exc.detail),
+        spec_changed=False,
+        breaking=False,
+        approved=False,
+        rename_only=False,
+        auth_ok=False,
+        data_fresh=True,
+        pact=False,
+    )
+    print("classify(direct 401) ->", classify_api(direct))
+finally:
+    os.environ["API_DRIFT_MODE"] = "none"
+observe() -> ApiFailure(status=500, error='unknown endpoint GET /api/cart', spec_changed=False, breaking=False, approved=False, rename_only=False, auth_ok=True, data_fresh=True, pact=False)
+classify(observe()) -> ApiClassification(api_class='unapproved_change', fired_rules=('spec_unchanged_likely_defect',), healable=False)
+direct api_cart() -> 401 'token expired'
+classify(direct 401) -> ApiClassification(api_class='expired_credential', fired_rules=('auth_401_spec_unchanged',), healable=True)

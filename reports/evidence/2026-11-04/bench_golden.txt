@@ -1,0 +1,8 @@
+$ .venv312/Scripts/python -m scripts.bench_golden
+# Golden-set report
+
+- cases: 24, mismatches: none
+- accuracy: 1.000 (min 1.0)
+- false-heal rate: 0.000 (max 0.0)
+- verdict: PASS
+exit=0

@@ -36,6 +36,14 @@ healed), but imprecise: an expired credential on the cart view is
 reported as an unapproved change. Fixing either the label or the
 endpoint coverage is explicitly out of scope for this step.
 
+**Follow-up (2026-11-04):** a direct probe shows the label is correct and
+the root cause is only the missing `GET /api/cart` dispatch in
+`observe()`. The real endpoint returns `401 token expired` and classifies
+as `expired_credential` / healable; the observer's synthetic `unknown
+endpoint` 500 is what the classifier sees. See
+`docs/TOKEN_CART_ANALYSIS.md` and
+`reports/evidence/2026-11-04/token_cart_probe.txt`. No code was changed.
+
 ## Per-case UI (MEASURED)
 
 | case | true | predicted | decision | healed | heal_ok |

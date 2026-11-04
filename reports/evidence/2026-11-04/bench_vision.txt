@@ -1,0 +1,18 @@
+$ .venv312/Scripts/python -m scripts.bench_vision
+# VISION_LLM extension report
+
+- vision standalone top-1: 15/15 (1.000)
+- vision ambiguous cases: 15/15 (fingerprints too coarse to separate same-form buttons)
+- vision avg latency: 0.225 ms/case (stdlib, no model)
+- ladder wins by attempt: {1: 15, 2: 0, 3: 0, 4: 0}
+- total ladder cost (vision on): 15.0
+- LLM disabled abstains: True
+- oracle-LLM marginal wins beyond attempts 1-3: 0
+
+## Cost-effectiveness
+- attempts 1-2 healed 15/15 at cost ~15.0
+- attempts 3-4 healed 0/15; each firing would cost vision_max_cost (1.0) + llm_max_cost (2.0) with zero marginal wins
+
+## Verdict
+DROP (leave disabled): attempts 3-4 add zero marginal heals on this benchmark -- vision top-1 ranks correctly but never clears the ambiguity margin, and the ladder already wins at attempt 1. Keep as tested default-off fallback for genuinely visual drift.
+exit=0
