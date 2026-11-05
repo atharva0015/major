@@ -69,6 +69,7 @@ The demo takes seconds.
 | `python tasks.py bench-e2e-live` | Live end-to-end pipeline (Docker required) |
 | `python tasks.py bench-shadow` | Shadow-mode report |
 | `python tasks.py bench-vision` | Vision/LLM extension benchmark |
+| `python tasks.py evidence-snapshot` | Deterministic quality transcript (masking, narrative, calibration, guard, GitOps) |
 
 ## How it works
 

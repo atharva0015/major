@@ -78,3 +78,22 @@ def test_local_refuses_protected_branch(tmp_path) -> None:
         client.open_pr("main", "main", "t", "b")
     # Protected patterns also cover release branches.
     assert is_protected("release/2.0", ("main", "release/*"))
+
+
+def test_local_revert_pr_uses_revert_namespace(tmp_path) -> None:
+    client = make_repo(tmp_path)
+    client.create_branch("heal/login-7")
+    client.commit("heal/login-7", {"tests/t.py": "x = 1\n"}, "heal login")
+    pr = client.open_pr("heal/login-7", "main", "Heal login", "body")
+    # The watcher reverts a merged heal; merge it locally first.
+    subprocess.run(["git", "checkout", "main"], cwd=client.workdir, check=True)
+    subprocess.run(
+        ["git", "merge", "--no-ff", "heal/login-7", "-m", "merge heal"],
+        cwd=client.workdir,
+        check=True,
+    )
+    subprocess.run(["git", "push", "origin", "main"], cwd=client.workdir, check=True)
+    revert = client.open_revert_pr(pr, "post-merge failure")
+    assert revert.branch == "revert/heal-login-7"
+    assert revert.title == "Revert Heal login"
+    assert revert in client.prs

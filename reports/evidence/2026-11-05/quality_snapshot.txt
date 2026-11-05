@@ -1,0 +1,5 @@
+﻿$ .venv312/Scripts/python tasks.py evidence-snapshot
++ C:\Users\Athar\Desktop\MAJOR PROJECT\MVP\.venv312\Scripts\python.exe -m scripts.evidence_snapshot
+wrote reports\evidence\2026-11-05\quality_snapshot.json
+sections: assertion_guard, autonomy, calibration, dedupe, gitops, gitops_backend, label, masking, metrics, narrative, survival
+exit=0

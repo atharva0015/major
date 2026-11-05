@@ -1,0 +1,230 @@
+{
+  "assertion_guard": [
+    {
+      "allowed": false,
+      "case": "removed_assertion",
+      "diff": "-    assert total == 10\n",
+      "reason": "refused: removes an assertion"
+    },
+    {
+      "allowed": false,
+      "case": "weakened_assertion",
+      "diff": "+    assert total is not None\n",
+      "reason": "refused: weakens an assertion"
+    },
+    {
+      "allowed": false,
+      "case": "threshold_change",
+      "diff": "+    max_ms = 50\n",
+      "reason": "refused: changes a performance threshold or SLA"
+    },
+    {
+      "allowed": true,
+      "case": "safe_strengthening",
+      "diff": "+    assert total == 11\n",
+      "reason": "ok: assertions preserved or strengthened"
+    }
+  ],
+  "autonomy": {
+    "alert": {
+      "ack_sla_s": 3600,
+      "owners": "healing-owners",
+      "severity": "high",
+      "text": "Autonomy downgraded L3->L2: false_heal_rate 0.5 > 0.0"
+    },
+    "downgraded": true,
+    "effective_level": "L2",
+    "reasons": [
+      "false_heal_rate 0.5 > 0.0"
+    ]
+  },
+  "calibration": {
+    "bad_alarm": [
+      true,
+      "calibration diverged: ECE 0.95 > limit 0.15"
+    ],
+    "bad_pairs_ece": 0.95,
+    "bad_reliability_curve": [
+      {
+        "accuracy": 0.0,
+        "bin": 0.0,
+        "confidence": 0.0,
+        "n": 0
+      },
+      {
+        "accuracy": 0.0,
+        "bin": 0.1,
+        "confidence": 0.0,
+        "n": 0
+      },
+      {
+        "accuracy": 0.0,
+        "bin": 0.2,
+        "confidence": 0.0,
+        "n": 0
+      },
+      {
+        "accuracy": 0.0,
+        "bin": 0.3,
+        "confidence": 0.0,
+        "n": 0
+      },
+      {
+        "accuracy": 0.0,
+        "bin": 0.4,
+        "confidence": 0.0,
+        "n": 0
+      },
+      {
+        "accuracy": 0.0,
+        "bin": 0.5,
+        "confidence": 0.0,
+        "n": 0
+      },
+      {
+        "accuracy": 0.0,
+        "bin": 0.6,
+        "confidence": 0.0,
+        "n": 0
+      },
+      {
+        "accuracy": 0.0,
+        "bin": 0.7,
+        "confidence": 0.0,
+        "n": 0
+      },
+      {
+        "accuracy": 0.0,
+        "bin": 0.8,
+        "confidence": 0.0,
+        "n": 0
+      },
+      {
+        "accuracy": 0.0,
+        "bin": 0.9,
+        "confidence": 0.95,
+        "n": 10
+      }
+    ],
+    "good_alarm": [
+      false,
+      ""
+    ],
+    "good_pairs_ece": 0.1
+  },
+  "dedupe": {
+    "groups": {
+      "add-cart-1": [
+        "test_cart"
+      ],
+      "login-submit": [
+        "test_login",
+        "test_checkout"
+      ]
+    },
+    "plans": [
+      {
+        "branch": "heal/shared-0",
+        "locator": "add-cart-1",
+        "tests": [
+          "test_cart"
+        ]
+      },
+      {
+        "branch": "heal/shared-1",
+        "locator": "login-submit",
+        "tests": [
+          "test_checkout",
+          "test_login"
+        ]
+      }
+    ]
+  },
+  "gitops": {
+    "alerts": [
+      "healed test login failed post-merge; revert #2: post-merge assertion failed"
+    ],
+    "branch_commit_sha": "0d8f32daa1dac2416918497ee5d1125976d561a1",
+    "diff": "--- before\n+++ after\n@@ -5,7 +5,7 @@\n \n class TestLogin:\n     def test_submit(self, driver):\n-        driver.find_element(By.ID, \"login-submit\").click()\n+        driver.find_element(By.ID, \"login-submit-v2\").click()\n \n     def test_cancel(self, driver):\n         driver.find_element(By.ID, \"login-cancel\").click()\n",
+    "new_source_has_locator": true,
+    "pr_body": "## Auto-heal summary\n\nHeal login locator drift\n\n## Diff\n\n```diff\n--- before\n+++ after\n@@ -5,7 +5,7 @@\n \n class TestLogin:\n     def test_submit(self, driver):\n-        driver.find_element(By.ID, \"login-submit\").click()\n+        driver.find_element(By.ID, \"login-submit-v2\").click()\n \n     def test_cancel(self, driver):\n         driver.find_element(By.ID, \"login-cancel\").click()\n\n```\n\n## Confidence\n\n0.930\n\n## Critic verdict\n\npass: all layers\n\n## Explanation record\n\nrecord:heal-evidence-1 (hash `deadbeef`)\n\n## Screenshots\n\n- before: shot://before\n- after: shot://after\n- candidate highlighted: shot://candidate\n\n## Sandbox replay\n\nreplay://heal-evidence-1\n\n## Rollback\n\nrevert the PR\n\n<!-- labels: auto-heal, unverified, needs-human -->\n",
+    "pr_body_complete": true,
+    "pr_body_missing": [],
+    "pull_requests": [
+      {
+        "base": "main",
+        "branch": "heal/login-7",
+        "comments": [
+          "Critic pass; sandbox replay ok"
+        ],
+        "labels": [
+          "auto-heal",
+          "unverified",
+          "needs-human"
+        ],
+        "number": 1,
+        "title": "Heal login locator drift"
+      },
+      {
+        "base": "main",
+        "branch": "revert/heal-login-7",
+        "comments": [],
+        "labels": [
+          "revert"
+        ],
+        "number": 2,
+        "title": "Revert Heal login locator drift"
+      }
+    ],
+    "revert_record": {
+      "reason": "post-merge assertion failed",
+      "revert_pr": 2,
+      "test": "login"
+    },
+    "watch_now": true,
+    "watch_old": false
+  },
+  "gitops_backend": "local bare repo (no network)",
+  "label": "SIMULATED/IN-PROCESS",
+  "masking": {
+    "mapping": {
+      "count": 3,
+      "email": "[email]"
+    },
+    "markers": {
+      "card": true,
+      "email": true,
+      "phone": true,
+      "token": true
+    },
+    "masked_text": "contact [email], card [card], call [phone], Authorization: [token]"
+  },
+  "metrics": {
+    "prometheus_text": "# HELP heal_latency_seconds Heal latency by attempt\n# TYPE heal_latency_seconds histogram\nheal_latency_seconds_bucket{attempt=\"1\",le=\"0.005\"} 0.0\nheal_latency_seconds_bucket{attempt=\"1\",le=\"0.01\"} 0.0\nheal_latency_seconds_bucket{attempt=\"1\",le=\"0.025\"} 0.0\nheal_latency_seconds_bucket{attempt=\"1\",le=\"0.05\"} 1.0\nheal_latency_seconds_bucket{attempt=\"1\",le=\"0.075\"} 1.0\nheal_latency_seconds_bucket{attempt=\"1\",le=\"0.1\"} 1.0\nheal_latency_seconds_bucket{attempt=\"1\",le=\"0.25\"} 1.0\nheal_latency_seconds_bucket{attempt=\"1\",le=\"0.5\"} 1.0\nheal_latency_seconds_bucket{attempt=\"1\",le=\"0.75\"} 1.0\nheal_latency_seconds_bucket{attempt=\"1\",le=\"1.0\"} 1.0\nheal_latency_seconds_bucket{attempt=\"1\",le=\"2.5\"} 1.0\nheal_latency_seconds_bucket{attempt=\"1\",le=\"5.0\"} 1.0\nheal_latency_seconds_bucket{attempt=\"1\",le=\"7.5\"} 1.0\nheal_latency_seconds_bucket{attempt=\"1\",le=\"10.0\"} 1.0\nheal_latency_seconds_bucket{attempt=\"1\",le=\"+Inf\"} 1.0\nheal_latency_seconds_count{attempt=\"1\"} 1.0\nheal_latency_seconds_sum{attempt=\"1\"} 0.05\n# HELP heal_latency_seconds_created Heal latency by attempt\n# TYPE heal_latency_seconds_created gauge\nheal_latency_seconds_created{attempt=\"1\"} 1.793888556457678e+09\n# HELP heal_cost_total Heal cost by attempt\n# TYPE heal_cost_total counter\nheal_cost_total{attempt=\"1\"} 1.0\n# HELP heal_cost_created Heal cost by attempt\n# TYPE heal_cost_created gauge\nheal_cost_created{attempt=\"1\"} 1.793888556457678e+09\n# HELP heal_success_total Heal success by attempt number\n# TYPE heal_success_total counter\nheal_success_total{attempt=\"1\",result=\"success\"} 1.0\n# HELP heal_success_created Heal success by attempt number\n# TYPE heal_success_created gauge\nheal_success_created{attempt=\"1\",result=\"success\"} 1.793888556457678e+09\n# HELP heal_escalations_total Escalations by class\n# TYPE heal_escalations_total counter\nheal_escalations_total{classification=\"locator_drift\"} 1.0\n# HELP heal_escalations_created Escalations by class\n# TYPE heal_escalations_created gauge\nheal_escalations_created{classification=\"locator_drift\"} 1.793888556457678e+09\n# HELP alert_ack_seconds Alert acknowledgement time\n# TYPE alert_ack_seconds histogram\nalert_ack_seconds_bucket{le=\"0.005\"} 0.0\nalert_ack_seconds_bucket{le=\"0.01\"} 0.0\nalert_ack_seconds_bucket{le=\"0.025\"} 0.0\nalert_ack_seconds_bucket{le=\"0.05\"} 0.0\nalert_ack_seconds_bucket{le=\"0.075\"} 0.0\nalert_ack_seconds_bucket{le=\"0.1\"} 0.0\nalert_ack_seconds_bucket{le=\"0.25\"} 0.0\nalert_ack_seconds_bucket{le=\"0.5\"} 0.0\nalert_ack_seconds_bucket{le=\"0.75\"} 0.0\nalert_ack_seconds_bucket{le=\"1.0\"} 0.0\nalert_ack_seconds_bucket{le=\"2.5\"} 0.0\nalert_ack_seconds_bucket{le=\"5.0\"} 0.0\nalert_ack_seconds_bucket{le=\"7.5\"} 0.0\nalert_ack_seconds_bucket{le=\"10.0\"} 0.0\nalert_ack_seconds_bucket{le=\"+Inf\"} 1.0\nalert_ack_seconds_count 1.0\nalert_ack_seconds_sum 12.0\n# HELP alert_ack_seconds_created Alert acknowledgement time\n# TYPE alert_ack_seconds_created gauge\nalert_ack_seconds_created 1.7938885564451423e+09\n"
+  },
+  "narrative": {
+    "consistency": {
+      "missing": [],
+      "ok": true
+    },
+    "narrative": "Heal heal-evidence-1 on test login step s1. Classification locator_drift (policy pol, config cfg). Selected login-submit with thresholds {'high': 0.8}. Critic {'verdict': 'unverified'}; escalation None. Versions model m prompt p.",
+    "record_hash": "af65fe847f6e22771db24f4f808e8c1fe03a1cee43fc31409833cb36190d7b26"
+  },
+  "survival": {
+    "30d": {
+      "days": 30,
+      "n": 0,
+      "status": "insufficient_data"
+    },
+    "override": {
+      "n": 0,
+      "rate": 0.0,
+      "status": "insufficient_data"
+    },
+    "revert": {
+      "n": 0,
+      "rate": 0.0,
+      "status": "insufficient_data"
+    }
+  }
+}

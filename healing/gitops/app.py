@@ -16,6 +16,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 
 BRANCH_RE = re.compile(r"^heal/[a-z0-9][a-z0-9/_.-]{0,99}$")
+REVERT_RE = re.compile(r"^revert/[a-z0-9][a-z0-9/_.-]{0,99}$")
 HEAL_LABELS = ("auto-heal", "verified", "unverified", "needs-human")
 
 
@@ -68,6 +69,11 @@ def is_protected(branch: str, patterns: tuple[str, ...]) -> bool:
 def check_branch_name(branch: str) -> None:
     if not BRANCH_RE.match(branch):
         raise RefusedError(f"bad heal branch name: {branch!r}")
+
+
+def check_revert_branch_name(branch: str) -> None:
+    if not REVERT_RE.match(branch):
+        raise RefusedError(f"bad revert branch name: {branch!r}")
 
 
 def reviews_valid(approvals: list[str], trigger_identity: str) -> bool:
@@ -255,7 +261,10 @@ class LocalBareRepoClient(GitHubClient):
 
     def open_revert_pr(self, pr: PullRequest, reason: str) -> PullRequest:
         revert = f"revert/{pr.branch.replace('/', '-')}"
-        self.create_branch(revert, pr.base)
+        check_revert_branch_name(revert)
+        if is_protected(revert, self.protected):
+            raise RefusedError(f"refusing protected branch: {revert}")
+        self._git("checkout", "-B", revert, pr.base)
         self._git("checkout", revert)
         self._git("revert", "--no-commit", f"origin/{pr.branch}")
         self._git(
