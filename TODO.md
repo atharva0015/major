@@ -9,9 +9,9 @@ verified/shipped · `[ ]` not completed.
 Evidence labels follow `PROJECT_STATUS.md`: **MEASURED**, **SIMULATED**,
 **UNVERIFIED**.
 
-At a glance: **47 done · 44 partial · 23 open** (was 72 / 13 / 31 before the
-2026-11-04 audit; the P0 batch closed four items, P1.3 closed one, and the
-demo-case/one-command-demo tests closed two more).
+At a glance: **58 done · 33 partial · 23 open** (was 72 / 13 / 31 before the
+2026-11-04 audit; the P0 batch, P1.3, the demo tests, and the quality
+snapshot closed items).
 
 > **Audit rule used here:** a `[x]` stays only if it has both (a) a passing
 > automated test that exercises the behaviour and (b) a saved output artifact
@@ -43,6 +43,9 @@ demo-case/one-command-demo tests closed two more).
   gate-shaped `golden_live.json` from the measured live E2E report; the gate
   moves from UNVERIFIED to PASS (historical data), so the count becomes
   9 PASS / 2 FAIL / 1 UNVERIFIED.
+- **Quality snapshot (2026-11-05):** one tested transcript now carries the
+  masking, narrative, calibration, autonomy, metrics, guard, and GitOps
+  artifacts that were previously test-only.
 
 ## 1. Completed features (kept after audit)
 
@@ -221,14 +224,43 @@ demo-case/one-command-demo tests closed two more).
 
 ### 1.10 Tests and documentation
 
-- [x] **185 tests passing** on Python 3.12.10, including classifier, matcher,
+- [x] **192 tests passing** on Python 3.12.10, including classifier, matcher,
   Critic, policy, orchestrator, sandbox, XAI, alerts, GitOps, API sidecar,
   held-out set, gates, and metrics (**MEASURED 2026-11-04**). Evidence: the
-  suite itself; `reports/evidence/2026-11-05/pytest.txt` (185 passed, exit 0).
+  suite itself; `reports/evidence/2026-11-05/pytest.txt` (192 passed, exit 0).
 - [x] **Lint/type checks clean** — ruff check, ruff format, mypy (**MEASURED
   2026-11-04**). Evidence: `reports/evidence/2026-11-04/lint.txt` (exit 0/0/0).
 
-## 2. Implemented but not fully verified/shipped (44)
+### 1.11 Quality evidence snapshot (2026-11-05)
+
+`scripts/evidence_snapshot.py` (tested by `tests/test_evidence_snapshot.py`)
+writes one reproducible in-process transcript. Artifacts:
+`reports/evidence/2026-11-05/quality_snapshot.json` and
+`quality_snapshot.txt`. GitOps uses a temporary local bare repo; no network,
+Docker, or real GitHub credentials are involved.
+
+- [x] **PII/secret masking** — email, phone, card, and token markers in the
+  saved transcript (`tests/test_masking.py`).
+- [x] **GitHub App client** — branch, commit, PR, labels, and comments from a
+  recorded local bare-repo run (not a real GitHub call).
+- [x] **AST locator edits** — saved unified diff and edited source
+  (`tests/test_ast_edit.py`).
+- [x] **PR template** — rendered PR body with all required sections
+  (`tests/test_pr_dedupe_watch.py`).
+- [x] **Shared-locator dedupe** — grouped failures and one-PR-per-locator plan.
+- [x] **Post-merge watcher** — revert PR record plus alert transcript.
+- [x] **Assertion/threshold guard** — blocked removed/weakened/threshold diffs
+  and an allowed strengthening (`tests/test_api_healers.py`).
+- [x] **Narrative renderer** — rendered text plus consistency check
+  (`tests/test_narrative.py`).
+- [x] **Calibration** — reliability curve, good/bad ECE, and alarm decision
+  (`tests/test_quality.py`).
+- [x] **Autonomy guard** — L3 to L2 downgrade with alert payload
+  (`tests/test_quality.py`).
+- [x] **OpenTelemetry/Prometheus** — exported healing metric samples
+  (`tests/test_quality_ops.py`).
+
+## 2. Implemented but not fully verified/shipped (33)
 
 ### 2.1 Existing partials (13)
 
@@ -264,33 +296,14 @@ demo-case/one-command-demo tests closed two more).
   quickstart, architecture, commands, evidence links, and limits, but most
   docs still have no executable check.
 
-### 2.2 Downgraded by the 2026-11-04 audit (30)
+### 2.2 Downgraded by the 2026-11-04 audit (19)
 
 Each item is implemented and/or tested, but lacks one of the two required
 proofs. The reason names the missing half.
 
-- [~] **PII/secret masking** — tested (`tests/test_masking.py`), but no saved
-  masked-output artifact.
-- [~] **GitHub App client** — tested against a local bare repo, but no saved
-  branch/PR artifact from a real or recorded run.
-- [~] **AST locator edits** — tested (`tests/test_ast_edit.py`), but no saved
-  unified-diff artifact.
-- [~] **PR template** — tested for completeness, but no saved rendered PR body.
-- [~] **Shared-locator dedupe** — tested (`tests/test_pr_dedupe_watch.py`), but
-  no saved dedupe output.
-- [~] **Post-merge watcher** — tested, but no saved revert/alert transcript.
-- [~] **Assertion/threshold guard** — tested (`tests/test_api_healers.py`), but
-  no saved blocked-diff output.
-- [~] **Narrative renderer** — tested (`tests/test_narrative.py`), but the demo
-  prints structured records only; no saved narrative transcript.
-- [~] **Calibration** — tested (`tests/test_quality.py`), but no saved
-  reliability/ECE report.
-- [~] **Autonomy guard** — tested (`tests/test_quality.py`), but no saved
-  L3→L2 downgrade output.
-- [~] **Survival metrics** — tested (`tests/test_quality.py`), but no saved
-  report and the gate remains UNVERIFIED (`insufficient_data`).
-- [~] **OpenTelemetry/Prometheus** — instrumentation tested
-  (`tests/test_quality_ops.py`), but no exported metrics artifact or scrape.
+- [~] **Survival metrics** — tested (`tests/test_quality.py`), but the gate
+  remains UNVERIFIED (`insufficient_data`); the snapshot records the status
+  without inventing history.
 - [~] **Live end-to-end pipeline run** — artifact exists
   (`benchmark/reports/e2e_live.md`), but no pytest test covers the live
   pipeline.
@@ -397,9 +410,9 @@ weeks. Human-only decisions are marked; no sign-off box is ticked here.
 - [ ] **P1.9 Smoke-test Slack/Teams/Jira delivery** with real webhook URLs from
   environment variables. **S**.
 - [ ] **P1.10 Close the missing test/artifact debt from section 2.2** —
-  demo cases and the one-command demo are now closed; remaining minimum:
-  live E2E, GitOps diff/PR, assertion guard, calibration, autonomy,
-  survival, OTel export, masking, narrative, frozen changelog. **L**.
+  remaining minimum: live E2E, survival history, and the frozen changelog;
+  the deterministic artifact debt is covered by
+  `scripts/evidence_snapshot.py`. **M**.
 - [ ] **P1.11 Write the operator runbook** — stack start/stop, secret rotation,
   failed-heal recovery, retention/apply. **M**.
 - [ ] **P1.12 Enforce the SBOM license allowlist in CI** — `scripts/sbom.py`
