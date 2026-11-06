@@ -84,6 +84,16 @@ The demo takes seconds.
 | `python tasks.py bench-vision` | Vision/LLM extension benchmark |
 | `python tasks.py evidence-snapshot` | Deterministic quality transcript (masking, narrative, calibration, guard, GitOps) |
 | `python tasks.py dashboard` | Local read-only dashboard (gates, records, metrics) at http://127.0.0.1:8080 |
+| `python tasks.py studio` | Modern Web UI for uploading, auto-healing, and optimizing any codebase at http://127.0.0.1:8081 |
+
+## Codebase Healing & Optimality Studio
+
+`python tasks.py studio` serves the interactive modern Web Studio at <http://127.0.0.1:8081>.
+It enables developers and QA engineers to:
+- **Upload any codebase** as a `.zip` file or run instant one-click analysis using the built-in demo project.
+- **Autonomous Bug Healing**: Scans for syntax errors, runtime crashes, mutable default parameters, unclosed file descriptors, and failing tests. It synthesizes optimal patches (using local free LLMs via Ollama or deterministic rule-based AST synthesis), verifies them in an isolated sandbox, and presents interactive unified split diffs.
+- **Code Optimality Engine**: Detects algorithmic complexity bottlenecks ($O(N^2) \rightarrow O(N)$), linear collection searches, string concatenation in loops, and unmemoized recursion; measures before/after execution speedups; and enforces strict Critic regression guards.
+- **Download Optimized Codebase**: One-click export of the clean, repaired, and benchmark-optimized codebase as a `.zip` archive.
 
 ## Read-only dashboard
 

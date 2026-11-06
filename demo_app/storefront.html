@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NovaMart — Demo E-Commerce & Order Analytics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, .font-heading { font-family: 'Plus Jakarta Sans', sans-serif; }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white text-lg shadow-lg shadow-emerald-500/20">
+        <i class="fa-solid fa-cart-shopping"></i>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold text-white flex items-center gap-2">
+          NovaMart Storefront
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">v1.2 Live</span>
+        </h1>
+        <p class="text-xs text-slate-400">Industrial Hardware & Enterprise Supplies</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div class="text-xs text-slate-400 font-mono bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Storefront Online</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-6 flex flex-col gap-8">
+    
+    <!-- Hero Banner -->
+    <div class="bg-gradient-to-r from-emerald-950/60 via-slate-900 to-indigo-950/60 p-6 rounded-3xl border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="max-w-2xl">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 inline-block mb-2">Enterprise Storefront</span>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-white mb-2">E-Commerce Store & Order Processing</h2>
+        <p class="text-sm text-slate-400">
+          Welcome to NovaMart. Browse hardware products, configure shopping carts, calculate order taxes, apply promotions, and generate verified invoice manifests.
+        </p>
+      </div>
+      <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800 text-center min-w-[200px]">
+        <span class="text-xs text-slate-400 block mb-1">Active Cart Items</span>
+        <span id="cart-counter" class="text-3xl font-extrabold text-emerald-400 font-mono">0</span>
+        <button onclick="clearCart()" class="mt-2 text-[11px] text-slate-500 hover:text-slate-300 underline block mx-auto">Reset Cart</button>
+      </div>
+    </div>
+
+    <!-- Section 1: Product Catalog -->
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-boxes-stacked text-emerald-400"></i> Store Products
+        </h3>
+        <span class="text-xs text-slate-400">Click to add items to your cart</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between hover:border-slate-700 transition">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-bold text-white">Widget Pro</span>
+              <span class="text-emerald-400 font-mono font-bold">$9.99</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">High-performance industrial precision widget.</p>
+          </div>
+          <button onclick="addToCart('Widget Pro', 9.99)" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white font-semibold text-xs transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-plus"></i> Add to Cart
+          </button>
+        </div>
+
+        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between hover:border-slate-700 transition">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-bold text-white">Gadget Max</span>
+              <span class="text-emerald-400 font-mono font-bold">$14.99</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Multi-frequency wireless testing gadget.</p>
+          </div>
+          <button onclick="addToCart('Gadget Max', 14.99)" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white font-semibold text-xs transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-plus"></i> Add to Cart
+          </button>
+        </div>
+
+        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between hover:border-slate-700 transition">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-bold text-white">Doohickey Ultra</span>
+              <span class="text-emerald-400 font-mono font-bold">$4.99</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Compact hardware diagnostic doohickey.</p>
+          </div>
+          <button onclick="addToCart('Doohickey Ultra', 4.99)" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white font-semibold text-xs transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-plus"></i> Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Interactive Business Logic Console (Exercises demo_app/orders.py) -->
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-terminal text-indigo-400"></i> Interactive Orders & Analytics Console
+        </h3>
+        <span class="text-xs text-slate-400">Directly calls functions in <code class="text-slate-300">orders.py</code></span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Card 1: Tax Rate Calculator -->
+        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-slate-200 flex items-center gap-2">
+              <i class="fa-solid fa-percent text-blue-400"></i> 1. Tax Rate Calculator (ZeroDivision)
+            </span>
+            <code class="text-[11px] text-slate-500">compute_tax_rate()</code>
+          </div>
+          <p class="text-xs text-slate-400">
+            Calculates effective tax rate. Set Tax Amount to <strong>0</strong> to test how the unhealed app triggers <code class="text-rose-400">ZeroDivisionError</code>, while the healed app returns safely!
+          </p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-[11px] text-slate-400 block mb-1">Subtotal ($)</label>
+              <input id="input-subtotal" type="number" value="100.0" class="w-full bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-xl text-xs text-white">
+            </div>
+            <div>
+              <label class="text-[11px] text-slate-400 block mb-1">Tax Amount ($)</label>
+              <input id="input-tax" type="number" value="0.0" class="w-full bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-xl text-xs text-white">
+            </div>
+          </div>
+          <button onclick="testTaxRate()" class="py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition">
+            Execute compute_tax_rate()
+          </button>
+          <div id="result-tax" class="text-xs font-mono bg-slate-900 p-3 rounded-xl border border-slate-800 text-slate-400">
+            Output: Pending test...
+          </div>
+        </div>
+
+        <!-- Card 2: Promotion Matcher -->
+        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-slate-200 flex items-center gap-2">
+              <i class="fa-solid fa-tags text-amber-400"></i> 2. Promotion Code Matcher (O(N) Optimization)
+            </span>
+            <code class="text-[11px] text-slate-500">match_promotions()</code>
+          </div>
+          <p class="text-xs text-slate-400">
+            Matches cart items against active discounts. Shows execution time comparing quadratic linear scan vs. precomputed O(1) set lookup.
+          </p>
+          <div>
+            <label class="text-[11px] text-slate-400 block mb-1">Active Promotions (comma-separated)</label>
+            <input id="input-promos" type="text" value="Gadget Max, Widget Pro, HOLIDAY50, VIP20" class="w-full bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-xl text-xs text-white">
+          </div>
+          <button onclick="testPromos()" class="py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs transition">
+            Execute match_promotions()
+          </button>
+          <div id="result-promos" class="text-xs font-mono bg-slate-900 p-3 rounded-xl border border-slate-800 text-slate-400">
+            Output: Pending test...
+          </div>
+        </div>
+
+        <!-- Card 3: Loyalty Multiplier -->
+        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-slate-200 flex items-center gap-2">
+              <i class="fa-solid fa-crown text-purple-400"></i> 3. Loyalty Multiplier (Recursion / @lru_cache)
+            </span>
+            <code class="text-[11px] text-slate-500">calculate_loyalty_tier()</code>
+          </div>
+          <p class="text-xs text-slate-400">
+            Recursive reward bonus formula. Unhealed code recomputes subproblems exponentially ($O(2^N)$). Optimized code with <code class="text-purple-300">@lru_cache</code> runs in under 0.1ms!
+          </p>
+          <div>
+            <label class="text-[11px] text-slate-400 block mb-1">Customer Loyalty Level (1 - 30)</label>
+            <input id="input-loyalty" type="number" min="1" max="30" value="24" class="w-full bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-xl text-xs text-white">
+          </div>
+          <button onclick="testLoyalty()" class="py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition">
+            Execute calculate_loyalty_tier()
+          </button>
+          <div id="result-loyalty" class="text-xs font-mono bg-slate-900 p-3 rounded-xl border border-slate-800 text-slate-400">
+            Output: Pending test...
+          </div>
+        </div>
+
+        <!-- Card 4: Invoice Manifest & Receipt Audit -->
+        <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800 flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-slate-200 flex items-center gap-2">
+              <i class="fa-solid fa-file-invoice-dollar text-emerald-400"></i> 4. Invoice Manifest & Receipt Audit
+            </span>
+            <code class="text-[11px] text-slate-500">generate_invoice_manifest()</code>
+          </div>
+          <p class="text-xs text-slate-400">
+            Generates string manifest and writes receipt to disk using <code class="text-emerald-300">save_receipt_audit()</code>. Demonstrates buffer optimization & file descriptor safety.
+          </p>
+          <div>
+            <label class="text-[11px] text-slate-400 block mb-1">Order ID</label>
+            <input id="input-order-id" type="number" value="1001" class="w-full bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-xl text-xs text-white">
+          </div>
+          <button onclick="testInvoice()" class="py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition">
+            Execute Invoice & Audit File Write
+          </button>
+          <div id="result-invoice" class="text-xs font-mono bg-slate-900 p-3 rounded-xl border border-slate-800 text-slate-400 max-h-32 overflow-y-auto">
+            Output: Pending test...
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let localCart = [];
+
+    function addToCart(name, price) {
+      localCart.push({ name, price });
+      document.getElementById('cart-counter').innerText = localCart.length;
+    }
+
+    function clearCart() {
+      localCart = [];
+      document.getElementById('cart-counter').innerText = '0';
+    }
+
+    async function testTaxRate() {
+      const subtotal = parseFloat(document.getElementById('input-subtotal').value);
+      const tax_amount = parseFloat(document.getElementById('input-tax').value);
+      const resElem = document.getElementById('result-tax');
+      resElem.innerText = "Calculating...";
+
+      try {
+        const res = await fetch('/api/orders/tax', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subtotal, tax_amount })
+        });
+        const data = await res.json();
+        if (data.success) {
+          resElem.innerHTML = `<span class="text-emerald-400 font-bold">Effective Tax Rate: ${data.effective_tax_rate}%</span>`;
+        } else {
+          resElem.innerHTML = `<span class="text-rose-400 font-bold">${data.error}</span><br><span class="text-xs text-slate-400">${data.hint}</span>`;
+        }
+      } catch (err) {
+        resElem.innerHTML = `<span class="text-rose-400">Network / Execution error: ${err.message}</span>`;
+      }
+    }
+
+    async function testPromos() {
+      const promosStr = document.getElementById('input-promos').value;
+      const active_promos = promosStr.split(',').map(s => s.trim()).filter(Boolean);
+      const cart_items = localCart.length > 0 ? localCart.map(c => c.name) : ["Widget Pro", "Gadget Max"];
+      const resElem = document.getElementById('result-promos');
+      resElem.innerText = "Matching promotions...";
+
+      try {
+        const res = await fetch('/api/orders/match-promos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cart_items, active_promos })
+        });
+        const data = await res.json();
+        resElem.innerHTML = `
+          <span class="text-emerald-400 font-bold">Matched: ${JSON.stringify(data.matched_promotions)}</span><br>
+          <span class="text-slate-400 text-xs">Items scanned: ${cart_items.length} | Execution time: ${data.execution_time_ms} ms</span>
+        `;
+      } catch (err) {
+        resElem.innerHTML = `<span class="text-rose-400">Error: ${err.message}</span>`;
+      }
+    }
+
+    async function testLoyalty() {
+      const level = parseInt(document.getElementById('input-loyalty').value);
+      const resElem = document.getElementById('result-loyalty');
+      resElem.innerText = "Computing recursive branch tree...";
+
+      try {
+        const res = await fetch('/api/orders/loyalty', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ level })
+        });
+        const data = await res.json();
+        resElem.innerHTML = `
+          <span class="text-purple-400 font-bold">Level ${data.level} Bonus Multiplier: ${data.points_multiplier}x</span><br>
+          <span class="text-slate-400 text-xs">Calculated in: <strong class="text-emerald-400">${data.execution_time_ms} ms</strong></span>
+        `;
+      } catch (err) {
+        resElem.innerHTML = `<span class="text-rose-400">Error: ${err.message}</span>`;
+      }
+    }
+
+    async function testInvoice() {
+      const order_id = parseInt(document.getElementById('input-order-id').value);
+      const items = localCart.length > 0 ? localCart : [{ name: "Widget Pro", price: 9.99 }, { name: "Gadget Max", price: 14.99 }];
+      const resElem = document.getElementById('result-invoice');
+      resElem.innerText = "Generating manifest & auditing file...";
+
+      try {
+        const res = await fetch('/api/orders/invoice', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order_id, items })
+        });
+        const data = await res.json();
+        resElem.innerHTML = `
+          <span class="text-emerald-400 font-bold">Receipt Audit File: ${data.audit_file} (${data.execution_time_ms} ms)</span><br>
+          <pre class="text-[11px] text-slate-300 mt-1">${data.manifest}</pre>
+        `;
+      } catch (err) {
+        resElem.innerHTML = `<span class="text-rose-400">Error: ${err.message}</span>`;
+      }
+    }
+  </script>
+</body>
+</html>

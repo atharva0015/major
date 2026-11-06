@@ -62,3 +62,6 @@ demo:
 
 dashboard:
 	python -m healing.dashboard.app
+
+studio:
+	python -m healing.codebase.app

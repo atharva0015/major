@@ -38,6 +38,8 @@ TASKS: dict[str, list[list[str]]] = {
     "gates-strict": [[sys.executable, "-m", "scripts.check_gates", "--strict"]],
     "demo": [[sys.executable, "-m", "scripts.demo"]],
     "dashboard": [[sys.executable, "-m", "healing.dashboard.app"]],
+    "studio": [[sys.executable, "-m", "healing.codebase.app"]],
+    "demo-ui": [[sys.executable, "-m", "demo_app.app"]],
 }
 
 
