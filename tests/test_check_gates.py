@@ -151,3 +151,21 @@ def test_live_gate_missing_file_is_unverified_not_pass(tmp_path, monkeypatch, ca
     assert "UNVERIFIED cost_per_heal [live]" in out
     assert "sim data must not stand in" in out
     assert "MEASURED PASS 1 / FAIL 0 / UNVERIFIED 2" in out
+
+
+def test_evaluate_returns_structured_rows(tmp_path, monkeypatch) -> None:
+    v = write(
+        tmp_path / "v.json", {"catch_rate": 0.95, "false_heal_rate": 0.0, "false_reject_rate": 0.0}
+    )
+    t = targets(tmp_path, [("critic_catch_rate", ">=", 0.9, v, "sim")])
+    monkeypatch.setattr(cg, "TARGETS_MD", t)
+    monkeypatch.setattr(cg, "check_alerts", lambda: ("PASS", "stubbed"))
+
+    rows = cg.evaluate()
+    assert rows[0]["metric"] == "critic_catch_rate"
+    assert rows[0]["status"] == "PASS"
+    assert rows[0]["actual"] == 0.95
+    assert rows[1]["metric"] == "alert_completeness"
+    assert rows[1]["status"] == "PASS"
+    assert rows[-1]["metric"] == "heal_survival_rate"
+    assert rows[-1]["status"] == "UNVERIFIED"

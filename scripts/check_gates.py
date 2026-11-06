@@ -108,16 +108,34 @@ def check_alerts() -> tuple[str, str]:
     return "FAIL", "tests/test_alerts.py red"
 
 
-def main() -> None:
-    try:
-        targets = load_targets()
-    except (OSError, ValueError) as exc:
-        print(f"FAIL targets_block: {exc}")
-        raise SystemExit(1)
-    failed = 0
-    unverified = 0
-    passed = 0
-    for t in targets:
+def evaluate(run_alerts: bool = True) -> list[dict[str, object]]:
+    """Return every gate as a structured row; never prints and never exits."""
+    rows: list[dict[str, object]] = []
+
+    def add(
+        metric: str,
+        op: str,
+        target: float | None,
+        provenance: str,
+        status: str,
+        actual: float | None,
+        message: str,
+        source: str,
+    ) -> None:
+        rows.append(
+            {
+                "metric": metric,
+                "op": op,
+                "target": target,
+                "provenance": provenance,
+                "status": status,
+                "actual": actual,
+                "message": message,
+                "source": source,
+            }
+        )
+
+    for t in load_targets():
         name, op, value, source = (
             str(t["metric"]),
             str(t["op"]),
@@ -130,42 +148,83 @@ def main() -> None:
             try:
                 actual = metric_value(name, live_path, live=True)
             except (OSError, ValueError, KeyError, AssertionError, TypeError) as exc:
-                print(
+                add(
+                    name,
+                    op,
+                    value,
+                    provenance,
+                    "UNVERIFIED",
+                    None,
                     f"UNVERIFIED {name} [live]: no live report at {live_path} "
-                    f"({exc}); sim data must not stand in"
+                    f"({exc}); sim data must not stand in",
+                    live_path,
                 )
-                unverified += 1
                 continue
-            if OPS[op](actual, value):
-                print(f"PASS {name} [live]: {actual} {op} {value}")
-                passed += 1
-            else:
-                print(f"FAIL {name} [live]: {actual} {op} {value} (from {live_path})")
-                failed += 1
+            ok = OPS[op](actual, value)
+            status = "PASS" if ok else "FAIL"
+            message = f"{status} {name} [live]: {actual} {op} {value}"
+            if not ok:
+                message += f" (from {live_path})"
+            add(name, op, value, provenance, status, actual, message, live_path)
             continue
         try:
             actual = metric_value(name, source)
         except (OSError, ValueError, KeyError, AssertionError, TypeError) as exc:
-            print(f"FAIL {name}: cannot read {source} ({exc})")
-            failed += 1
+            add(
+                name,
+                op,
+                value,
+                provenance,
+                "FAIL",
+                None,
+                f"FAIL {name}: cannot read {source} ({exc})",
+                source,
+            )
             continue
-        if OPS[op](actual, value):
-            print(f"PASS {name} [sim]: {actual} {op} {value}")
-            passed += 1
-        else:
-            print(f"FAIL {name} [sim]: {actual} {op} {value} (from {source})")
-            failed += 1
-    status, detail = check_alerts()
-    print(f"{status} alert_completeness: {detail}")
-    if status == "PASS":
-        passed += 1
-    else:
-        failed += 1
-    print(
+        ok = OPS[op](actual, value)
+        status = "PASS" if ok else "FAIL"
+        message = f"{status} {name} [sim]: {actual} {op} {value}"
+        if not ok:
+            message += f" (from {source})"
+        add(name, op, value, provenance, status, actual, message, source)
+
+    if run_alerts:
+        status, detail = check_alerts()
+        add(
+            "alert_completeness",
+            "==",
+            1.0,
+            "test",
+            status,
+            1.0 if status == "PASS" else 0.0,
+            f"{status} alert_completeness: {detail}",
+            "tests/test_alerts.py",
+        )
+    add(
+        "heal_survival_rate",
+        "TBD",
+        None,
+        "history",
+        "UNVERIFIED",
+        None,
         "UNVERIFIED heal_survival_rate: no history yet (survival.py reports "
-        "insufficient_data); becomes a FAIL gate once data accrues"
+        "insufficient_data); becomes a FAIL gate once data accrues",
+        "healing/quality/survival.py",
     )
-    unverified += 1
+    return rows
+
+
+def main() -> None:
+    try:
+        rows = evaluate()
+    except (OSError, ValueError) as exc:
+        print(f"FAIL targets_block: {exc}")
+        raise SystemExit(1)
+    for row in rows:
+        print(row["message"])
+    passed = sum(1 for row in rows if row["status"] == "PASS")
+    failed = sum(1 for row in rows if row["status"] == "FAIL")
+    unverified = sum(1 for row in rows if row["status"] == "UNVERIFIED")
     print(f"MEASURED PASS {passed} / FAIL {failed} / UNVERIFIED {unverified}")
     print(f"result: {'FAIL' if failed else 'PASS'} ({failed} failing)")
     if failed:
