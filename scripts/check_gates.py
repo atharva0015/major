@@ -43,14 +43,35 @@ def read_json(path: str) -> dict[str, object]:
 
 
 def adversarial_fhr(path: str) -> float:
+    """False-heal rate on should_heal=false rows.
+
+    Fail closed: an empty, malformed, or non-adversarial report cannot prove
+    a zero rate. It raises instead of returning 0.0, so a live gate becomes
+    UNVERIFIED and a sim gate becomes FAIL.
+    """
     data = read_json(path)
-    rows = data.get("results", data.get("vias", []))
-    assert isinstance(rows, list)
-    adv = [r for r in rows if isinstance(r, dict) and not r.get("should_heal")]
-    healed = [r for r in adv if r.get("healed")]
+    rows = data.get("results", data.get("vias"))
+    if not isinstance(rows, list) or not rows:
+        raise ValueError(f"{path} has no result rows")
+
+    checked: list[dict[str, object]] = []
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise ValueError(f"{path} row {index} is not an object")
+        for field in ("should_heal", "healed"):
+            if not isinstance(row.get(field), bool):
+                raise ValueError(f"{path} row {index} lacks boolean {field}")
+        if row["healed"] is True and not isinstance(row.get("correct"), bool):
+            raise ValueError(f"{path} row {index} healed without boolean correct")
+        checked.append(row)
+
+    adv = [r for r in checked if r["should_heal"] is False]
+    if not adv:
+        raise ValueError(f"{path} has no should_heal=false rows")
+    healed = [r for r in adv if r["healed"] is True]
     if not healed:
         return 0.0
-    wrong = [r for r in healed if not r.get("correct")]
+    wrong = [r for r in healed if r["correct"] is not True]
     return len(wrong) / len(healed)
 
 
@@ -214,7 +235,8 @@ def evaluate(run_alerts: bool = True) -> list[dict[str, object]]:
     return rows
 
 
-def main() -> None:
+def main(strict: bool = False) -> None:
+    """Print gate results; exit 1 on FAIL, or on UNVERIFIED when strict."""
     try:
         rows = evaluate()
     except (OSError, ValueError) as exc:
@@ -226,10 +248,14 @@ def main() -> None:
     failed = sum(1 for row in rows if row["status"] == "FAIL")
     unverified = sum(1 for row in rows if row["status"] == "UNVERIFIED")
     print(f"MEASURED PASS {passed} / FAIL {failed} / UNVERIFIED {unverified}")
-    print(f"result: {'FAIL' if failed else 'PASS'} ({failed} failing)")
-    if failed:
+    blocked = failed > 0 or (strict and unverified > 0)
+    reason = f"{failed} failing"
+    if strict:
+        reason += f", {unverified} unverified in strict mode"
+    print(f"result: {'FAIL' if blocked else 'PASS'} ({reason})")
+    if blocked:
         raise SystemExit(1)
 
 
 if __name__ == "__main__":
-    main()
+    main(strict="--strict" in sys.argv[1:])

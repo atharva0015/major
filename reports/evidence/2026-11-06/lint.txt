@@ -1,7 +1,11 @@
-﻿$ ruff check .
+$ .venv312/Scripts/python -m ruff check .
 All checks passed!
-$ ruff format --check .
-176 files already formatted
-$ mypy healing
+exit=0
+
+$ .venv312/Scripts/python -m ruff format --check .
+177 files already formatted
+exit=0
+
+$ .venv312/Scripts/python -m mypy healing
 Success: no issues found in 52 source files
-exit=0/0/0
+exit=0

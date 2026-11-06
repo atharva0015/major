@@ -208,13 +208,16 @@ path this retention job scans.
 .venv312/Scripts/python -m ruff format --check .
 .venv312/Scripts/python -m mypy healing
 .venv312/Scripts/python -m scripts.check_gates
+.venv312/Scripts/python -m scripts.check_gates --strict
 .venv312/Scripts/python -m scripts.evidence_snapshot
 ```
 
 The gate command exits 1 while the documented red gates remain
 (`false_heal_rate_adversarial` and `latency_per_heal_ms`). Do not loosen a
 safety target to make it green; a human must fix, waive, or re-baseline it.
-`heal_survival_rate` stays UNVERIFIED until history exists.
+`heal_survival_rate` stays UNVERIFIED until history exists. Use `--strict`
+for release checks: it also exits 1 on any UNVERIFIED gate, so a missing
+live report cannot pass as green.
 
 ## 7. Known gaps and stop conditions
 

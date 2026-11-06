@@ -25,7 +25,7 @@ is committed. Tracked docs (`docs/HELDOUT.md`, `docs/LIVE_VS_SIM.md`,
 
 | # | Claim | Exact command | Output artifact | Date | Label | Re-run 2026-11-04/05/06 |
 |---|---|---|---|---|---|---|
-| 1 | 204 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-06/pytest.txt` | 2026-11-06 | MEASURED | **MATCH** — 204 passed in 23.42 s (count same; runtime varies) |
+| 1 | 204 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-06/pytest.txt` | 2026-11-06 | MEASURED | **MATCH** — 204 passed in 25.38 s (count same; runtime varies) |
 | 2 | Demo 24/24 match, exit 0 | `python tasks.py demo` | `reports/evidence/2026-11-04/demo.txt`, `p0-demo.txt`, `2026-11-05/demo.txt` | 2026-11-04; re-run 2026-11-05 | SIMULATED | **MATCH** — 24 rows, all expected/pipeline pairs equal, exit 0 |
 | 3 | Held-out UI 24/24, accuracy 1.000, FHR 0.000 | `python -m scripts.bench_heldout` | `benchmark/reports/heldout.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_heldout.txt`, `p0-heldout.txt`; tracked `docs/HELDOUT.md` | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — report hash unchanged; `ui_accuracy=1.0`, `ui_false_heal_rate=0.0`, `ui_escaped=0` |
 | 4 | Held-out API 10/11 | `python -m scripts.bench_heldout` | same as #3 | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — still 10/11; `heldout:token-cart` remains the one miss |
@@ -159,6 +159,20 @@ The source column is the report the checker reads.
 | `latency_per_heal_ms` (`<= 100`) | `benchmark/reports/healenium_live.json` | 2026-10-08 | MEASURED | FAIL — 1122.08; input unchanged, live re-run blocked |
 | `alert_completeness` (`= 1.0`) | `tests/test_alerts.py` (subgate) | 2026-11-04 | MEASURED | PASS — tests green |
 | `heal_survival_rate` (TBD) | none — `healing/quality/survival.py` reports `insufficient_data` | — | UNVERIFIED | Still UNVERIFIED. **No history and no command can produce it.** |
+
+## Fail-closed gate parsing and strict mode (2026-11-06)
+
+The adversarial false-heal calculation now raises instead of returning 0.0
+when a report has no result rows, no `should_heal=false` rows, a row that is
+not an object, a non-boolean `should_heal`/`healed`, or a healed row without
+a boolean `correct`. A live gate becomes **UNVERIFIED**; a simulated gate
+becomes **FAIL**. `--strict` additionally exits 1 on any UNVERIFIED gate, so
+release checks cannot silently accept missing evidence.
+
+| Artifact | Command | Contents |
+|---|---|---|
+| `reports/evidence/2026-11-06/gates-strict.txt` | `python -m scripts.check_gates --strict` | 9 PASS / 2 FAIL / 1 UNVERIFIED; `result: FAIL (2 failing, 1 unverified in strict mode)`; exit 1 |
+| `tests/test_check_gates.py` | `python -m pytest tests/test_check_gates.py -q` | 10 passed; empty, malformed, and non-adversarial reports are rejected, and strict mode exits 1 |
 
 ## Supporting benchmark re-runs
 

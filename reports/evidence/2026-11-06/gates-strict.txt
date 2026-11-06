@@ -1,0 +1,16 @@
+$ .venv312/Scripts/python -m scripts.check_gates --strict
+PASS heal_accuracy [live]: 1.0 >= 0.95
+PASS false_heal_rate_overall [sim]: 0.0 == 0.0
+FAIL false_heal_rate_adversarial [live]: 1.0 == 0.0 (from benchmark/reports/healenium_live.json)
+PASS critic_catch_rate [sim]: 1.0 >= 0.9
+PASS critic_false_reject_rate [sim]: 0.0 <= 0.05
+PASS classification_accuracy [sim]: 1.0 >= 0.95
+PASS genuine_passed_to_heal [sim]: 0.0 == 0.0
+PASS contract_healed [sim]: 0.0 == 0.0
+PASS cost_per_heal [live]: 1.0 <= 2.0
+FAIL latency_per_heal_ms [live]: 1122.0797958352098 <= 100.0 (from benchmark/reports/healenium_live.json)
+PASS alert_completeness: tests/test_alerts.py green (builder enforces all fields)
+UNVERIFIED heal_survival_rate: no history yet (survival.py reports insufficient_data); becomes a FAIL gate once data accrues
+MEASURED PASS 9 / FAIL 2 / UNVERIFIED 1
+result: FAIL (2 failing, 1 unverified in strict mode)
+exit=1

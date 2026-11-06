@@ -55,6 +55,20 @@ def test_adversarial_rate_zero_when_nothing_healed(tmp_path) -> None:
     )
     assert cg.adversarial_fhr(p) == 0.0
 
+    # An empty, malformed, or all-positive report cannot prove a zero rate.
+    for name, payload in (
+        ("empty.json", {"results": []}),
+        ("no_rows.json", {"metrics": {}}),
+        ("no_adv.json", {"results": [{"should_heal": True, "healed": True, "correct": True}]}),
+        ("no_flag.json", {"results": [{"healed": False}]}),
+        ("no_healed.json", {"results": [{"should_heal": False}]}),
+        ("no_correct.json", {"results": [{"should_heal": False, "healed": True}]}),
+        ("not_object.json", {"results": ["bad"]}),
+    ):
+        bad = write(tmp_path / name, payload)
+        with pytest.raises(ValueError):
+            cg.adversarial_fhr(bad)
+
 
 def test_missing_report_is_fail_closed(tmp_path) -> None:
     with pytest.raises(OSError):
@@ -151,6 +165,13 @@ def test_live_gate_missing_file_is_unverified_not_pass(tmp_path, monkeypatch, ca
     assert "UNVERIFIED cost_per_heal [live]" in out
     assert "sim data must not stand in" in out
     assert "MEASURED PASS 1 / FAIL 0 / UNVERIFIED 2" in out
+
+    with pytest.raises(SystemExit) as exc:
+        cg.main(strict=True)
+    assert exc.value.code == 1
+    strict_out = capsys.readouterr().out
+    assert "UNVERIFIED cost_per_heal [live]" in strict_out
+    assert "result: FAIL (0 failing, 2 unverified in strict mode)" in strict_out
 
 
 def test_evaluate_returns_structured_rows(tmp_path, monkeypatch) -> None:

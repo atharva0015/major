@@ -42,7 +42,8 @@ python3.12 -m venv .venv312
 
 Open <http://127.0.0.1:8080> for the read-only dashboard. `tasks.py gates`
 is optional in the quickstart: it exits 1 while the two documented red
-gates remain (see Current limits).
+gates remain (see Current limits). `tasks.py gates-strict` also fails on
+UNVERIFIED gates, so release checks cannot ignore missing evidence.
 
 If `make` is installed, the same targets are available as `make test` and
 `make demo`. `tasks.py` is the Windows-friendly equivalent of every Makefile
@@ -67,6 +68,7 @@ The demo takes seconds.
 | `python tasks.py lint` | ruff check, ruff format check, mypy |
 | `python tasks.py demo` | 24-case presenter demo, two XAI records |
 | `python tasks.py gates` | Quality gates from the saved reports |
+| `python tasks.py gates-strict` | Quality gates; UNVERIFIED also exits 1 |
 | `python tasks.py bench` | Baseline benchmark plus Critic verify |
 | `python tasks.py bench-heldout` | Held-out UI + API cases |
 | `python tasks.py bench-demo-cases` | External mini-demo cases |

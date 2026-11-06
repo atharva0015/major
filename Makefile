@@ -1,4 +1,4 @@
-.PHONY: test lint bench bench-healenium bench-healenium-live bench-shadow bench-api bench-golden bench-golden-live bench-vision bench-decision bench-verify bench-heldout bench-demo-cases bench-e2e-live evidence-snapshot gates demo dashboard
+.PHONY: test lint bench bench-healenium bench-healenium-live bench-shadow bench-api bench-golden bench-golden-live bench-vision bench-decision bench-verify bench-heldout bench-demo-cases bench-e2e-live evidence-snapshot gates gates-strict demo dashboard
 
 test:
 	pytest -q
@@ -53,6 +53,9 @@ evidence-snapshot:
 
 gates:
 	python -m scripts.check_gates
+
+gates-strict:
+	python -m scripts.check_gates --strict
 
 demo:
 	python -m scripts.demo

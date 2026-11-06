@@ -737,6 +737,12 @@ Expected result: **9 PASS / 2 FAIL / 1 UNVERIFIED**, exit code 1.
 The exit code is 1 because two gates are still red. The dashboard shows the
 same status.
 
+For a release check, run `python tasks.py gates-strict`. It also exits 1 when
+any gate is UNVERIFIED, so a missing live report cannot be treated as green.
+The gate checker also refuses to compute a zero adversarial false-heal rate
+from an empty or malformed report; that becomes UNVERIFIED (or FAIL for a
+simulated gate).
+
 ### Open the dashboard
 
 ```powershell
@@ -753,6 +759,7 @@ so do not expose it to the internet.
 | Command | What it does |
 |---|---|
 | `python tasks.py lint` | Run ruff and mypy |
+| `python tasks.py gates-strict` | Quality gates; UNVERIFIED also fails |
 | `python tasks.py bench` | Baseline benchmark and Critic verify |
 | `python tasks.py bench-heldout` | Held-out UI and API cases |
 | `python tasks.py bench-api` | API sidecar with zero contract heals |

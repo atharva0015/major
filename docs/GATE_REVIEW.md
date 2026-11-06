@@ -41,6 +41,9 @@ accrues).
   is not marked `"live": true`, but it does not re-run Docker or the stack.
 - The Healenium adversarial and latency values are live measurements from
   2026-10-08 and have not been re-run since Docker became unavailable.
+- `python -m scripts.check_gates --strict` also exits 1 on UNVERIFIED gates.
+  The current survival gate would therefore block a strict release check
+  until it has history or a written human waiver.
 - Nothing here weakens the golden `1.0/0.0` limits in `policy.yaml`.
 
 ## Human sign-off checklist

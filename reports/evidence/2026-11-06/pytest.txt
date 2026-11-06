@@ -1,4 +1,4 @@
-﻿$ .venv312/Scripts/python -m pytest -q
+$ .venv312/Scripts/python -m pytest -q
 ........................................................................ [ 35%]
 ........................................................................ [ 70%]
 ............................................................             [100%]
@@ -8,5 +8,5 @@
     from starlette.testclient import TestClient as TestClient  # noqa
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-204 passed, 1 warning in 23.42s
+204 passed, 1 warning in 25.38s
 exit=0

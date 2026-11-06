@@ -1,4 +1,4 @@
-﻿$ .venv312/Scripts/python -m scripts.check_gates
+$ .venv312/Scripts/python -m scripts.check_gates
 PASS heal_accuracy [live]: 1.0 >= 0.95
 PASS false_heal_rate_overall [sim]: 0.0 == 0.0
 FAIL false_heal_rate_adversarial [live]: 1.0 == 0.0 (from benchmark/reports/healenium_live.json)
