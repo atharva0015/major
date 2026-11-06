@@ -14,7 +14,7 @@ The healing pipeline is implemented end-to-end: classify → match →
 sandbox replay → layered Critic → policy gate → explanation record →
 alert / shadow PR, with an API sidecar, a read-only local dashboard, and
 quality tooling. **MEASURED this session (2026-11-06, Python 3.12.10):
-203 tests pass; lint and mypy are clean; the 24-case demo matches 24/24;
+204 tests pass; lint and mypy are clean; the 24-case demo matches 24/24;
 gates report 9 PASS, 2 FAIL, 1 UNVERIFIED (exit 1).** Both failures are the
 documented ones: the raw live Healenium matcher heals 9/9 adversarial
 cases, and live latency is 1122 ms against a sim-era 100 ms target. The
@@ -32,7 +32,7 @@ remains UNVERIFIED by design (no history).
 
 | Check | Result |
 |---|---|
-| `pytest -q` | 203 passed in 26.23 s |
+| `pytest -q` | 204 passed in 23.42 s |
 | `ruff check .` | clean |
 | `ruff format --check .` | 176 files already formatted |
 | `mypy healing` | no issues in 52 source files |
@@ -192,7 +192,11 @@ green on 3.12 observed.
 
 ## Changes since the previous status
 
-- Tests: 166 → **203 passed**; lint/mypy re-verified on Python 3.12.10.
+- Tests: 166 → **204 passed**; lint/mypy re-verified on Python 3.12.10.
+- Onboarding: `tasks.py` now runs pytest, ruff, and mypy through
+  `sys.executable`, so a fresh venv cannot silently fall back to a PATH
+  interpreter. A clean temp venv installed with `pip install -e ".[dev]"`,
+  passed 204 tests, ran the 24-case demo, and served the dashboard.
 - Dashboard: added a GET-only local page for gates, recent explanation
   records, and the latest saved metrics snapshot. Records are
   hash-checked, PII-masked, and HTML-escaped; there is no authentication,

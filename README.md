@@ -23,6 +23,7 @@ py -3.12 -m venv .venv312
 .venv312\Scripts\python -m pip install -e ".[dev]"
 .venv312\Scripts\python tasks.py test
 .venv312\Scripts\python tasks.py demo
+.venv312\Scripts\python tasks.py dashboard
 ```
 
 Unix:
@@ -32,11 +33,16 @@ python3.12 -m venv .venv312
 .venv312/bin/python -m pip install -e ".[dev]"
 .venv312/bin/python tasks.py test
 .venv312/bin/python tasks.py demo
+.venv312/bin/python tasks.py dashboard
 ```
+
+Open <http://127.0.0.1:8080> for the read-only dashboard. `tasks.py gates`
+is optional in the quickstart: it exits 1 while the two documented red
+gates remain (see Current limits).
 
 If `make` is installed, the same targets are available as `make test` and
 `make demo`. `tasks.py` is the Windows-friendly equivalent of every Makefile
-target.
+target and always runs through the active interpreter.
 
 ## What the demo shows
 

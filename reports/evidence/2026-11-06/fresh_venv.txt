@@ -1,0 +1,30 @@
+﻿fresh venv: C:\Users\Athar\AppData\Local\Temp\opencode\sh-fresh-venv
+command: C:\Users\Athar\AppData\Local\Temp\opencode\sh-fresh-venv\Scripts\python.exe
+
+Python 3.12.10
+$ python -m pip install --disable-pip-version-check -e ".[dev]"
+      Successfully uninstalled self-healing-framework-0.1.0
+Successfully installed self-healing-framework-0.1.0
+exit=0
+
+$ python tasks.py test
+204 passed, 1 warning in 24.37s
+exit=0
+
+$ python tasks.py demo
+demo_table_rows=26 (header + separator + 24 cases)
+xai_heal=True
+xai_escalation=True
+exit=0
+
+$ python -c "TestClient(dashboard).get('/')"
+dashboard_status 200; read_only_marker True
+exit=0
+
+$ python -m scripts.check_gates
+MEASURED PASS 9 / FAIL 2 / UNVERIFIED 1
+result: FAIL (2 failing)
+exit=1
+
+label=MEASURED install/tests/gates; demo=SIMULATED/IN-PROCESS
+note=no Docker, browser, or external service was used

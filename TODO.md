@@ -234,11 +234,11 @@ the dashboard, and the operator runbook closed items).
 
 ### 1.10 Tests and documentation
 
-- [x] **203 tests passing** on Python 3.12.10, including classifier, matcher,
+- [x] **204 tests passing** on Python 3.12.10, including classifier, matcher,
   Critic, policy, orchestrator, sandbox, XAI, alerts, GitOps, API sidecar,
   held-out set, gates, dashboard, runbook, and metrics (**MEASURED
   2026-11-06**). Evidence: the suite itself;
-  `reports/evidence/2026-11-06/pytest.txt` (203 passed, exit 0).
+  `reports/evidence/2026-11-06/pytest.txt` (204 passed, exit 0).
 - [x] **Lint/type checks clean** — ruff check, ruff format, mypy (**MEASURED
   2026-11-04**). Evidence: `reports/evidence/2026-11-04/lint.txt` (exit 0/0/0).
 
