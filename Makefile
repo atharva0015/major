@@ -1,4 +1,4 @@
-.PHONY: test lint bench bench-healenium bench-healenium-live bench-shadow bench-api bench-golden bench-golden-live bench-vision bench-decision bench-verify bench-heldout bench-demo-cases bench-e2e-live evidence-snapshot gates demo
+.PHONY: test lint bench bench-healenium bench-healenium-live bench-shadow bench-api bench-golden bench-golden-live bench-vision bench-decision bench-verify bench-heldout bench-demo-cases bench-e2e-live evidence-snapshot gates demo dashboard
 
 test:
 	pytest -q
@@ -56,3 +56,6 @@ gates:
 
 demo:
 	python -m scripts.demo
+
+dashboard:
+	python -m healing.dashboard.app

@@ -36,6 +36,7 @@ TASKS: dict[str, list[list[str]]] = {
     "evidence-snapshot": [[sys.executable, "-m", "scripts.evidence_snapshot"]],
     "gates": [[sys.executable, "-m", "scripts.check_gates"]],
     "demo": [[sys.executable, "-m", "scripts.demo"]],
+    "dashboard": [[sys.executable, "-m", "healing.dashboard.app"]],
 }
 
 

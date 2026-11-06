@@ -70,6 +70,15 @@ The demo takes seconds.
 | `python tasks.py bench-shadow` | Shadow-mode report |
 | `python tasks.py bench-vision` | Vision/LLM extension benchmark |
 | `python tasks.py evidence-snapshot` | Deterministic quality transcript (masking, narrative, calibration, guard, GitOps) |
+| `python tasks.py dashboard` | Local read-only dashboard (gates, records, metrics) at http://127.0.0.1:8080 |
+
+## Read-only dashboard
+
+`python tasks.py dashboard` serves a local page showing the quality gates,
+the newest 25 explanation records, and the latest saved metrics snapshot.
+It is GET-only, masks PII, escapes displayed text, and never heals or
+writes. It has no authentication, so bind it to localhost only. See
+`docs/DASHBOARD.md` for routes, data sources, and limits.
 
 ## How it works
 
