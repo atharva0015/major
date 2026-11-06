@@ -29,6 +29,7 @@ def test_readme_has_quickstart_demo_evidence_and_limits() -> None:
         "docs/DECISIONS.md",
         "docs/TARGETS.md",
         "docs/HUMAN_SIGNOFF.md",
+        "docs/OPERATOR_RUNBOOK.md",
         "NOTICE",
         "THIRD_PARTY_NOTICES.md",
     ):

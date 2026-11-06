@@ -146,6 +146,7 @@ Safety invariants:
 - [`docs/TARGETS.md`](docs/TARGETS.md) — quality targets and rationale.
 - [`docs/EVIDENCE_INDEX.md`](docs/EVIDENCE_INDEX.md) — claim → command → artifact.
 - [`docs/HUMAN_SIGNOFF.md`](docs/HUMAN_SIGNOFF.md) — decisions reserved for humans.
+- [`docs/OPERATOR_RUNBOOK.md`](docs/OPERATOR_RUNBOOK.md) — start/stop, secret rotation, recovery, retention.
 - [`TODO.md`](TODO.md) — P0/P1/P2 open work with effort estimates.
 
 Apache-2.0 notices for reused Healenium code are in [`NOTICE`](NOTICE) and

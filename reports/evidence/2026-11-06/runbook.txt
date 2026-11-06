@@ -1,0 +1,9 @@
+﻿$ .venv312/Scripts/python -m pytest tests/test_operator_runbook.py tests/test_readme.py -q
+...                                                                      [100%]
+3 passed in 0.11s
+exit=0
+
+runbook=docs/OPERATOR_RUNBOOK.md
+test=tests/test_operator_runbook.py
+readme_link=tests/test_readme.py
+label=SIMULATED/IN-PROCESS (documentation and command checks; Docker and external services not run)
