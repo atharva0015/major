@@ -11,11 +11,11 @@ import subprocess
 import sys
 
 TASKS: dict[str, list[list[str]]] = {
-    "test": [["pytest", "-q"]],
+    "test": [[sys.executable, "-m", "pytest", "-q"]],
     "lint": [
-        ["ruff", "check", "."],
-        ["ruff", "format", "--check", "."],
-        ["mypy", "healing"],
+        [sys.executable, "-m", "ruff", "check", "."],
+        [sys.executable, "-m", "ruff", "format", "--check", "."],
+        [sys.executable, "-m", "mypy", "healing"],
     ],
     "bench": [
         [sys.executable, "-m", "scripts.bench"],
