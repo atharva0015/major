@@ -15,6 +15,7 @@ def test_readme_has_quickstart_demo_evidence_and_limits() -> None:
         "python tasks.py demo",
         "## Current limits",
         "docs/EVIDENCE_INDEX.md",
+        "docs/PROJECT_EXPLAINED.md",
         "TODO.md",
         "docs/TOKEN_CART_ANALYSIS.md",
         "NOTICE",
@@ -23,6 +24,7 @@ def test_readme_has_quickstart_demo_evidence_and_limits() -> None:
 
     for target in (
         "docs/EVIDENCE_INDEX.md",
+        "docs/PROJECT_EXPLAINED.md",
         "TODO.md",
         "docs/TOKEN_CART_ANALYSIS.md",
         "docs/ARCHITECTURE.md",

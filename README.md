@@ -11,6 +11,10 @@ It labels every number **MEASURED**, **SIMULATED**, or **UNVERIFIED** and
 links the command and artifact behind it. The open-work backlog is
 [`TODO.md`](TODO.md), split into P0/P1/P2.
 
+New to the project? Start with
+[`docs/PROJECT_EXPLAINED.md`](docs/PROJECT_EXPLAINED.md), a plain-English
+guide to how it works, what is real, and what the end user experiences.
+
 ## Quickstart
 
 Requires Python 3.12. No Docker, browser, or network is needed for the
@@ -147,6 +151,7 @@ Safety invariants:
 
 ## Documentation
 
+- [`docs/PROJECT_EXPLAINED.md`](docs/PROJECT_EXPLAINED.md) — plain-English project guide, including the end-user view.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — components and flow.
 - [`docs/DECISIONS.md`](docs/DECISIONS.md) — ADRs, including fail-closed rules.
 - [`docs/TARGETS.md`](docs/TARGETS.md) — quality targets and rationale.
