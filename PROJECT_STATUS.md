@@ -14,7 +14,7 @@ The healing pipeline is implemented end-to-end: classify → match →
 sandbox replay → layered Critic → policy gate → explanation record →
 alert / shadow PR, with an API sidecar, a read-only local dashboard, and
 quality tooling. **MEASURED this session (2026-11-06, Python 3.12.10):
-201 tests pass; lint and mypy are clean; the 24-case demo matches 24/24;
+203 tests pass; lint and mypy are clean; the 24-case demo matches 24/24;
 gates report 9 PASS, 2 FAIL, 1 UNVERIFIED (exit 1).** Both failures are the
 documented ones: the raw live Healenium matcher heals 9/9 adversarial
 cases, and live latency is 1122 ms against a sim-era 100 ms target. The
@@ -32,9 +32,9 @@ remains UNVERIFIED by design (no history).
 
 | Check | Result |
 |---|---|
-| `pytest -q` | 201 passed in 26.91 s |
+| `pytest -q` | 203 passed in 26.23 s |
 | `ruff check .` | clean |
-| `ruff format --check .` | 174 files already formatted |
+| `ruff format --check .` | 176 files already formatted |
 | `mypy healing` | no issues in 52 source files |
 | `python tasks.py demo` | 24/24 cases match, exit 0 |
 | `python -m scripts.bench_demo_cases` | 24/24, 0 false heals, 0 wrong escalations |
@@ -192,11 +192,15 @@ green on 3.12 observed.
 
 ## Changes since the previous status
 
-- Tests: 166 → **201 passed**; lint/mypy re-verified on Python 3.12.10.
+- Tests: 166 → **203 passed**; lint/mypy re-verified on Python 3.12.10.
 - Dashboard: added a GET-only local page for gates, recent explanation
   records, and the latest saved metrics snapshot. Records are
   hash-checked, PII-masked, and HTML-escaped; there is no authentication,
   so it binds to `127.0.0.1`.
+- Operator runbook: added `docs/OPERATOR_RUNBOOK.md` for stack start/stop,
+  secret rotation, failed-heal recovery, and retention. Its test checks the
+  commands and safety notes against the repository; it records the dry-run
+  rollback and the Docker/external-service gaps as **UNVERIFIED**.
 - Demo debt: `bench_demo_cases` now runs all **24** pre-registered cases
   (it previously ran only the 12 base cases); new tests cover the bench and
   the one-command demo.

@@ -25,7 +25,7 @@ is committed. Tracked docs (`docs/HELDOUT.md`, `docs/LIVE_VS_SIM.md`,
 
 | # | Claim | Exact command | Output artifact | Date | Label | Re-run 2026-11-04/05/06 |
 |---|---|---|---|---|---|---|
-| 1 | 201 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-06/pytest.txt` | 2026-11-06 | MEASURED | **MATCH** — 201 passed in 26.91 s (count same; runtime varies) |
+| 1 | 203 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-06/pytest.txt` | 2026-11-06 | MEASURED | **MATCH** — 203 passed in 26.23 s (count same; runtime varies) |
 | 2 | Demo 24/24 match, exit 0 | `python tasks.py demo` | `reports/evidence/2026-11-04/demo.txt`, `p0-demo.txt`, `2026-11-05/demo.txt` | 2026-11-04; re-run 2026-11-05 | SIMULATED | **MATCH** — 24 rows, all expected/pipeline pairs equal, exit 0 |
 | 3 | Held-out UI 24/24, accuracy 1.000, FHR 0.000 | `python -m scripts.bench_heldout` | `benchmark/reports/heldout.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_heldout.txt`, `p0-heldout.txt`; tracked `docs/HELDOUT.md` | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — report hash unchanged; `ui_accuracy=1.0`, `ui_false_heal_rate=0.0`, `ui_escaped=0` |
 | 4 | Held-out API 10/11 | `python -m scripts.bench_heldout` | same as #3 | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — still 10/11; `heldout:token-cart` remains the one miss |
@@ -108,6 +108,23 @@ The metrics section is the **saved** transcript from
 The dashboard has no authentication; it binds to localhost by default.
 Tests: `tests/test_dashboard.py`, `tests/test_check_gates.py`.
 
+## Operator runbook (2026-11-06)
+
+`docs/OPERATOR_RUNBOOK.md` records stack start/stop, secret rotation,
+failed-heal recovery, retention, and the known gaps. The accompanying test
+checks that the named commands, environment variables, retention periods,
+and dry-run/UNVERIFIED warnings stay in the document.
+
+| Artifact | Command | Contents |
+|---|---|---|
+| `docs/OPERATOR_RUNBOOK.md` | n/a | operator procedures |
+| `reports/evidence/2026-11-06/runbook.txt` | `python -m pytest tests/test_operator_runbook.py tests/test_readme.py -q` | 3 passed, exit 0 |
+| `tests/test_operator_runbook.py` | same | section, command, env-var, and safety-note checks |
+
+The runbook is documentation, not proof that the stack or external
+integrations work. Docker, GitHub, Slack, Teams, and Jira remain
+**UNVERIFIED** in this environment.
+
 ## Gate-by-gate evidence
 
 The gate command is the same for every row: `python -m scripts.check_gates`.
@@ -170,7 +187,7 @@ fails the suite).
 
 **No differences.** The two gaps flagged in the earlier audit are closed:
 the held-out case files are now frozen and hash-checked, and the freeze
-record's test count is refreshed to 201.
+record's test count is refreshed to 203.
 
 ## Claims with no reproducible command
 

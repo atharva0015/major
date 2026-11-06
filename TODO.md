@@ -9,9 +9,9 @@ verified/shipped · `[ ]` not completed.
 Evidence labels follow `PROJECT_STATUS.md`: **MEASURED**, **SIMULATED**,
 **UNVERIFIED**.
 
-At a glance: **59 done · 33 partial · 23 open** (was 72 / 13 / 31 before the
+At a glance: **60 done · 33 partial · 22 open** (was 72 / 13 / 31 before the
 2026-11-04 audit; the P0 batch, P1.3, the demo tests, the quality snapshot,
-and the dashboard closed items).
+the dashboard, and the operator runbook closed items).
 
 > **Audit rule used here:** a `[x]` stays only if it has both (a) a passing
 > automated test that exercises the behaviour and (b) a saved output artifact
@@ -46,6 +46,10 @@ and the dashboard closed items).
 - **Quality snapshot (2026-11-05):** one tested transcript now carries the
   masking, narrative, calibration, autonomy, metrics, guard, and GitOps
   artifacts that were previously test-only.
+- **Operator runbook (2026-11-06):** `docs/OPERATOR_RUNBOOK.md` documents
+  stack start/stop, secret rotation, failed-heal recovery, retention, and
+  the unverified external integrations; `tests/test_operator_runbook.py`
+  checks the procedures and commands against the repository.
 
 ## 1. Completed features (kept after audit)
 
@@ -230,11 +234,11 @@ and the dashboard closed items).
 
 ### 1.10 Tests and documentation
 
-- [x] **201 tests passing** on Python 3.12.10, including classifier, matcher,
+- [x] **203 tests passing** on Python 3.12.10, including classifier, matcher,
   Critic, policy, orchestrator, sandbox, XAI, alerts, GitOps, API sidecar,
-  held-out set, gates, dashboard, and metrics (**MEASURED 2026-11-06**).
-  Evidence: the suite itself; `reports/evidence/2026-11-06/pytest.txt`
-  (201 passed, exit 0).
+  held-out set, gates, dashboard, runbook, and metrics (**MEASURED
+  2026-11-06**). Evidence: the suite itself;
+  `reports/evidence/2026-11-06/pytest.txt` (203 passed, exit 0).
 - [x] **Lint/type checks clean** — ruff check, ruff format, mypy (**MEASURED
   2026-11-04**). Evidence: `reports/evidence/2026-11-04/lint.txt` (exit 0/0/0).
 
@@ -420,8 +424,12 @@ weeks. Human-only decisions are marked; no sign-off box is ticked here.
   remaining minimum: live E2E, survival history, and the frozen changelog;
   the deterministic artifact debt is covered by
   `scripts/evidence_snapshot.py`. **M**.
-- [ ] **P1.11 Write the operator runbook** — stack start/stop, secret rotation,
-  failed-heal recovery, retention/apply. **M**.
+- [x] **P1.11 Write the operator runbook** — stack start/stop, secret rotation,
+  failed-heal recovery, retention/apply. `docs/OPERATOR_RUNBOOK.md` states
+  the dry-run rollback, the Postgres data-loss warning, the retention
+  schedule, and the unverified external integrations. Evidence:
+  `tests/test_operator_runbook.py`; `reports/evidence/2026-11-06/runbook.txt`.
+  **M**.
 - [ ] **P1.12 Enforce the SBOM license allowlist in CI** — `scripts/sbom.py`
   defines it but never checks it; add `pip-licenses` or equivalent. **S**.
 - [ ] **P1.13 Replace the grep-based secret scan** with gitleaks/trufflehog if
