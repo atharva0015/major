@@ -22,14 +22,24 @@ GATES = [
         "source": "benchmark/reports/golden_live.json",
     },
     {
-        "metric": "latency_per_heal_ms",
+        "metric": "pipeline_latency_ms",
         "op": "<=",
         "target": 100.0,
         "provenance": "live",
+        "status": "PASS",
+        "actual": 19.99,
+        "message": "PASS pipeline_latency_ms [live]: 19.99 <= 100.0",
+        "source": "benchmark/reports/e2e_live.json",
+    },
+    {
+        "metric": "critic_catch_rate",
+        "op": ">=",
+        "target": 0.9,
+        "provenance": "sim",
         "status": "FAIL",
-        "actual": 1122.0,
-        "message": "FAIL latency_per_heal_ms [live]: 1122.0 <= 100.0",
-        "source": "benchmark/reports/healenium_live.json",
+        "actual": 0.5,
+        "message": "FAIL critic_catch_rate [sim]: 0.5 >= 0.9",
+        "source": "benchmark/reports/verify.json",
     },
     {
         "metric": "heal_survival_rate",
@@ -40,6 +50,29 @@ GATES = [
         "actual": None,
         "message": "UNVERIFIED heal_survival_rate: insufficient_data",
         "source": "healing/quality/survival.py",
+    },
+]
+
+DIAGNOSTICS = [
+    {
+        "metric": "raw_matcher_adversarial_fhr",
+        "op": "n/a",
+        "target": None,
+        "provenance": "live (non-gating)",
+        "status": "DIAGNOSTIC",
+        "actual": 1.0,
+        "message": "DIAGNOSTIC raw_matcher_adversarial_fhr: 1.0 (not gated)",
+        "source": "benchmark/reports/healenium_live.json",
+    },
+    {
+        "metric": "browser_latency_per_heal_ms",
+        "op": "n/a",
+        "target": None,
+        "provenance": "live (non-gating)",
+        "status": "DIAGNOSTIC",
+        "actual": 1122.0,
+        "message": "DIAGNOSTIC browser_latency_per_heal_ms: 1122.0 (not gated)",
+        "source": "benchmark/reports/healenium_live.json",
     },
 ]
 
@@ -98,6 +131,7 @@ def client(tmp_path, monkeypatch):  # type: ignore[no-untyped-def]
     monkeypatch.setenv("RECORDS_PATH", str(records))
     monkeypatch.setenv("DASHBOARD_METRICS_PATH", str(metrics))
     monkeypatch.setattr(dashboard, "_gate_rows", lambda: GATES)
+    monkeypatch.setattr(dashboard, "_diagnostic_rows", lambda: DIAGNOSTICS)
     return TestClient(dashboard.app)
 
 
@@ -135,7 +169,10 @@ def test_index_renders_gates_records_and_metrics(client) -> None:  # type: ignor
     body = response.text
     assert "READ-ONLY" in body
     assert "heal_accuracy" in body
-    assert "latency_per_heal_ms" in body
+    assert "pipeline_latency_ms" in body
+    assert "Diagnostics (not gating)" in body
+    assert "raw_matcher_adversarial_fhr" in body
+    assert "browser_latency_per_heal_ms" in body
     assert "heal-new" in body
     assert "add-cart-1" in body
     assert "Successful heals" in body
@@ -146,7 +183,8 @@ def test_index_renders_gates_records_and_metrics(client) -> None:  # type: ignor
 def test_api_summary_is_json(client) -> None:  # type: ignore[no-untyped-def]
     data = client.get("/api/summary").json()
     assert data["read_only"] is True
-    assert data["gate_counts"] == {"pass": 1, "fail": 1, "unverified": 1}
+    assert data["gate_counts"] == {"pass": 2, "fail": 1, "unverified": 1}
+    assert [row["status"] for row in data["diagnostics"]] == ["DIAGNOSTIC", "DIAGNOSTIC"]
     assert data["record_counts"] == {"heals": 1, "escalations": 1, "hash_mismatch": 0}
     assert data["metrics"]["totals"]["heal_success"] == 2.0
     assert data["records"]["records"][0]["heal_id"] == "heal-new"
@@ -167,6 +205,7 @@ def test_index_masks_and_escapes_record_text(tmp_path, monkeypatch) -> None:  # 
     monkeypatch.setenv("RECORDS_PATH", str(records))
     monkeypatch.setenv("DASHBOARD_METRICS_PATH", str(tmp_path / "missing.json"))
     monkeypatch.setattr(dashboard, "_gate_rows", lambda: GATES)
+    monkeypatch.setattr(dashboard, "_diagnostic_rows", lambda: DIAGNOSTICS)
 
     body = TestClient(dashboard.app).get("/").text
     assert "<script>alert(1)</script>" not in body
@@ -179,6 +218,7 @@ def test_missing_data_is_shown_not_crashed(tmp_path, monkeypatch) -> None:  # ty
     monkeypatch.setenv("RECORDS_PATH", str(tmp_path / "missing.jsonl"))
     monkeypatch.setenv("DASHBOARD_METRICS_PATH", str(tmp_path / "missing.json"))
     monkeypatch.setattr(dashboard, "_gate_rows", lambda: [])
+    monkeypatch.setattr(dashboard, "_diagnostic_rows", lambda: [])
 
     response = TestClient(dashboard.app).get("/")
     assert response.status_code == 200

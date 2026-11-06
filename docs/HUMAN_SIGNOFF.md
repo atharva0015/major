@@ -7,14 +7,14 @@ either approval or a replacement value with rationale.
 
 - [ ] heal accuracy >= 0.95 (human: ______, date: ______)
 - [ ] false-heal rate, overall = 0.0 (human: ______, date: ______)
-- [ ] false-heal rate, adversarial = 0.0 (human: ______, date: ______)
+- [ ] false-heal rate, adversarial = 0.0 on the orchestrator path (raw matcher diagnostic) (human: ______, date: ______)
 - [ ] Critic catch rate >= 0.90 (human: ______, date: ______)
 - [ ] Critic false-reject rate <= 0.05 (human: ______, date: ______)
 - [ ] classification accuracy >= 0.95 (human: ______, date: ______)
 - [ ] genuine regressions passed to heal engine = 0 (human: ______, date: ______)
 - [ ] auto-healed contract changes = 0 (human: ______, date: ______)
 - [ ] cost per heal <= 2.0 units (human: ______, date: ______)
-- [ ] latency per heal <= 100 ms (human: ______, date: ______)
+- [ ] pipeline latency <= 100 ms (browser latency diagnostic) (human: ______, date: ______)
 - [ ] alert completeness = 1.0 (human: ______, date: ______)
 - [ ] heal survival rate TBD (human: ______, date: ______)
 

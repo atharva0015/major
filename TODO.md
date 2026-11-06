@@ -9,7 +9,7 @@ verified/shipped · `[ ]` not completed.
 Evidence labels follow `PROJECT_STATUS.md`: **MEASURED**, **SIMULATED**,
 **UNVERIFIED**.
 
-At a glance: **60 done · 33 partial · 22 open** (was 72 / 13 / 31 before the
+At a glance: **62 done · 33 partial · 20 open** (was 72 / 13 / 31 before the
 2026-11-04 audit; the P0 batch, P1.3, the demo tests, the quality snapshot,
 the dashboard, and the operator runbook closed items).
 
@@ -230,7 +230,8 @@ the dashboard, and the operator runbook closed items).
   metrics snapshot. It is GET-only, masks/escapes displayed text, hash-checks
   records, and binds to localhost. Evidence: `tests/test_dashboard.py`;
   `reports/evidence/2026-11-06/dashboard.jpeg` and `dashboard.txt`
-  (9 PASS / 2 FAIL / 1 UNVERIFIED; 25 of 6020 records).
+  (11 PASS / 0 FAIL / 1 UNVERIFIED plus two diagnostics; 25 of 7996
+  records).
 
 ### 1.10 Tests and documentation
 
@@ -297,8 +298,8 @@ Docker, or real GitHub credentials are involved.
   the author had prior pipeline exposure; not double-blind
   (`docs/HELDOUT_PROVENANCE.md`).
 - [~] **CI verification** — workflows authored; GitHub Actions results were
-  never observed from this machine; `gates` will fail until the red gates are
-  decided.
+  never observed from this machine. The local `gates` run now passes
+  (11/0/1), but real CI remains unobserved.
 - [~] **Compliance tooling** — SBOM, retention, masking, and audit exist, but
   the SBOM license allowlist is unused and no CI step enforces it.
 - [~] **Vision/LLM extension** — code and benchmark complete; verdict is DROP
@@ -388,14 +389,19 @@ weeks. Human-only decisions are marked; no sign-off box is ticked here.
   available** — otherwise present the 2026-10-08 results explicitly as
   historical/UNVERIFIED, not as fresh measurements. **M**.
 
-### P1 — before merge to main (17 open, 1 done)
+### P1 — before merge to main (14 open, 4 done)
 
-- [ ] **P1.1 Resolve `false_heal_rate_adversarial`** — 1.0 vs target 0.0 on raw
-  live Healenium data. Human must choose: contain the raw matcher, waive with
-  a written reason, or change the target. **M**.
-- [ ] **P1.2 Resolve `latency_per_heal_ms`** — 1122 ms vs 100 ms. Add session
-  reuse and split sim/live budgets, or formally re-baseline with rationale.
-  **M**.
+- [x] **P1.1 Resolve `false_heal_rate_adversarial`** — human-approved
+  2026-11-06: gate the shipped orchestrator path from `e2e_live.json`
+  (`adversarial_fhr = 0.0`; all 9 adversarial cases escalate). Raw matcher FHR
+  1.0 stays visible as a non-gating diagnostic. Evidence:
+  `reports/evidence/2026-11-06/gates.txt` (11/0/1, exit 0),
+  `gates-strict.txt`, and `tests/test_check_gates.py`. **M**.
+- [x] **P1.2 Resolve `latency_per_heal_ms`** — human-approved 2026-11-06:
+  gate `pipeline_latency_ms` (mean `pipeline_ms` = 19.99 ms, target 100 ms).
+  Browser latency 1122.08 ms stays visible as a non-gating diagnostic.
+  Evidence: same artifacts; `docs/TARGETS.md` and `docs/GATE_REVIEW.md`
+  record the measurement correction. **M**.
 - [x] **P1.3 Produce `benchmark/reports/golden_live.json`** so
   `heal_accuracy [live]` is verified instead of UNVERIFIED.
   `scripts/bench_golden_live.py` derives it from the measured live E2E report
@@ -414,7 +420,8 @@ weeks. Human-only decisions are marked; no sign-off box is ticked here.
 - [ ] **P1.6 Capture real before/after/candidate screenshots** and feed them
   into alerts, PRs, and retention instead of placeholder paths. **M**.
 - [ ] **P1.7 Observe CI green on Python 3.12** for `lint-test`, `golden`,
-  `compliance`, and `gates`; make the `gates` job pass after P1.1/P1.2. **M**.
+  `compliance`, and `gates`; the local `gates` run now passes after
+  P1.1/P1.2, but the real GitHub Actions run remains unobserved. **M**.
 - [ ] **P1.8 Install the GitHub App and open one real heal PR and one revert
   PR** — verify branch protection, required checks, and replace the CODEOWNERS
   placeholders with real teams. **L**.

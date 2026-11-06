@@ -25,13 +25,13 @@ is committed. Tracked docs (`docs/HELDOUT.md`, `docs/LIVE_VS_SIM.md`,
 
 | # | Claim | Exact command | Output artifact | Date | Label | Re-run 2026-11-04/05/06 |
 |---|---|---|---|---|---|---|
-| 1 | 204 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-06/pytest.txt` | 2026-11-06 | MEASURED | **MATCH** — 204 passed in 25.38 s (count same; runtime varies) |
+| 1 | 204 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-06/pytest.txt` | 2026-11-06 | MEASURED | **MATCH** — 204 passed in 24.96 s (count same; runtime varies) |
 | 2 | Demo 24/24 match, exit 0 | `python tasks.py demo` | `reports/evidence/2026-11-04/demo.txt`, `p0-demo.txt`, `2026-11-05/demo.txt` | 2026-11-04; re-run 2026-11-05 | SIMULATED | **MATCH** — 24 rows, all expected/pipeline pairs equal, exit 0 |
 | 3 | Held-out UI 24/24, accuracy 1.000, FHR 0.000 | `python -m scripts.bench_heldout` | `benchmark/reports/heldout.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_heldout.txt`, `p0-heldout.txt`; tracked `docs/HELDOUT.md` | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — report hash unchanged; `ui_accuracy=1.0`, `ui_false_heal_rate=0.0`, `ui_escaped=0` |
 | 4 | Held-out API 10/11 | `python -m scripts.bench_heldout` | same as #3 | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — still 10/11; `heldout:token-cart` remains the one miss |
 | 5 | Healenium live: accuracy 1.000, FHR 0.375, adversarial 9/9, 1122 ms | `python -m scripts.bench_healenium_live` | `benchmark/reports/healenium_live.json` + `.md` (ignored); tracked summary `docs/LIVE_VS_SIM.md` | 2026-10-08 | MEASURED (historical) | **NOT RE-RUN** — Docker unavailable; the gate and index still read the unchanged 2026-10-08 report. **UNVERIFIED now.** |
 | 6 | Critic catch rate 1.000 | `python -m scripts.bench_verify` | `benchmark/reports/verify.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_verify.txt`, `p0-verify.txt` | 2026-10-14; re-run 2026-11-04 | SIMULATED | **MATCH** — report hash unchanged; `catch_rate=1.0`, `false_reject_rate=0.0`, `false_heal_rate=0.0` |
-| 7 | Gate result 9 PASS / 2 FAIL / 1 UNVERIFIED | `python -m scripts.check_gates` | `reports/evidence/2026-11-05/gates-after-golden-live.txt`, `2026-11-06/gates.txt` | 2026-11-05; re-run 2026-11-06 | MEASURED | **MATCH** — current statuses; exit 1 |
+| 7 | Gate result 11 PASS / 0 FAIL / 1 UNVERIFIED | `python -m scripts.check_gates` | `reports/evidence/2026-11-06/gates.txt`; strict: `gates-strict.txt` | 2026-11-06 | MEASURED | **MATCH** — normal mode exit 0; strict mode exit 1 on the UNVERIFIED survival gate |
 | 8 | Live E2E pipeline 24/24, 0 false heals, 0 escaped | `python -m scripts.bench_e2e_live` | `benchmark/reports/e2e_live.json` + `.md` (ignored); tracked summary `docs/E2E_LIVE.md` | 2026-10-08 | MEASURED (historical) | **NOT RE-RUN** — Docker unavailable; **UNVERIFIED now.** |
 | 9 | Live golden accuracy 1.0 on 24 cases | `python -m scripts.bench_golden_live` | `reports/evidence/2026-11-05/bench_golden_live.txt`, `golden_live.json` | 2026-11-05 derivation | DERIVED from live 2026-10-08 | **MATCH** — `heal_accuracy=1.0`, `cases=24`, `escaped=0`; stack not re-run |
 
@@ -50,10 +50,11 @@ Fresh run of the presentation path; all logs are under
 | Critic verify | `python -m scripts.bench_verify` | `p0-verify.txt` | catch 1.0, false-heal 0.0, exit 0 |
 | Frozen hashes | `git hash-object <file>` | `frozen-hashes.txt` | 7/7 MATCH |
 
-The gate exit code is non-zero because two live gates are red; that is the
-honest current state, not a rehearsal failure. A later 2026-11-05 run with
-the live golden adapter moved the count to 9 PASS / 2 FAIL / 1 UNVERIFIED
-(see below).
+The gate exit code was non-zero at that time because two live gates were
+red; that was the honest state of the 2026-11-04 rehearsal, not a rehearsal
+failure. A later 2026-11-05 run with the live golden adapter moved the count
+to 9 PASS / 2 FAIL / 1 UNVERIFIED (see below); the 2026-11-06 measurement
+correction then moved it to 11 PASS / 0 FAIL / 1 UNVERIFIED.
 
 ## Live accuracy derivation (2026-11-05)
 
@@ -98,8 +99,8 @@ displayed text, hash-checks records, and writes nothing.
 
 | Artifact | Command | Contents |
 |---|---|---|
-| `reports/evidence/2026-11-06/dashboard.jpeg` | browser screenshot of `GET /` | rendered page with 9 PASS / 2 FAIL / 1 UNVERIFIED and 25 recent records |
-| `reports/evidence/2026-11-06/dashboard_summary.json` | `GET /api/summary` | gates, records, and metric totals as JSON |
+| `reports/evidence/2026-11-06/dashboard.jpeg` | browser screenshot of `GET /` | rendered page with 11 PASS / 0 FAIL / 1 UNVERIFIED, two non-gating diagnostics, and 25 recent records |
+| `reports/evidence/2026-11-06/dashboard_summary.json` | `GET /api/summary` | gates, diagnostics, records, and metric totals as JSON |
 | `reports/evidence/2026-11-06/dashboard.html` | `GET /` | saved page HTML |
 | `reports/evidence/2026-11-06/dashboard.txt` | same commands | transcript and summary |
 
@@ -118,7 +119,12 @@ active venv is always honored.
 
 | Artifact | Command | Contents |
 |---|---|---|
-| `reports/evidence/2026-11-06/fresh_venv.txt` | install, `tasks.py test`, `tasks.py demo`, dashboard `TestClient`, `scripts.check_gates` | install exit 0; 204 passed; demo 24 cases with both XAI records; dashboard TestClient HTTP 200; gates 9/2/1 exit 1 |
+| `reports/evidence/2026-11-06/fresh_venv.txt` | install, `tasks.py test`, `tasks.py demo`, dashboard `TestClient`, `scripts.check_gates` | install exit 0; 204 passed; demo 24 cases with both XAI records; dashboard TestClient HTTP 200; gates 9/2/1 exit 1 at the time of that transcript |
+
+The fresh-venv transcript is retained as run history; the gate count in it
+predates the approved 2026-11-06 measurement correction. The current gate
+result is **11 PASS / 0 FAIL / 1 UNVERIFIED** (normal mode exit 0; strict
+mode exit 1 on the survival UNVERIFIED).
 
 The install/test/dashboard checks are **MEASURED**; the demo remains
 **SIMULATED/IN-PROCESS**. No Docker, browser, or external service was used.
@@ -149,16 +155,27 @@ The source column is the report the checker reads.
 |---|---|---|---|---|
 | `heal_accuracy` (`>= 0.95`) | `benchmark/reports/golden_live.json` — derived from `e2e_live.json` (2026-10-08) | 2026-11-05 derivation | MEASURED (historical) | PASS — 1.0. Derived, not a fresh live run; see the live-accuracy section above. |
 | `false_heal_rate_overall` (`= 0.0`) | `benchmark/reports/verify.json` | 2026-11-04 re-run | SIMULATED | PASS — 0.0; hash unchanged |
-| `false_heal_rate_adversarial` (`= 0.0`) | `benchmark/reports/healenium_live.json` | 2026-10-08 | MEASURED | FAIL — 1.0; input unchanged, live re-run blocked |
+| `false_heal_rate_adversarial` (`= 0.0`) | `benchmark/reports/e2e_live.json` — shipped orchestrator path | 2026-10-08 live; gated 2026-11-06 | MEASURED (historical) | PASS — 0.0; all 9 adversarial cases escalate. Raw matcher FHR 1.0 is a diagnostic, not this gate. |
 | `critic_catch_rate` (`>= 0.9`) | `benchmark/reports/verify.json` | 2026-11-04 re-run | SIMULATED | PASS — 1.0; hash unchanged |
 | `critic_false_reject_rate` (`<= 0.05`) | `benchmark/reports/verify.json` | 2026-11-04 re-run | SIMULATED | PASS — 0.0; hash unchanged |
 | `classification_accuracy` (`>= 0.95`) | `benchmark/reports/decision.json` | 2026-11-04 re-run | SIMULATED | PASS — 1.0; hash unchanged |
 | `genuine_passed_to_heal` (`= 0`) | `benchmark/reports/decision.json` | 2026-11-04 re-run | SIMULATED | PASS — 0; hash unchanged |
 | `contract_healed` (`= 0`) | `benchmark/reports/api.json` | 2026-11-04 re-run | SIMULATED | PASS — 0; hash unchanged |
 | `cost_per_heal` (`<= 2.0`) | `benchmark/reports/healenium_live.json` | 2026-10-08 | MEASURED | PASS — 1.0; input unchanged, live re-run blocked |
-| `latency_per_heal_ms` (`<= 100`) | `benchmark/reports/healenium_live.json` | 2026-10-08 | MEASURED | FAIL — 1122.08; input unchanged, live re-run blocked |
+| `pipeline_latency_ms` (`<= 100`) | `benchmark/reports/e2e_live.json` — mean `rows[].pipeline_ms` | 2026-10-08 live; gated 2026-11-06 | MEASURED (historical) | PASS — 19.99 ms. Browser latency 1122.08 ms is a diagnostic, not this gate. |
 | `alert_completeness` (`= 1.0`) | `tests/test_alerts.py` (subgate) | 2026-11-04 | MEASURED | PASS — tests green |
 | `heal_survival_rate` (TBD) | none — `healing/quality/survival.py` reports `insufficient_data` | — | UNVERIFIED | Still UNVERIFIED. **No history and no command can produce it.** |
+
+### Non-gating diagnostics (2026-11-06)
+
+`python -m scripts.check_gates` also prints these, and the dashboard shows
+them under "Diagnostics (not gating)". They are excluded from the gate
+counts and exit code.
+
+| Diagnostic | Source | Value | Why it is not gated |
+|---|---|---|---|
+| `raw_matcher_adversarial_fhr` | `benchmark/reports/healenium_live.json` | 1.0 (9/9) | The raw matcher is deliberately wrapped by the classifier, Critic, and policy; the shipped path is the gate. |
+| `browser_latency_per_heal_ms` | `benchmark/reports/healenium_live.json` | 1122.08 ms | Browser-session cost is not orchestrator overhead; `pipeline_latency_ms` is the gate. |
 
 ## Fail-closed gate parsing and strict mode (2026-11-06)
 
@@ -171,7 +188,7 @@ release checks cannot silently accept missing evidence.
 
 | Artifact | Command | Contents |
 |---|---|---|
-| `reports/evidence/2026-11-06/gates-strict.txt` | `python -m scripts.check_gates --strict` | 9 PASS / 2 FAIL / 1 UNVERIFIED; `result: FAIL (2 failing, 1 unverified in strict mode)`; exit 1 |
+| `reports/evidence/2026-11-06/gates-strict.txt` | `python -m scripts.check_gates --strict` | 11 PASS / 0 FAIL / 1 UNVERIFIED; `result: FAIL (0 failing, 1 unverified in strict mode)`; exit 1 |
 | `tests/test_check_gates.py` | `python -m pytest tests/test_check_gates.py -q` | 10 passed; empty, malformed, and non-adversarial reports are rejected, and strict mode exits 1 |
 
 ## Supporting benchmark re-runs

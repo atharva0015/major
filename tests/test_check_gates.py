@@ -109,6 +109,30 @@ def test_metric_value_reads_nested_keys(tmp_path) -> None:
     p = write(tmp_path / "h.json", {"metrics": {"cost_per_heal": 1.0}})
     assert cg.metric_value("cost_per_heal", p) == 1.0
 
+    e2e = write(
+        tmp_path / "e2e_live.json",
+        {
+            "adversarial_fhr": 0.0,
+            "rows": [{"pipeline_ms": 10.0}, {"pipeline_ms": 20.0}],
+        },
+    )
+    assert cg.metric_value("false_heal_rate_adversarial", e2e) == 0.0
+    assert cg.metric_value("pipeline_latency_ms", e2e) == 15.0
+
+    for name, payload in (
+        ("adv_no_rows.json", {"adversarial_fhr": 0.0, "rows": []}),
+        ("adv_bad_rate.json", {"adversarial_fhr": "zero", "rows": [{"pipeline_ms": 1.0}]}),
+        ("latency_no_rows.json", {"rows": []}),
+        ("latency_bad_row.json", {"rows": [{"pipeline_ms": "fast"}]}),
+        ("latency_missing.json", {"rows": [{}]}),
+    ):
+        bad = write(tmp_path / name, payload)
+        with pytest.raises(ValueError):
+            cg.metric_value(
+                "pipeline_latency_ms" if "latency" in name else "false_heal_rate_adversarial",
+                bad,
+            )
+
 
 def test_live_source_mapping() -> None:
     assert (
@@ -117,6 +141,9 @@ def test_live_source_mapping() -> None:
     )
     assert (
         cg.live_source_for("benchmark/reports/golden.json") == "benchmark/reports/golden_live.json"
+    )
+    assert (
+        cg.live_source_for("benchmark/reports/e2e_live.json") == "benchmark/reports/e2e_live.json"
     )
 
 
@@ -190,3 +217,19 @@ def test_evaluate_returns_structured_rows(tmp_path, monkeypatch) -> None:
     assert rows[1]["status"] == "PASS"
     assert rows[-1]["metric"] == "heal_survival_rate"
     assert rows[-1]["status"] == "UNVERIFIED"
+
+    raw = write(
+        tmp_path / "raw.json",
+        {
+            "metrics": {"latency_per_heal_ms": 1122.0},
+            "results": [{"should_heal": False, "healed": True, "correct": False}],
+        },
+    )
+    diag = cg.diagnostics(str(raw))
+    assert [row["metric"] for row in diag] == [
+        "raw_matcher_adversarial_fhr",
+        "browser_latency_per_heal_ms",
+    ]
+    assert all(row["status"] == "DIAGNOSTIC" for row in diag)
+    assert diag[0]["actual"] == 1.0
+    assert diag[1]["actual"] == 1122.0

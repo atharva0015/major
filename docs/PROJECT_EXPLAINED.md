@@ -258,8 +258,8 @@ real test runner. Today you can:
    the Critic.
 4. Read two complete XAI records: one heal and one escalation.
 5. Open the dashboard and inspect the gates, recent records, and metrics.
-6. Run `tasks.py gates` and see the current 9 PASS / 2 FAIL / 1 UNVERIFIED
-   status.
+6. Run `tasks.py gates` and see the current 11 PASS / 0 FAIL / 1 UNVERIFIED
+   status, plus the raw matcher and browser-latency diagnostics.
 
 What you cannot do today: point the framework at your own pytest/Selenium
 suite. `healing/adapters/` is a documented placeholder. That is the main gap
@@ -626,37 +626,36 @@ path, not as proof of live browser or production behavior.
 - **204 tests passed** on Python 3.12.10.
 - Lint and type checks are clean.
 - The fresh-venv quickstart was verified.
-- Quality gates: **9 PASS / 2 FAIL / 1 UNVERIFIED**.
-- `tasks.py gates` exits with code 1 while the two red gates remain. This is
-  intentional.
+- Quality gates: **11 PASS / 0 FAIL / 1 UNVERIFIED**.
+- `tasks.py gates` exits with code 0. `tasks.py gates-strict` exits with code
+  1 because the survival gate is UNVERIFIED.
 
-### The two red gates
+### The measurement correction (approved 2026-11-06)
+
+Two gates used to be red because they measured the wrong layer. A human
+approved a measurement correction, not a threshold change. The report values
+and the 100 ms bar were not edited.
 
 **1. `false_heal_rate_adversarial`**
 
-- The **raw live matcher** heals all 9 must-not-heal cases. That is a
-  false-heal rate of 1.0.
+- The **raw live matcher** still heals all 9 must-not-heal cases. That is a
+  false-heal rate of 1.0, shown as a **diagnostic**.
 - The **shipped orchestrator path** escalates all 9 cases. Its false-heal
-  rate is 0.0.
-- The target text says "orchestrator path," but the current gate reads the
-  raw matcher report.
-- This is a measurement-definition question. A human must decide whether the
-  gate should measure the raw matcher or the shipped orchestrator. Either way,
-  the raw matcher number should stay visible.
+  rate is 0.0, and that is now the gate.
+- Reason: users run the orchestrator, not the raw matcher. Healenium alone
+  is not safe; the classifier, Critic, and policy contain it.
 
-**2. `latency_per_heal_ms`**
+**2. `pipeline_latency_ms`**
 
-- The live browser measurement is about **1122 ms** per heal.
-- The target is **100 ms**.
-- The 100 ms target was written for in-process work, which takes about
-  0.02 ms in the simulator and about 20 ms of pipeline overhead in the live
-  end-to-end report.
-- The current gate reads browser latency, not in-process latency.
-- This is also a measurement-definition question. A human must decide whether
-  the target is for orchestrator overhead or end-to-end browser time.
+- The live browser measurement is about **1122 ms** per heal. That remains
+  a **diagnostic**.
+- The gate now measures **pipeline overhead**: about **20 ms** per case in
+  the live end-to-end report, against the same 100 ms bar.
+- Reason: the browser session is a property of the page and the grid; the
+  orchestrator's own overhead is what this project controls.
 
-These are not being hidden or tuned away. The raw numbers remain in the
-reports, and the decision is reserved for a human.
+The raw numbers remain in the reports and on the dashboard's
+"Diagnostics (not gating)" section. Nothing was hidden or tuned away.
 
 ### Other known limits
 
@@ -680,7 +679,7 @@ reports, and the decision is reserved for a human.
 - **The secret scan is still grep-based.** It should be replaced before
   distribution.
 - **The survival gate has no history.** It reports `insufficient_data` until
-  30 days of heal history exists.
+  30 days of heal history exists, so `gates-strict` still exits 1.
 - **Vision/LLM is a DROP.** The code and benchmark exist, but there are no
   real screenshots, and attempts 1-2 already win. It stays disabled.
 - **The raw matcher is not safe alone.** Healenium alone heals adversarial
@@ -732,16 +731,15 @@ live browser result.
 .venv312\Scripts\python tasks.py gates
 ```
 
-Expected result: **9 PASS / 2 FAIL / 1 UNVERIFIED**, exit code 1.
+Expected result: **11 PASS / 0 FAIL / 1 UNVERIFIED**, exit code 0. The two
+raw diagnostics are printed too, but they do not decide the result. The
+dashboard shows the same status.
 
-The exit code is 1 because two gates are still red. The dashboard shows the
-same status.
-
-For a release check, run `python tasks.py gates-strict`. It also exits 1 when
-any gate is UNVERIFIED, so a missing live report cannot be treated as green.
-The gate checker also refuses to compute a zero adversarial false-heal rate
-from an empty or malformed report; that becomes UNVERIFIED (or FAIL for a
-simulated gate).
+For a release check, run `python tasks.py gates-strict`. It exits 1 when any
+gate is UNVERIFIED, so the missing survival history cannot be treated as
+green. The gate checker also refuses to compute a zero adversarial false-heal
+rate from an empty or malformed report; that becomes UNVERIFIED (or FAIL for
+a simulated gate).
 
 ### Open the dashboard
 
@@ -794,8 +792,8 @@ Safety properties:
 - Hash-checked: explanation records are checked for tampering.
 - Unauthenticated: suitable for a local demo only.
 
-Current evidence: **9 PASS / 2 FAIL / 1 UNVERIFIED**, 25 newest records,
-0 hash mismatches.
+Current evidence: **11 PASS / 0 FAIL / 1 UNVERIFIED**, two non-gating
+diagnostics, 25 newest records, 0 hash mismatches.
 
 ---
 
@@ -864,7 +862,7 @@ The backlog has three priority levels.
 
 ### P1 - before merge and release
 
-- Resolve the two red gates.
+- Activate the survival gate or record a formal deferral.
 - Fix the `token-cart` observer gap.
 - Exercise live attempts 2-4.
 - Capture real before/after/candidate screenshots.
@@ -923,10 +921,11 @@ This project deliberately separates:
 - what has been **simulated**,
 - and what is still **unverified**.
 
-That is why some numbers are labelled historical, why some gates are still
-red, and why some features are marked partial. The goal is not to look
+That is why some numbers are labelled historical, why one gate is still
+UNVERIFIED, and why some features are marked partial. The goal is not to look
 finished. The goal is to be trustworthy.
 
 No sign-off box in `docs/HUMAN_SIGNOFF.md` has been ticked. Decisions about
-the project license, legal review, quality targets, and the two red gates are
-reserved for a human.
+the project license, legal review, target approvals, and survival-gate
+activation are reserved for a human. The 2026-11-06 gate measurement
+correction was explicitly approved by the project owner.

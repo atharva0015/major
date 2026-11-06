@@ -1,34 +1,46 @@
-# Known red gates (MEASURED via `python -m scripts.check_gates`, exit 1)
+# Known red gates (none as of 2026-11-06)
 
-Current run (2026-11-05): **9 PASS / 2 FAIL / 1 UNVERIFIED**. Evidence:
-`reports/evidence/2026-11-05/gates-after-golden-live.txt`.
+Current run: **11 PASS / 0 FAIL / 1 UNVERIFIED**. Evidence:
+`reports/evidence/2026-11-06/gates.txt` (normal mode, exit 0) and
+`reports/evidence/2026-11-06/gates-strict.txt` (strict mode, exit 1 because
+`heal_survival_rate` is UNVERIFIED).
 
-Two gates fail. Neither was tuned, waived, or edited around. A human must
-decide, per gate: **fix** the underlying cause, **waive** with written
-reason, or **change the target** with rationale. No box below is ticked.
+The two former red gates were resolved by a human-approved measurement
+correction on 2026-11-06. No report value or threshold was edited. The raw
+values remain visible as non-gating diagnostics.
 
-## 1. `false_heal_rate_adversarial` — 1.0 vs target 0.0 (MEASURED live)
+## Resolved: `false_heal_rate_adversarial` (was 1.0 vs target 0.0)
 
-- Why it fails: the raw Healenium simulator heals 6 of 9 must-not-heal
-  cases (duplicate buttons, swapped roles). Live measurement is worse
-  (9/9, `healenium_live.md`). The unprotected matcher cannot refuse.
-- What a fix looks like: keep classifier + Critic gates in front of every
-  heal (already the shipped path — its own 0.0 gate passes); optionally
-  point this gate at live data when a live bench runs in CI.
-- Decision:
-  - [ ] Fix (human: ______, date: ______)
-  - [ ] Waive with reason (human: ______, date: ______)
-  - [ ] Change target with rationale (human: ______, date: ______)
+- **Old measurement:** raw live Healenium matcher on the 9 must-not-heal
+  cases. It healed 9/9, so the rate was 1.0.
+- **New gate:** the shipped orchestrator path in
+  `benchmark/reports/e2e_live.json`; all 9 cases escalate, so
+  `adversarial_fhr = 0.0`.
+- **Still visible:** raw matcher FHR 1.0 in the diagnostics section. The
+  raw matcher is deliberately protected by the classifier, Critic, and
+  policy; it is not safe alone.
+- **Evidence:** `benchmark/reports/e2e_live.json`,
+  `benchmark/reports/healenium_live.json`, and `docs/E2E_LIVE.md`.
 
-## 2. `latency_per_heal_ms` — 1122.08 vs target 100.0 (MEASURED live)
+## Resolved: `latency_per_heal_ms` (was 1122.08 vs target 100 ms)
 
-- Why it fails: the 100 ms bar was set for in-process sim units (~0.02 ms);
-  real browser sessions cost ~1.1 s per heal. The target, not the system,
-  is mismatched to the live path — but changing it here would be tuning
-  to fit, so it stands as a FAIL until a human resets it deliberately.
-- What a fix looks like: session reuse across cases, or a latency budget
-  split by path (sim vs live) with separate bars.
-- Decision:
-  - [ ] Fix (human: ______, date: ______)
-  - [ ] Waive with reason (human: ______, date: ______)
-  - [ ] Change target with rationale (human: ______, date: ______)
+- **Old measurement:** live browser session time per heal (1122.08 ms).
+- **New gate:** `pipeline_latency_ms`, the mean orchestrator overhead from
+  `e2e_live.json` rows (19.99 ms), against the same 100 ms bar.
+- **Still visible:** browser latency 1122.08 ms in the diagnostics section.
+- **Evidence:** `benchmark/reports/e2e_live.json` and
+  `reports/evidence/2026-11-06/gates.txt`.
+
+## Remaining strict blocker
+
+`heal_survival_rate` is **UNVERIFIED** because no 30-day heal history
+exists. Normal `check_gates` exits 0 with one UNVERIFIED row;
+`check_gates --strict` exits 1 by design. A human must activate the gate
+once history exists or record a formal deferral.
+
+## History
+
+The pre-correction run is retained unchanged:
+`reports/evidence/2026-11-05/gates-after-golden-live.txt` records
+9 PASS / 2 FAIL / 1 UNVERIFIED. Do not rewrite dated transcripts when a
+measurement definition changes.

@@ -3,6 +3,7 @@
 `healing/dashboard/app.py` serves a local page showing:
 
 - quality gates from `docs/TARGETS.md` and the report JSON files;
+- non-gating diagnostics (raw matcher FHR and browser latency);
 - the newest explanation records from the JSONL store;
 - the latest saved Prometheus metrics transcript.
 
@@ -41,6 +42,7 @@ disabled.
 | Section | Source | Notes |
 |---|---|---|
 | Gates | `docs/TARGETS.md` + `benchmark/reports/*.json` | Recomputed with `scripts.check_gates.evaluate()`, including the alert subgate; cached for 30 seconds |
+| Diagnostics | `benchmark/reports/healenium_live.json` | `scripts.check_gates.diagnostics()`: raw matcher FHR and browser latency; shown but never counted as gates |
 | Records | `RECORDS_PATH` (default `benchmark/reports/records.jsonl`) | Newest `DASHBOARD_RECORD_LIMIT` records (default 25, maximum 100); malformed lines are skipped and counted |
 | Metrics | `DASHBOARD_METRICS_PATH`, or the newest `reports/evidence/*/quality_snapshot.json` | Displays the saved `metrics.prometheus_text`; it does **not** scrape a live process |
 
@@ -55,6 +57,8 @@ mismatch is shown as a failure, not hidden.
 - **Fail-closed display**: missing files, malformed records, and gate
   errors produce visible warnings or `UNVERIFIED` rows; the page does not
   invent success.
+- **Diagnostics are separate**: raw matcher and browser-time rows are
+  labelled `DIAGNOSTIC` and are excluded from the gate counts.
 - **Localhost by default**: bind address is `127.0.0.1`.
 - **Security headers**: `nosniff`, `no-referrer`, and a restrictive
   Content-Security-Policy.
@@ -72,9 +76,9 @@ mismatch is shown as a failure, not hidden.
 ## Evidence
 
 - `tests/test_dashboard.py` covers data loading, masking/escaping,
-  fail-closed display, GET-only routes, and the JSON summary.
-- `tests/test_check_gates.py` covers the structured `evaluate()` path used
-  by the dashboard.
+  fail-closed display, diagnostics, GET-only routes, and the JSON summary.
+- `tests/test_check_gates.py` covers the structured `evaluate()` and
+  `diagnostics()` paths used by the dashboard.
 - `reports/evidence/2026-11-06/dashboard.jpeg` is a browser screenshot;
   `dashboard_summary.json`, `dashboard.html`, and `dashboard.txt` are the
   captured page, API summary, and transcript.

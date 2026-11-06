@@ -8,14 +8,14 @@ never be loosened to fit measured numbers.
 |---|---|---|---|
 | heal accuracy | >= 0.95 | Flake allowance; golden separately pins 1.0 | golden.json, golden_live.json (derived), decision.json |
 | false-heal rate, overall (orchestrator) | = 0.0 | Any wrong heal can hide a defect | verify.json, golden.json |
-| false-heal rate, adversarial (orchestrator path) | = 0.0 | Willful-misheal cases must all escalate | healenium.json adversarial slice, decision.json |
+| false-heal rate, adversarial (orchestrator path) | = 0.0 | Willful-misheal cases must all escalate; raw matcher rate is a diagnostic | e2e_live.json `adversarial_fhr`, decision.json |
 | Critic catch rate | >= 0.90 | 1-in-3 escapes today is inadequate | verify.json |
 | Critic false-reject rate | <= 0.05 | Waste, not danger; lenient bound | verify.json |
 | classification accuracy | >= 0.95 | Misroutes can expose adversarial cases to the healer | decision.json |
 | genuine regressions passed to heal engine | = 0 | Defect-masking is the top risk | decision.json |
 | auto-healed contract changes | = 0 | Absolute per AGENTS.md | api.json |
 | cost per heal | <= 2.0 units | 2x current 1.0; tripwire for runaway model/API spend | healenium.json |
-| latency per heal | <= 100 ms | Far above in-process ~0.02 ms; headroom for CI variance | healenium.json |
+| pipeline latency (orchestrator) | <= 100 ms | Far above the ~20 ms live pipeline overhead; browser time is a diagnostic | e2e_live.json `rows[].pipeline_ms` |
 | alert completeness | = 1.0 | Every escalation must carry evidence | tests/test_alerts.py (subgate) |
 | heal survival rate | TBD, pending data | No history yet; becomes a FAIL gate once data accrues | UNVERIFIED by design |
 
@@ -35,8 +35,8 @@ never be loosened to fit measured numbers.
 - metric: false_heal_rate_adversarial
   op: "=="
   value: 0.0
-  source: benchmark/reports/healenium.json
-  key: "results[computed: wrong_heals/healed among should_heal=false]"
+  source: benchmark/reports/e2e_live.json
+  key: adversarial_fhr
   provenance: live
 - metric: critic_catch_rate
   op: ">="
@@ -74,10 +74,25 @@ never be loosened to fit measured numbers.
   source: benchmark/reports/healenium.json
   key: metrics.cost_per_heal
   provenance: live
-- metric: latency_per_heal_ms
+- metric: pipeline_latency_ms
   op: "<="
   value: 100.0
-  source: benchmark/reports/healenium.json
-  key: metrics.latency_per_heal_ms
+  source: benchmark/reports/e2e_live.json
+  key: "rows[computed: mean pipeline_ms]"
   provenance: live
 ```
+
+## Non-gating diagnostics
+
+The raw matcher and the browser session are still measured, but they do not
+decide the gate:
+
+- **Raw matcher adversarial FHR:** 1.0 (9/9 healed) from
+  `benchmark/reports/healenium_live.json`.
+- **Browser latency per heal:** 1122.08 ms from the same report.
+
+`scripts.check_gates.diagnostics()` prints both and the dashboard shows them
+in a separate "Diagnostics (not gating)" section. The gated values are the
+shipped orchestrator path (`e2e_live.json`: adversarial FHR 0.0) and its
+pipeline overhead (~20 ms). This measurement correction was approved by a
+human on 2026-11-06; the raw numbers were not changed or hidden.

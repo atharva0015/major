@@ -93,6 +93,25 @@ def _gate_rows() -> list[dict[str, Any]]:
     return rows
 
 
+def _diagnostic_rows() -> list[dict[str, Any]]:
+    """Non-gating raw matcher/browser rows; never crash the dashboard."""
+    try:
+        return check_gates.diagnostics()
+    except Exception as exc:
+        return [
+            {
+                "metric": "diagnostics",
+                "op": "n/a",
+                "target": None,
+                "provenance": "config",
+                "status": "DIAGNOSTIC",
+                "actual": None,
+                "message": f"DIAGNOSTIC diagnostics: unavailable ({exc})",
+                "source": check_gates.RAW_MATCHER_LIVE,
+            }
+        ]
+
+
 def _summarize_record(record: ExplanationRecord) -> dict[str, Any]:
     decision = "heal" if record.selected and not record.escalation_reason else "escalate"
     return {
@@ -246,6 +265,7 @@ def load_metrics(path: str | None = None) -> dict[str, Any]:
 
 def build_summary() -> dict[str, Any]:
     gates = _gate_rows()
+    diagnostics = _diagnostic_rows()
     records = load_records()
     metrics = load_metrics()
     recent = records["records"]
@@ -259,6 +279,7 @@ def build_summary() -> dict[str, Any]:
             "fail": sum(1 for gate in gates if gate["status"] == "FAIL"),
             "unverified": sum(1 for gate in gates if gate["status"] == "UNVERIFIED"),
         },
+        "diagnostics": diagnostics,
         "records": records,
         "record_counts": {
             "heals": heals,
@@ -282,7 +303,12 @@ def _number(value: Any) -> str:
 
 
 def _badge(status: str) -> str:
-    css = {"PASS": "pass", "FAIL": "fail", "UNVERIFIED": "unverified"}.get(status, "unknown")
+    css = {
+        "PASS": "pass",
+        "FAIL": "fail",
+        "UNVERIFIED": "unverified",
+        "DIAGNOSTIC": "diagnostic",
+    }.get(status, "unknown")
     return f'<span class="badge {css}">{_escape(status)}</span>'
 
 
@@ -371,6 +397,7 @@ def _metric_cards(metrics: dict[str, Any]) -> str:
 
 def render_page(summary: dict[str, Any]) -> str:
     gates = summary["gates"]
+    diagnostics = summary["diagnostics"]
     gate_counts = summary["gate_counts"]
     records = summary["records"]
     record_counts = summary["record_counts"]
@@ -424,6 +451,9 @@ def render_page(summary: dict[str, Any]) -> str:
         '<section><div class="section-head"><h2>Quality gates</h2>'
         '<span class="muted">recomputed from reports; cached 30s</span></div>'
         f"{_gate_table(gates)}</section>"
+        '<section><div class="section-head"><h2>Diagnostics (not gating)</h2>'
+        '<span class="muted">raw matcher and browser time; context only</span></div>'
+        f"{_gate_table(diagnostics)}</section>"
         '<section><div class="section-head"><h2>Recent explanation records</h2>'
         f'<span class="muted">newest {_escape(records["limit"])} of {_escape(records["seen"])} · '
         f"{_escape(records['path'])}</span></div>"
@@ -463,6 +493,7 @@ font-weight:700;letter-spacing:.03em;white-space:nowrap}
 .badge.pass,.badge.heal{background:#d4efdf;color:var(--pass)}
 .badge.fail,.badge.escalate{background:#fadbd8;color:var(--fail)}
 .badge.unverified{background:#fcf3cf;color:var(--unverified)}
+.badge.diagnostic{background:#e8f0fe;color:var(--accent)}
 .badge.read-only{background:#fff;color:var(--ink);align-self:center;padding:7px 12px}
 .badge.unknown{background:#e5e8e8;color:var(--muted)}
 .warning{background:#fef9e7;border:1px solid #f7dc6f;border-radius:10px;padding:12px 16px;

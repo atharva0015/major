@@ -212,12 +212,15 @@ path this retention job scans.
 .venv312/Scripts/python -m scripts.evidence_snapshot
 ```
 
-The gate command exits 1 while the documented red gates remain
-(`false_heal_rate_adversarial` and `latency_per_heal_ms`). Do not loosen a
-safety target to make it green; a human must fix, waive, or re-baseline it.
+The gate command currently exits 0 with **11 PASS / 0 FAIL / 1 UNVERIFIED**.
+The former red gates now use the human-approved orchestrator-path
+measurement (`false_heal_rate_adversarial`) and pipeline-overhead
+measurement (`pipeline_latency_ms`); the raw matcher FHR (1.0) and browser
+latency (1122 ms) are visible non-gating diagnostics. Do not loosen a safety
+target to make it green; a human must fix, waive, or re-baseline it.
 `heal_survival_rate` stays UNVERIFIED until history exists. Use `--strict`
-for release checks: it also exits 1 on any UNVERIFIED gate, so a missing
-live report cannot pass as green.
+for release checks: it exits 1 on any UNVERIFIED gate, so the missing
+survival history cannot pass as green.
 
 ## 7. Known gaps and stop conditions
 

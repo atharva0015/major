@@ -41,9 +41,10 @@ python3.12 -m venv .venv312
 ```
 
 Open <http://127.0.0.1:8080> for the read-only dashboard. `tasks.py gates`
-is optional in the quickstart: it exits 1 while the two documented red
-gates remain (see Current limits). `tasks.py gates-strict` also fails on
-UNVERIFIED gates, so release checks cannot ignore missing evidence.
+is optional in the quickstart: it currently exits 0 with **11 PASS / 0 FAIL
+/ 1 UNVERIFIED**. `tasks.py gates-strict` exits 1 until the survival gate
+has history or a written waiver, so release checks cannot ignore missing
+evidence.
 
 If `make` is installed, the same targets are available as `make test` and
 `make demo`. `tasks.py` is the Windows-friendly equivalent of every Makefile
@@ -67,7 +68,7 @@ The demo takes seconds.
 | `python tasks.py test` | Full pytest suite |
 | `python tasks.py lint` | ruff check, ruff format check, mypy |
 | `python tasks.py demo` | 24-case presenter demo, two XAI records |
-| `python tasks.py gates` | Quality gates from the saved reports |
+| `python tasks.py gates` | Quality gates from the saved reports (currently 11/0/1, exit 0) |
 | `python tasks.py gates-strict` | Quality gates; UNVERIFIED also exits 1 |
 | `python tasks.py bench` | Baseline benchmark plus Critic verify |
 | `python tasks.py bench-heldout` | Held-out UI + API cases |
@@ -119,10 +120,11 @@ Safety invariants:
 
 ## Current limits (say these out loud)
 
-- The **raw live Healenium matcher** heals all 9 adversarial cases. The
-  pipeline around it escalates all 9, so the protection is real, but the
-  `false_heal_rate_adversarial` gate is red on raw matcher output.
-- Live **latency** is 1122 ms per heal against a sim-era 100 ms target.
+- The **raw live Healenium matcher** still heals all 9 adversarial cases.
+  That is a **non-gating diagnostic**: the gate measures the shipped
+  orchestrator path, which escalates all 9 (`adversarial_fhr = 0.0`).
+- **Browser latency** is 1122 ms per heal. That is also a diagnostic; the
+  gate measures orchestrator overhead (`pipeline_latency_ms`, ~20 ms).
 - `heal_accuracy [live]` **PASSES** at 1.0 only because
   `scripts/bench_golden_live.py` derives `benchmark/reports/golden_live.json`
   from the historical 2026-10-08 live E2E report. It does not re-run the

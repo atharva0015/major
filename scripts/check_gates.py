@@ -18,6 +18,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 TARGETS_MD = os.path.join("docs", "TARGETS.md")
+RAW_MATCHER_LIVE = os.path.join("benchmark", "reports", "healenium_live.json")
 
 
 def load_targets(path: str | None = None) -> list[dict[str, object]]:
@@ -78,13 +79,42 @@ def adversarial_fhr(path: str) -> float:
 def live_source_for(source: str) -> str:
     """Live counterpart of a sim report path (healenium.json -> healenium_live.json)."""
     root, ext = os.path.splitext(source)
+    if root.endswith("_live"):
+        return source
     return root + "_live" + ext
+
+
+def _number(value: object, label: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"{label} is not a number")
+    return float(value)
+
+
+def _pipeline_latency(data: dict[str, object]) -> float:
+    """Mean per-case orchestrator overhead from e2e_live.json rows."""
+    rows = data.get("rows")
+    if not isinstance(rows, list) or not rows:
+        raise ValueError("report has no rows")
+    total = 0.0
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise ValueError(f"row {index} is not an object")
+        total += _number(row.get("pipeline_ms"), f"row {index} pipeline_ms")
+    return total / len(rows)
 
 
 def metric_value(name: str, source: str, live: bool = False) -> float:
     if name == "false_heal_rate_adversarial":
+        data = read_json(source)
+        if "adversarial_fhr" in data:
+            rows = data.get("rows")
+            if not isinstance(rows, list) or not rows:
+                raise ValueError(f"{source} has no rows")
+            return _number(data["adversarial_fhr"], f"{source} adversarial_fhr")
         return adversarial_fhr(source)
     data = read_json(source)
+    if name == "pipeline_latency_ms":
+        return _pipeline_latency(data)
     if name in ("cost_per_heal", "latency_per_heal_ms"):
         metrics = data.get("metrics", {})
         assert isinstance(metrics, dict)
@@ -235,6 +265,61 @@ def evaluate(run_alerts: bool = True) -> list[dict[str, object]]:
     return rows
 
 
+def diagnostics(source: str = RAW_MATCHER_LIVE) -> list[dict[str, object]]:
+    """Return non-gating raw-matcher and browser-latency diagnostics.
+
+    These numbers explain why the shipped orchestrator path exists, but they
+    do not decide pass/fail. A missing or malformed report is shown as
+    unavailable instead of being treated as a zero.
+    """
+    rows: list[dict[str, object]] = []
+
+    def add(metric: str, actual: float | None, message: str) -> None:
+        rows.append(
+            {
+                "metric": metric,
+                "op": "n/a",
+                "target": None,
+                "provenance": "live (non-gating)",
+                "status": "DIAGNOSTIC",
+                "actual": actual,
+                "message": message,
+                "source": source,
+            }
+        )
+
+    try:
+        raw = adversarial_fhr(source)
+        add(
+            "raw_matcher_adversarial_fhr",
+            raw,
+            f"DIAGNOSTIC raw_matcher_adversarial_fhr: {raw} (not gated; "
+            "the orchestrator path is the gate)",
+        )
+    except (OSError, ValueError, KeyError, AssertionError, TypeError) as exc:
+        add(
+            "raw_matcher_adversarial_fhr",
+            None,
+            f"DIAGNOSTIC raw_matcher_adversarial_fhr: unavailable ({exc})",
+        )
+
+    try:
+        browser = metric_value("latency_per_heal_ms", source)
+        add(
+            "browser_latency_per_heal_ms",
+            browser,
+            f"DIAGNOSTIC browser_latency_per_heal_ms: {browser} (not gated; "
+            "pipeline overhead is the gate)",
+        )
+    except (OSError, ValueError, KeyError, AssertionError, TypeError) as exc:
+        add(
+            "browser_latency_per_heal_ms",
+            None,
+            f"DIAGNOSTIC browser_latency_per_heal_ms: unavailable ({exc})",
+        )
+    return rows
+
+
 def main(strict: bool = False) -> None:
     """Print gate results; exit 1 on FAIL, or on UNVERIFIED when strict."""
     try:
@@ -243,6 +328,8 @@ def main(strict: bool = False) -> None:
         print(f"FAIL targets_block: {exc}")
         raise SystemExit(1)
     for row in rows:
+        print(row["message"])
+    for row in diagnostics():
         print(row["message"])
     passed = sum(1 for row in rows if row["status"] == "PASS")
     failed = sum(1 for row in rows if row["status"] == "FAIL")
