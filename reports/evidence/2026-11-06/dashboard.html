@@ -1,0 +1,99 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Self-Healing MVP Dashboard</title><style>
+:root{color-scheme:light;--ink:#17202a;--muted:#5d6d7e;--line:#d6dbdf;--bg:#f4f6f7;
+--card:#fff;--pass:#1e8449;--fail:#b03a2e;--unverified:#9a7d0a;--accent:#1f618d}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;
+background:var(--bg);color:var(--ink)}header{display:flex;justify-content:space-between;
+gap:16px;align-items:flex-start;padding:24px 32px;background:var(--ink);color:#fff}
+h1{margin:0;font-size:26px}h2{font-size:18px;margin:0}.sub{margin:4px 0 0;color:#d5dbdb}
+main{max-width:1400px;margin:0 auto;padding:24px 32px 40px}section{margin:0 0 28px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.card,.mini{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card span,.mini span{display:block;color:var(--muted);font-size:13px}
+.card strong{display:block;font-size:24px;margin:4px 0}.card small{color:var(--muted)}
+.section-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline;
+margin:0 0 10px}.muted{color:var(--muted);font-size:13px}
+.scroll{overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:9px 12px;
+border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:#eaecee;font-size:12px;text-transform:uppercase;letter-spacing:.03em;
+white-space:nowrap}tr:last-child td{border-bottom:0}td.detail{color:var(--muted);
+min-width:280px}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px}
+.badge{display:inline-block;border-radius:999px;padding:2px 9px;font-size:12px;
+font-weight:700;letter-spacing:.03em;white-space:nowrap}
+.badge.pass,.badge.heal{background:#d4efdf;color:var(--pass)}
+.badge.fail,.badge.escalate{background:#fadbd8;color:var(--fail)}
+.badge.unverified{background:#fcf3cf;color:var(--unverified)}
+.badge.read-only{background:#fff;color:var(--ink);align-self:center;padding:7px 12px}
+.badge.unknown{background:#e5e8e8;color:var(--muted)}
+.warning{background:#fef9e7;border:1px solid #f7dc6f;border-radius:10px;padding:12px 16px;
+margin:0 0 24px}.warning ul{margin:6px 0 0;padding-left:20px}
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;
+margin:0 0 10px}.mini strong{display:block;font-size:20px;margin-top:2px}
+details{margin-top:10px}summary{cursor:pointer;color:var(--accent)}
+pre{overflow:auto;background:#17202a;color:#eaf2f8;padding:14px;border-radius:8px;
+font-size:12px;max-height:420px}footer{max-width:1400px;margin:0 auto;padding:0 32px 32px;
+color:var(--muted);font-size:12px}@media(max-width:700px){header,main,footer{padding-left:16px;
+padding-right:16px}h1{font-size:22px}}
+</style></head><body><header><div><h1>Self-Healing MVP</h1><p class="sub">Gates, explanation records, and the latest saved metrics snapshot. Local files only.</p></div><span class="badge read-only">READ-ONLY</span></header><main><section class="cards"><div class="card"><span>Quality gates</span><strong>9 PASS</strong><small>2 FAIL · 1 UNVERIFIED</small></div><div class="card"><span>Recent records</span><strong>25</strong><small>16 heals · 9 escalations</small></div><div class="card"><span>Record integrity</span><strong>0 mismatch</strong><small>hash-checked on read</small></div><div class="card"><span>Metrics source</span><strong>saved snapshot</strong><small>SIMULATED/IN-PROCESS</small></div></section><section><div class="section-head"><h2>Quality gates</h2><span class="muted">recomputed from reports; cached 30s</span></div><div class="scroll"><table><thead><tr><th>Metric</th><th>Target</th><th>Actual</th><th>Status</th><th>Provenance</th><th>Detail</th></tr></thead><tbody><tr><td><code>heal_accuracy</code></td><td><code>&gt;= 0.95</code></td><td>1</td><td><span class="badge pass">PASS</span></td><td>live</td><td class="detail">PASS heal_accuracy [live]: 1.0 &gt;= 0.95</td></tr><tr><td><code>false_heal_rate_overall</code></td><td><code>== 0.0</code></td><td>0</td><td><span class="badge pass">PASS</span></td><td>sim</td><td class="detail">PASS false_heal_rate_overall [sim]: 0.0 == 0.0</td></tr><tr><td><code>false_heal_rate_adversarial</code></td><td><code>== 0.0</code></td><td>1</td><td><span class="badge fail">FAIL</span></td><td>live</td><td class="detail">FAIL false_heal_rate_adversarial [live]: 1.0 == 0.0 (from benchmark/reports/healenium_live.json)</td></tr><tr><td><code>critic_catch_rate</code></td><td><code>&gt;= 0.9</code></td><td>1</td><td><span class="badge pass">PASS</span></td><td>sim</td><td class="detail">PASS critic_catch_rate [sim]: 1.0 &gt;= 0.9</td></tr><tr><td><code>critic_false_reject_rate</code></td><td><code>&lt;= 0.05</code></td><td>0</td><td><span class="badge pass">PASS</span></td><td>sim</td><td class="detail">PASS critic_false_reject_rate [sim]: 0.0 &lt;= 0.05</td></tr><tr><td><code>classification_accuracy</code></td><td><code>&gt;= 0.95</code></td><td>1</td><td><span class="badge pass">PASS</span></td><td>sim</td><td class="detail">PASS classification_accuracy [sim]: 1.0 &gt;= 0.95</td></tr><tr><td><code>genuine_passed_to_heal</code></td><td><code>== 0.0</code></td><td>0</td><td><span class="badge pass">PASS</span></td><td>sim</td><td class="detail">PASS genuine_passed_to_heal [sim]: 0.0 == 0.0</td></tr><tr><td><code>contract_healed</code></td><td><code>== 0.0</code></td><td>0</td><td><span class="badge pass">PASS</span></td><td>sim</td><td class="detail">PASS contract_healed [sim]: 0.0 == 0.0</td></tr><tr><td><code>cost_per_heal</code></td><td><code>&lt;= 2.0</code></td><td>1</td><td><span class="badge pass">PASS</span></td><td>live</td><td class="detail">PASS cost_per_heal [live]: 1.0 &lt;= 2.0</td></tr><tr><td><code>latency_per_heal_ms</code></td><td><code>&lt;= 100.0</code></td><td>1122</td><td><span class="badge fail">FAIL</span></td><td>live</td><td class="detail">FAIL latency_per_heal_ms [live]: 1122.0797958352098 &lt;= 100.0 (from benchmark/reports/healenium_live.json)</td></tr><tr><td><code>alert_completeness</code></td><td><code>== 1.0</code></td><td>1</td><td><span class="badge pass">PASS</span></td><td>test</td><td class="detail">PASS alert_completeness: tests/test_alerts.py green (builder enforces all fields)</td></tr><tr><td><code>heal_survival_rate</code></td><td><code>TBD </code></td><td>—</td><td><span class="badge unverified">UNVERIFIED</span></td><td>history</td><td class="detail">UNVERIFIED heal_survival_rate: no history yet (survival.py reports insufficient_data); becomes a FAIL gate once data accrues</td></tr></tbody></table></div></section><section><div class="section-head"><h2>Recent explanation records</h2><span class="muted">newest 25 of 6020 · benchmark\reports\records.jsonl</span></div><div class="scroll"><table><thead><tr><th>Heal ID</th><th>Test</th><th>Step</th><th>Decision</th><th>Class</th><th>Selected</th><th>Critic</th><th>Hash</th></tr></thead><tbody><tr><td><code>heal-a052dd8bfb99</code></td><td>ab_variant_text:/checkout</td><td>ab_variant_text:/checkout</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>checkout-submit</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-f41d186ad8d4</code></td><td>ab_variant_text:/products</td><td>ab_variant_text:/products</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>add-cart-1</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-6d34dbdca9ed</code></td><td>ab_variant_text:/login</td><td>ab_variant_text:/login</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>login-submit</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-cb2d33cbb823</code></td><td>swapped_roles:/checkout</td><td>swapped_roles:/checkout</td><td><span class="badge escalate">escalate</span></td><td>genuine_regression</td><td><code>—</code></td><td>escalated</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-e70eb3b8d3ef</code></td><td>swapped_roles:/products</td><td>swapped_roles:/products</td><td><span class="badge escalate">escalate</span></td><td>genuine_regression</td><td><code>—</code></td><td>escalated</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-3161d32ca5d8</code></td><td>swapped_roles:/login</td><td>swapped_roles:/login</td><td><span class="badge escalate">escalate</span></td><td>genuine_regression</td><td><code>—</code></td><td>escalated</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-e60b033a8a4d</code></td><td>removed_element:/checkout</td><td>removed_element:/checkout</td><td><span class="badge escalate">escalate</span></td><td>genuine_regression</td><td><code>—</code></td><td>escalated</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-8b402b541dff</code></td><td>removed_element:/products</td><td>removed_element:/products</td><td><span class="badge escalate">escalate</span></td><td>genuine_regression</td><td><code>—</code></td><td>escalated</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-2b4a06c6a7a1</code></td><td>removed_element:/login</td><td>removed_element:/login</td><td><span class="badge escalate">escalate</span></td><td>genuine_regression</td><td><code>—</code></td><td>escalated</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-aca06c48817a</code></td><td>duplicate_buttons:/checkout</td><td>duplicate_buttons:/checkout</td><td><span class="badge escalate">escalate</span></td><td>environment_issue</td><td><code>—</code></td><td>escalated</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-5f08d6297035</code></td><td>duplicate_buttons:/products</td><td>duplicate_buttons:/products</td><td><span class="badge escalate">escalate</span></td><td>environment_issue</td><td><code>—</code></td><td>escalated</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-b3bf22b4c814</code></td><td>duplicate_buttons:/login</td><td>duplicate_buttons:/login</td><td><span class="badge escalate">escalate</span></td><td>environment_issue</td><td><code>—</code></td><td>escalated</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-8718ad4b3a0b</code></td><td>reskinned_layout:/checkout</td><td>reskinned_layout:/checkout</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>checkout-submit</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-98dde3f31f6a</code></td><td>reskinned_layout:/products</td><td>reskinned_layout:/products</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>add-cart-1</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-cc831e873920</code></td><td>reskinned_layout:/login</td><td>reskinned_layout:/login</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>login-submit</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-800de7d46a61</code></td><td>moved_elements:/checkout</td><td>moved_elements:/checkout</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>checkout-submit</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-cc7eab82aa21</code></td><td>moved_elements:/products</td><td>moved_elements:/products</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>add-cart-1</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-47265d565711</code></td><td>moved_elements:/login</td><td>moved_elements:/login</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>login-submit</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-311e692d6363</code></td><td>changed_classes:/checkout</td><td>changed_classes:/checkout</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>checkout-submit</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-3a93ba062242</code></td><td>changed_classes:/products</td><td>changed_classes:/products</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>add-cart-1</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-a03f30399cd0</code></td><td>changed_classes:/login</td><td>changed_classes:/login</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>login-submit</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-11ed9a93d3ba</code></td><td>renamed_ids:/checkout</td><td>renamed_ids:/checkout</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>checkout-submit</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-d1fd134e1140</code></td><td>renamed_ids:/products</td><td>renamed_ids:/products</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>add-cart-1</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-428d8218ad03</code></td><td>renamed_ids:/login</td><td>renamed_ids:/login</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>login-submit</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr><tr><td><code>heal-f10d56bde694</code></td><td>t</td><td>renamed_ids:/login</td><td><span class="badge heal">heal</span></td><td>locator_drift</td><td><code>login-submit</code></td><td>pass</td><td><span class="badge pass">PASS</span></td></tr></tbody></table></div></section><section><div class="section-head"><h2>Metrics snapshot</h2><span class="muted">not live; no Prometheus scrape</span></div><div class="mini-grid"><div class="mini"><span>Successful heals</span><strong>1</strong></div><div class="mini"><span>Failed heals</span><strong>0</strong></div><div class="mini"><span>Escalations</span><strong>1</strong></div><div class="mini"><span>Cost units</span><strong>1</strong></div><div class="mini"><span>Latency samples</span><strong>1</strong></div><div class="mini"><span>Avg latency</span><strong>50.00 ms</strong></div><div class="mini"><span>Alert acks</span><strong>1</strong></div><div class="mini"><span>Avg ack</span><strong>12.00 s</strong></div></div><p class="muted">Source: <code>reports\evidence\2026-11-05\quality_snapshot.json</code> · label: <code>SIMULATED/IN-PROCESS</code></p><details><summary>Raw Prometheus transcript</summary><pre># HELP heal_latency_seconds Heal latency by attempt
+# TYPE heal_latency_seconds histogram
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;0.005&quot;} 0.0
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;0.01&quot;} 0.0
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;0.025&quot;} 0.0
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;0.05&quot;} 1.0
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;0.075&quot;} 1.0
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;0.1&quot;} 1.0
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;0.25&quot;} 1.0
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;0.5&quot;} 1.0
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;0.75&quot;} 1.0
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;1.0&quot;} 1.0
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;2.5&quot;} 1.0
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;5.0&quot;} 1.0
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;7.5&quot;} 1.0
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;10.0&quot;} 1.0
+heal_latency_seconds_bucket{attempt=&quot;1&quot;,le=&quot;+Inf&quot;} 1.0
+heal_latency_seconds_count{attempt=&quot;1&quot;} 1.0
+heal_latency_seconds_sum{attempt=&quot;1&quot;} 0.05
+# HELP heal_latency_seconds_created Heal latency by attempt
+# TYPE heal_latency_seconds_created gauge
+heal_latency_seconds_created{attempt=&quot;1&quot;} 1.793888556457678e+09
+# HELP heal_cost_total Heal cost by attempt
+# TYPE heal_cost_total counter
+heal_cost_total{attempt=&quot;1&quot;} 1.0
+# HELP heal_cost_created Heal cost by attempt
+# TYPE heal_cost_created gauge
+heal_cost_created{attempt=&quot;1&quot;} 1.793888556457678e+09
+# HELP heal_success_total Heal success by attempt number
+# TYPE heal_success_total counter
+heal_success_total{attempt=&quot;1&quot;,result=&quot;success&quot;} 1.0
+# HELP heal_success_created Heal success by attempt number
+# TYPE heal_success_created gauge
+heal_success_created{attempt=&quot;1&quot;,result=&quot;success&quot;} 1.793888556457678e+09
+# HELP heal_escalations_total Escalations by class
+# TYPE heal_escalations_total counter
+heal_escalations_total{classification=&quot;locator_drift&quot;} 1.0
+# HELP heal_escalations_created Escalations by class
+# TYPE heal_escalations_created gauge
+heal_escalations_created{classification=&quot;locator_drift&quot;} 1.793888556457678e+09
+# HELP alert_ack_seconds Alert acknowledgement time
+# TYPE alert_ack_seconds histogram
+alert_ack_seconds_bucket{le=&quot;0.005&quot;} 0.0
+alert_ack_seconds_bucket{le=&quot;0.01&quot;} 0.0
+alert_ack_seconds_bucket{le=&quot;0.025&quot;} 0.0
+alert_ack_seconds_bucket{le=&quot;0.05&quot;} 0.0
+alert_ack_seconds_bucket{le=&quot;0.075&quot;} 0.0
+alert_ack_seconds_bucket{le=&quot;0.1&quot;} 0.0
+alert_ack_seconds_bucket{le=&quot;0.25&quot;} 0.0
+alert_ack_seconds_bucket{le=&quot;0.5&quot;} 0.0
+alert_ack_seconds_bucket{le=&quot;0.75&quot;} 0.0
+alert_ack_seconds_bucket{le=&quot;1.0&quot;} 0.0
+alert_ack_seconds_bucket{le=&quot;2.5&quot;} 0.0
+alert_ack_seconds_bucket{le=&quot;5.0&quot;} 0.0
+alert_ack_seconds_bucket{le=&quot;7.5&quot;} 0.0
+alert_ack_seconds_bucket{le=&quot;10.0&quot;} 0.0
+alert_ack_seconds_bucket{le=&quot;+Inf&quot;} 1.0
+alert_ack_seconds_count 1.0
+alert_ack_seconds_sum 12.0
+# HELP alert_ack_seconds_created Alert acknowledgement time
+# TYPE alert_ack_seconds_created gauge
+alert_ack_seconds_created 1.7938885564451423e+09
+</pre></details></section></main><footer>Generated 2026-11-06 13:14:16 · read-only · bind to 127.0.0.1 · no auth, do not expose publicly</footer></body></html>

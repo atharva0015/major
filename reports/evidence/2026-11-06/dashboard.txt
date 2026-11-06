@@ -1,0 +1,12 @@
+$ .venv312/Scripts/python -m healing.dashboard.app
+GET http://127.0.0.1:8080/ -> 200 (text/html)
+GET http://127.0.0.1:8080/api/summary -> 200 (application/json)
+GET http://127.0.0.1:8080/healthz -> 200 (application/json)
+read_only=True
+gates=9 PASS / 2 FAIL / 1 UNVERIFIED
+records_window=25 of 6020
+record_counts=heals:16 escalations:9 hash_mismatch:0
+metrics_source=reports\evidence\2026-11-05\quality_snapshot.json
+metrics_totals={"ack_count": 1.0, "avg_ack_s": 12.0, "avg_latency_ms": 50.0, "cost": 1.0, "escalations": 1.0, "heal_fail": 0.0, "heal_success": 1.0, "latency_count": 1.0}
+screenshot=reports/evidence/2026-11-06/dashboard.jpeg
+label=SIMULATED/IN-PROCESS (saved artifacts; no live scrape)

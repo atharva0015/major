@@ -9,9 +9,9 @@ verified/shipped · `[ ]` not completed.
 Evidence labels follow `PROJECT_STATUS.md`: **MEASURED**, **SIMULATED**,
 **UNVERIFIED**.
 
-At a glance: **58 done · 33 partial · 23 open** (was 72 / 13 / 31 before the
-2026-11-04 audit; the P0 batch, P1.3, the demo tests, and the quality
-snapshot closed items).
+At a glance: **59 done · 33 partial · 23 open** (was 72 / 13 / 31 before the
+2026-11-04 audit; the P0 batch, P1.3, the demo tests, the quality snapshot,
+and the dashboard closed items).
 
 > **Audit rule used here:** a `[x]` stays only if it has both (a) a passing
 > automated test that exercises the behaviour and (b) a saved output artifact
@@ -221,13 +221,20 @@ snapshot closed items).
   `tests/test_demo_script.py` runs it as a subprocess and asserts 24 case
   rows plus both XAI records. Evidence:
   `reports/evidence/2026-11-05/demo.txt` (24/24, exit 0).
+- [x] **Read-only operator dashboard** — `healing/dashboard/app.py` renders
+  quality gates, the newest explanation records, and the latest saved
+  metrics snapshot. It is GET-only, masks/escapes displayed text, hash-checks
+  records, and binds to localhost. Evidence: `tests/test_dashboard.py`;
+  `reports/evidence/2026-11-06/dashboard.jpeg` and `dashboard.txt`
+  (9 PASS / 2 FAIL / 1 UNVERIFIED; 25 of 6020 records).
 
 ### 1.10 Tests and documentation
 
-- [x] **192 tests passing** on Python 3.12.10, including classifier, matcher,
+- [x] **201 tests passing** on Python 3.12.10, including classifier, matcher,
   Critic, policy, orchestrator, sandbox, XAI, alerts, GitOps, API sidecar,
-  held-out set, gates, and metrics (**MEASURED 2026-11-04**). Evidence: the
-  suite itself; `reports/evidence/2026-11-05/pytest.txt` (192 passed, exit 0).
+  held-out set, gates, dashboard, and metrics (**MEASURED 2026-11-06**).
+  Evidence: the suite itself; `reports/evidence/2026-11-06/pytest.txt`
+  (201 passed, exit 0).
 - [x] **Lint/type checks clean** — ruff check, ruff format, mypy (**MEASURED
   2026-11-04**). Evidence: `reports/evidence/2026-11-04/lint.txt` (exit 0/0/0).
 

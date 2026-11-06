@@ -1,15 +1,15 @@
-# Evidence index (2026-11-04, refreshed 2026-11-05)
+# Evidence index (2026-11-04, refreshed 2026-11-06)
 
 Every headline claim in `PROJECT_STATUS.md` with its exact command, output
 artifact, date, provenance label, and the result of re-running it on
-2026-11-04/05. Labels: **MEASURED** (real run), **SIMULATED** (simulator or
+2026-11-04/05/06. Labels: **MEASURED** (real run), **SIMULATED** (simulator or
 in-process replay), **UNVERIFIED** (not observed / input missing).
 
 Environment: Windows host, `.venv312` (Python 3.12.10), `make` absent.
 Commands shown as `python` were run as
 `.venv312/Scripts/python.exe -m ...`; the full invocation is recorded at the
 top of each log under `reports/evidence/2026-11-04/` or
-`reports/evidence/2026-11-05/`. Docker was **not
+`reports/evidence/2026-11-05/` or `reports/evidence/2026-11-06/`. Docker was **not
 running** (`npipe:////./pipe/dockerDesktopLinuxEngine` unavailable), so
 live-stack commands could not be repeated.
 
@@ -23,15 +23,15 @@ is committed. Tracked docs (`docs/HELDOUT.md`, `docs/LIVE_VS_SIM.md`,
 
 ## Headline claims
 
-| # | Claim | Exact command | Output artifact | Date | Label | Re-run 2026-11-04/05 |
+| # | Claim | Exact command | Output artifact | Date | Label | Re-run 2026-11-04/05/06 |
 |---|---|---|---|---|---|---|
-| 1 | 192 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-05/pytest.txt` | 2026-11-05 | MEASURED | **MATCH** — 192 passed in 27.88 s (count same; runtime varies) |
+| 1 | 201 tests pass | `python -m pytest -q` | `reports/evidence/2026-11-06/pytest.txt` | 2026-11-06 | MEASURED | **MATCH** — 201 passed in 26.91 s (count same; runtime varies) |
 | 2 | Demo 24/24 match, exit 0 | `python tasks.py demo` | `reports/evidence/2026-11-04/demo.txt`, `p0-demo.txt`, `2026-11-05/demo.txt` | 2026-11-04; re-run 2026-11-05 | SIMULATED | **MATCH** — 24 rows, all expected/pipeline pairs equal, exit 0 |
 | 3 | Held-out UI 24/24, accuracy 1.000, FHR 0.000 | `python -m scripts.bench_heldout` | `benchmark/reports/heldout.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_heldout.txt`, `p0-heldout.txt`; tracked `docs/HELDOUT.md` | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — report hash unchanged; `ui_accuracy=1.0`, `ui_false_heal_rate=0.0`, `ui_escaped=0` |
 | 4 | Held-out API 10/11 | `python -m scripts.bench_heldout` | same as #3 | 2026-10-14; re-run 2026-11-04 | MEASURED | **MATCH** — still 10/11; `heldout:token-cart` remains the one miss |
 | 5 | Healenium live: accuracy 1.000, FHR 0.375, adversarial 9/9, 1122 ms | `python -m scripts.bench_healenium_live` | `benchmark/reports/healenium_live.json` + `.md` (ignored); tracked summary `docs/LIVE_VS_SIM.md` | 2026-10-08 | MEASURED (historical) | **NOT RE-RUN** — Docker unavailable; the gate and index still read the unchanged 2026-10-08 report. **UNVERIFIED now.** |
 | 6 | Critic catch rate 1.000 | `python -m scripts.bench_verify` | `benchmark/reports/verify.json` + `.md` (ignored); `reports/evidence/2026-11-04/bench_verify.txt`, `p0-verify.txt` | 2026-10-14; re-run 2026-11-04 | SIMULATED | **MATCH** — report hash unchanged; `catch_rate=1.0`, `false_reject_rate=0.0`, `false_heal_rate=0.0` |
-| 7 | Gate result 9 PASS / 2 FAIL / 1 UNVERIFIED | `python -m scripts.check_gates` | `reports/evidence/2026-11-05/gates-after-golden-live.txt` | 2026-11-05 | MEASURED | **MATCH** — current statuses; exit 1 |
+| 7 | Gate result 9 PASS / 2 FAIL / 1 UNVERIFIED | `python -m scripts.check_gates` | `reports/evidence/2026-11-05/gates-after-golden-live.txt`, `2026-11-06/gates.txt` | 2026-11-05; re-run 2026-11-06 | MEASURED | **MATCH** — current statuses; exit 1 |
 | 8 | Live E2E pipeline 24/24, 0 false heals, 0 escaped | `python -m scripts.bench_e2e_live` | `benchmark/reports/e2e_live.json` + `.md` (ignored); tracked summary `docs/E2E_LIVE.md` | 2026-10-08 | MEASURED (historical) | **NOT RE-RUN** — Docker unavailable; **UNVERIFIED now.** |
 | 9 | Live golden accuracy 1.0 on 24 cases | `python -m scripts.bench_golden_live` | `reports/evidence/2026-11-05/bench_golden_live.txt`, `golden_live.json` | 2026-11-05 derivation | DERIVED from live 2026-10-08 | **MATCH** — `heal_accuracy=1.0`, `cases=24`, `escaped=0`; stack not re-run |
 
@@ -89,6 +89,25 @@ autonomy, observability, guard, GitOps, dedupe, and watcher items. It does
 **not** close live E2E (Docker), survival history (no 30-day data), or the
 frozen changelog.
 
+## Read-only dashboard (2026-11-06)
+
+`python tasks.py dashboard` serves a GET-only page at
+<http://127.0.0.1:8080>. It reads the gate reports, the newest explanation
+records, and the latest saved metrics snapshot. It masks and escapes
+displayed text, hash-checks records, and writes nothing.
+
+| Artifact | Command | Contents |
+|---|---|---|
+| `reports/evidence/2026-11-06/dashboard.jpeg` | browser screenshot of `GET /` | rendered page with 9 PASS / 2 FAIL / 1 UNVERIFIED and 25 recent records |
+| `reports/evidence/2026-11-06/dashboard_summary.json` | `GET /api/summary` | gates, records, and metric totals as JSON |
+| `reports/evidence/2026-11-06/dashboard.html` | `GET /` | saved page HTML |
+| `reports/evidence/2026-11-06/dashboard.txt` | same commands | transcript and summary |
+
+The metrics section is the **saved** transcript from
+`reports/evidence/2026-11-05/quality_snapshot.json`, not a live scrape.
+The dashboard has no authentication; it binds to localhost by default.
+Tests: `tests/test_dashboard.py`, `tests/test_check_gates.py`.
+
 ## Gate-by-gate evidence
 
 The gate command is the same for every row: `python -m scripts.check_gates`.
@@ -128,8 +147,9 @@ The source column is the report the checker reads.
 
 Every command above was run from the repo root with
 `.venv312/Scripts/python.exe`. Gate, pytest, and adapter stdout is saved
-under `reports/evidence/2026-11-04/` or `reports/evidence/2026-11-05/`;
-bench stdout is also saved there for the rows that were re-run.
+under `reports/evidence/2026-11-04/`, `reports/evidence/2026-11-05/`, or
+`reports/evidence/2026-11-06/`; bench stdout is also saved there for the
+rows that were re-run.
 
 ## Frozen-file check (2026-11-04)
 
@@ -150,7 +170,7 @@ fails the suite).
 
 **No differences.** The two gaps flagged in the earlier audit are closed:
 the held-out case files are now frozen and hash-checked, and the freeze
-record's test count is refreshed to 192.
+record's test count is refreshed to 201.
 
 ## Claims with no reproducible command
 

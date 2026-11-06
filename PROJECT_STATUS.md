@@ -12,13 +12,14 @@ rerun, or a missing input).
 
 The healing pipeline is implemented end-to-end: classify → match →
 sandbox replay → layered Critic → policy gate → explanation record →
-alert / shadow PR, with an API sidecar and quality tooling. **MEASURED
-this session (2026-11-05, Python 3.12.10): 192 tests pass; lint and mypy
-are clean; the 24-case demo matches 24/24; gates report 9 PASS, 2 FAIL,
-1 UNVERIFIED (exit 1).** Both failures are the documented ones: the raw
-live Healenium matcher heals 9/9 adversarial cases, and live latency is
-1122 ms against a sim-era 100 ms target. The pipeline around the matcher
-still escalates all 9 adversarial cases (MEASURED live, 2026-10-08).
+alert / shadow PR, with an API sidecar, a read-only local dashboard, and
+quality tooling. **MEASURED this session (2026-11-06, Python 3.12.10):
+201 tests pass; lint and mypy are clean; the 24-case demo matches 24/24;
+gates report 9 PASS, 2 FAIL, 1 UNVERIFIED (exit 1).** Both failures are the
+documented ones: the raw live Healenium matcher heals 9/9 adversarial
+cases, and live latency is 1122 ms against a sim-era 100 ms target. The
+pipeline around the matcher still escalates all 9 adversarial cases
+(MEASURED live, 2026-10-08).
 
 The held-out set now exists and was measured (previous status said it was
 absent): UI 24/24 correct with 0 false heals; API 10/11, with one
@@ -27,17 +28,18 @@ now **PASSES** at 1.0, but from `golden_live.json` derived from the
 historical 2026-10-08 live E2E report; the stack was not re-run. Survival
 remains UNVERIFIED by design (no history).
 
-## Verification this session (MEASURED 2026-11-05)
+## Verification this session (MEASURED 2026-11-06)
 
 | Check | Result |
 |---|---|
-| `pytest -q` | 192 passed in 27.88 s |
+| `pytest -q` | 201 passed in 26.91 s |
 | `ruff check .` | clean |
-| `ruff format --check .` | 170 files already formatted |
-| `mypy healing` | no issues in 50 source files |
+| `ruff format --check .` | 174 files already formatted |
+| `mypy healing` | no issues in 52 source files |
 | `python tasks.py demo` | 24/24 cases match, exit 0 |
 | `python -m scripts.bench_demo_cases` | 24/24, 0 false heals, 0 wrong escalations |
 | `python tasks.py evidence-snapshot` | in-process quality transcript, exit 0 |
+| `python tasks.py dashboard` | local read-only page, HTTP 200; screenshot saved |
 | `python -m scripts.bench_golden_live` | 24 cases, heal_accuracy 1.0 |
 | `python -m scripts.check_gates` | 9 PASS / 2 FAIL / 1 UNVERIFIED, exit 1 |
 
@@ -190,7 +192,11 @@ green on 3.12 observed.
 
 ## Changes since the previous status
 
-- Tests: 166 → **192 passed**; lint/mypy re-verified on Python 3.12.10.
+- Tests: 166 → **201 passed**; lint/mypy re-verified on Python 3.12.10.
+- Dashboard: added a GET-only local page for gates, recent explanation
+  records, and the latest saved metrics snapshot. Records are
+  hash-checked, PII-masked, and HTML-escaped; there is no authentication,
+  so it binds to `127.0.0.1`.
 - Demo debt: `bench_demo_cases` now runs all **24** pre-registered cases
   (it previously ran only the 12 base cases); new tests cover the bench and
   the one-command demo.
